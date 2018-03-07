@@ -43,7 +43,7 @@ public class SecurityBizProperties {
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl;
 	private String loginUrlPatterns;
-
+	private boolean loginAjax = false;
 	private boolean allowSessionCreation = true;
 	/**  the parameter name. Defaults to "username". */
 	private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
@@ -75,7 +75,14 @@ public class SecurityBizProperties {
     private ReferrerPolicy referrerPolicy = ReferrerPolicy.NO_REFERRER;
     private XFrameOptionsMode frameOptions = XFrameOptionsMode.ALLOW_FROM;
     
-	
+	public boolean isLoginAjax() {
+		return loginAjax;
+	}
+
+	public void setLoginAjax(boolean loginAjax) {
+		this.loginAjax = loginAjax;
+	}
+
 	public boolean isForceHttps() {
 		return forceHttps;
 	}

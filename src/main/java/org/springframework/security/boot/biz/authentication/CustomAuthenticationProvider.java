@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz;
+package org.springframework.security.boot.biz.authentication;
 
 import java.util.ArrayList;
 import java.util.List;

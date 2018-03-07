@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareAuthenticationSuccessHandler;
+import org.springframework.security.boot.biz.authentication.ajax.AjaxUsernamePasswordAuthenticationFilter;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -156,15 +159,29 @@ public class SecurityBizWebFilterConfiguration implements ApplicationContextAwar
 	@Bean
 	@ConditionalOnMissingBean
 	public AuthenticationSuccessHandler successHandler() {
-		SimpleUrlAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-		successHandler.setDefaultTargetUrl(bizProperties.getSuccessUrl());
-		return successHandler;
+		// Ajax Login
+		if(bizProperties.isLoginAjax()) {
+			return new AjaxAwareAuthenticationSuccessHandler(bizProperties.getSuccessUrl());
+		}
+		// Form Login
+		else {
+			SimpleUrlAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+			successHandler.setDefaultTargetUrl(bizProperties.getSuccessUrl());
+			return successHandler;
+		}
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	public AuthenticationFailureHandler failureHandler() {
-		return new SimpleUrlAuthenticationFailureHandler(bizProperties.getFailureUrl());
+		// Ajax Login
+		if(bizProperties.isLoginAjax()) {
+			return new AjaxAwareAuthenticationFailureHandler(bizProperties.getFailureUrl());
+		}
+		// Form Login
+		else {
+			return new SimpleUrlAuthenticationFailureHandler(bizProperties.getFailureUrl());
+		}
 	}
 
 	@Bean
@@ -186,9 +203,17 @@ public class SecurityBizWebFilterConfiguration implements ApplicationContextAwar
 			AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource,
 			AuthenticationSuccessHandler successHandler, RememberMeServices rememberMeServices,
 			SessionAuthenticationStrategy sessionStrategy) {
-
-		UsernamePasswordAuthenticationFilter authenticationFilter = new UsernamePasswordAuthenticationFilter();
-
+		
+		UsernamePasswordAuthenticationFilter authenticationFilter = null;
+		
+		// Ajax Login
+		if(bizProperties.isLoginAjax()) {
+			authenticationFilter = new AjaxUsernamePasswordAuthenticationFilter();
+		} 
+		// Form Login
+		else {
+			authenticationFilter = new UsernamePasswordAuthenticationFilter();
+		}
 		authenticationFilter.setAllowSessionCreation(bizProperties.isAllowSessionCreation());
 		authenticationFilter.setApplicationEventPublisher(publisher);
 		authenticationFilter.setAuthenticationDetailsSource(authenticationDetailsSource);
