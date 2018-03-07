@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -39,8 +38,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 @Configuration
 @AutoConfigureBefore(name = {
-		"org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration" })
-@ConditionalOnWebApplication(type = Type.SERVLET)
+	"org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration" 
+})
+@ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class })
 public class SecurityBizWebFilterConfiguration implements ApplicationContextAware {

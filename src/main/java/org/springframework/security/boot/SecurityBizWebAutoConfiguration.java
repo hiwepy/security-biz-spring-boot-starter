@@ -30,7 +30,7 @@ import org.springframework.web.cors.CorsUtils;
 @AutoConfigureBefore( name = {
 	"org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration"
 })
-@ConditionalOnWebApplication(type = Type.SERVLET)
+@ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class })
 public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapter {
