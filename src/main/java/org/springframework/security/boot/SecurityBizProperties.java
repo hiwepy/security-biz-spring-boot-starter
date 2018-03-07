@@ -16,6 +16,11 @@
 package org.springframework.security.boot;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
+import org.springframework.security.boot.biz.property.SecurityCorsProperties;
+import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
+import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
 
@@ -74,6 +79,15 @@ public class SecurityBizProperties {
     /** Referrer-Policy Default value is: Referrer-Policy: no-referrer */
     private ReferrerPolicy referrerPolicy = ReferrerPolicy.NO_REFERRER;
     private XFrameOptionsMode frameOptions = XFrameOptionsMode.ALLOW_FROM;
+    
+    @NestedConfigurationProperty
+	private SecurityAnonymousProperties anonymous = new SecurityAnonymousProperties();
+    @NestedConfigurationProperty
+   	private SecurityCorsProperties cors = new SecurityCorsProperties();
+    @NestedConfigurationProperty
+	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
+    @NestedConfigurationProperty
+   	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
     
 	public boolean isLoginAjax() {
 		return loginAjax;
@@ -259,6 +273,39 @@ public class SecurityBizProperties {
 		this.maxSessionsPreventsLogin = maxSessionsPreventsLogin;
 	}
 
+	public SecurityAnonymousProperties getAnonymous() {
+		return anonymous;
+	}
+
+	public void setAnonymous(SecurityAnonymousProperties anonymous) {
+		this.anonymous = anonymous;
+	}
+
+	public SecurityCorsProperties getCors() {
+		return cors;
+	}
+
+	public void setCors(SecurityCorsProperties cors) {
+		this.cors = cors;
+	}
+
+	public SecurityCsrfProperties getCsrf() {
+		return csrf;
+	}
+
+	public void setCsrf(SecurityCsrfProperties csrf) {
+		this.csrf = csrf;
+	}
+
+	public SecurityLogoutProperties getLogout() {
+		return logout;
+	}
+
+	public void setLogout(SecurityLogoutProperties logout) {
+		this.logout = logout;
+	}
+
+	
 	
 }
 

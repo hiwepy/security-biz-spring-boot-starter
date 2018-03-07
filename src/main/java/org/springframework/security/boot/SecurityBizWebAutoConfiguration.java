@@ -7,8 +7,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
+import org.springframework.security.boot.biz.property.SecurityCorsProperties;
+import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
+import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,7 +29,9 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @AutoConfigureBefore( name = {
@@ -66,6 +73,12 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
 		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getExpiredUrl());
 	}
     
+    
+    protected CorsConfigurationSource corsConfigurationSource() {
+    	CorsConfigurationSource s = new UrlBasedCorsConfigurationSource();
+    	return s;
+    }
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 		
@@ -88,10 +101,35 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
                 .antMatchers("/api/**").permitAll()  	// 不拦截对外API
                     .anyRequest().authenticated();  	// 所有资源都需要登陆后才可以访问。
 
-        http.logout().permitAll();  // 不拦截注销
+        
+        http.logout()
+        .clearAuthentication(true)
+        .permitAll();  // 不拦截注销
 
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
+        
+        
+        SecurityAnonymousProperties anonymous = bizProperties.getAnonymous();
+        if(anonymous != null && anonymous.isEnabled()) {
+        	http.anonymous().disable();
+        }
+        
+       	SecurityCorsProperties cors = bizProperties.getCors();
+    	SecurityCsrfProperties csrf = bizProperties.getCsrf();
+       	SecurityLogoutProperties logout = bizProperties.getLogout();
+        
+        
+        /*
+        
+        
+        http.cors().configurationSource(corsConfigurationSource());
+        
+        
+        http.csrf().disable();
+        */
+        
+        
         http.servletApi().disable();
 
         SessionManagementConfigurer<HttpSecurity> sessionManagement = http.sessionManagement();
