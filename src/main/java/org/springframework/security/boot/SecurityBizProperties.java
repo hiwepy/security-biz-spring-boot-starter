@@ -15,12 +15,17 @@
  */
 package org.springframework.security.boot;
 
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
 
@@ -35,6 +40,14 @@ public class SecurityBizProperties {
 	public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 	
 	/* ================================== Security Basic ================================= */
+	
+	/**
+	 * Indicates if the filter chain should be continued prior to delegation to
+	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
+	 * , which may be useful in certain environment (such as Tapestry applications).
+	 * Defaults to <code>false</code>.
+	 */
+	private boolean continueChainBeforeSuccessfulAuthentication = false;
 	
 	/**
      * 是否校验验证码
@@ -303,6 +316,14 @@ public class SecurityBizProperties {
 
 	public void setLogout(SecurityLogoutProperties logout) {
 		this.logout = logout;
+	}
+
+	public boolean isContinueChainBeforeSuccessfulAuthentication() {
+		return continueChainBeforeSuccessfulAuthentication;
+	}
+
+	public void setContinueChainBeforeSuccessfulAuthentication(boolean continueChainBeforeSuccessfulAuthentication) {
+		this.continueChainBeforeSuccessfulAuthentication = continueChainBeforeSuccessfulAuthentication;
 	}
 
 	

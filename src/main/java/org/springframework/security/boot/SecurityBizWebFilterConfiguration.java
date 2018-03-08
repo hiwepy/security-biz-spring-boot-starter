@@ -19,7 +19,7 @@ import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.ajax.AjaxUsernamePasswordAuthenticationFilter;
+import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareLoginProcessingFilter;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -199,16 +199,18 @@ public class SecurityBizWebFilterConfiguration implements ApplicationContextAwar
 	@Bean
 	@ConditionalOnMissingBean
 	public AbstractAuthenticationProcessingFilter authenticationFilter(AuthenticationFailureHandler failureHandler,
-			AuthenticationManager authenticationManager, ApplicationEventPublisher publisher,
+			AuthenticationManager authenticationManager, 
+			ApplicationEventPublisher publisher,
 			AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource,
-			AuthenticationSuccessHandler successHandler, RememberMeServices rememberMeServices,
+			AuthenticationSuccessHandler successHandler, 
+			RememberMeServices rememberMeServices,
 			SessionAuthenticationStrategy sessionStrategy) {
 		
 		UsernamePasswordAuthenticationFilter authenticationFilter = null;
 		
 		// Ajax Login
 		if(bizProperties.isLoginAjax()) {
-			authenticationFilter = new AjaxUsernamePasswordAuthenticationFilter();
+			authenticationFilter = new AjaxAwareLoginProcessingFilter();
 		} 
 		// Form Login
 		else {
