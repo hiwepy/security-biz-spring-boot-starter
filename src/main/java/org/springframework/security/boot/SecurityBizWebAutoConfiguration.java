@@ -14,6 +14,7 @@ import org.springframework.security.boot.biz.property.SecurityAnonymousPropertie
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
+import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -148,7 +149,14 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
         http.addFilter(authenticationFilter)
                 .addFilterBefore(logoutFilter, LogoutFilter.class);
 
-        http.antMatcher("/**");
+        if(StringUtils.hasText(bizProperties.getAntPattern())) {
+        	http.antMatcher(bizProperties.getAntPattern());
+        } else if(StringUtils.hasText(bizProperties.getMvcPattern())) {
+        	http.mvcMatcher(bizProperties.getMvcPattern());
+        } else if(StringUtils.hasText(bizProperties.getRegexPattern())) {
+        	http.regexMatcher(bizProperties.getRegexPattern());
+        }
+        
     }
 	
 	@Override
