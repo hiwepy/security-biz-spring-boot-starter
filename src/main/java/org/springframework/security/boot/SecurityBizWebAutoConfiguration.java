@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
@@ -100,8 +101,7 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/static/**").permitAll() 	// 不拦截静态资源
                 .antMatchers("/api/**").permitAll()  	// 不拦截对外API
-                    .anyRequest().authenticated();  	// 所有资源都需要登陆后才可以访问。
-
+                .anyRequest().authenticated();  	// 未匹配资源需要登陆后才可以访问
         
         http.logout()
         .clearAuthentication(true)

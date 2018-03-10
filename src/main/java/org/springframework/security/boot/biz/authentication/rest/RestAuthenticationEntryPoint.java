@@ -21,22 +21,46 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.boot.biz.exception.AuthMethodNotSupportedException;
+import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	
-	public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-			AuthenticationException e) throws IOException, ServletException {
-		/*
-		 * if ajax request return 401 Unauthorized else rediect to specific page
-		 */
-		if ("XMLHttpRequest".equals(httpServletRequest.getHeader("x-requested-with"))) {
-			httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-		} else {
-			httpServletResponse.sendRedirect("/xx/login");
-		}
-		
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class RestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+
+	private final ObjectMapper mapper;
+	public RestAuthenticationEntryPoint(final ObjectMapper mapper, String loginFormUrl) {
+		super(loginFormUrl);
+		this.mapper = mapper;
 	}
-	
+
+	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
+			throws IOException, ServletException {
+		/*
+		 * if Rest request return 401 Unauthorized else rediect to specific page
+		 */
+		if (WebUtils.isPostRequest(request)) {
+			
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			
+			if (e instanceof BadCredentialsException) {
+				mapper.writeValue(response.getWriter(), RestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+			} else if (e instanceof AuthMethodNotSupportedException) {
+			    mapper.writeValue(response.getWriter(), RestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			}
+
+			mapper.writeValue(response.getWriter(), RestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+			
+		} else {
+			super.commence(request, response, e);
+		}
+
+	}
+
 }

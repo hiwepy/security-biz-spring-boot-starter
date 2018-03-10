@@ -40,7 +40,7 @@ public class AjaxAwareLoginProcessingFilter extends UsernamePasswordAuthenticati
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
     	
-    	 if (!HttpMethod.POST.name().equals(request.getMethod()) || !WebUtils.isAjax(request)) {
+    	 if (!HttpMethod.POST.name().equals(request.getMethod()) || !WebUtils.isAjaxRequest(request)) {
              if(logger.isDebugEnabled()) {
                  logger.debug("Authentication method not supported. Request method: " + request.getMethod());
              }
