@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication.ajax;
+package org.springframework.security.boot.biz.authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,11 +16,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * @className	： AjaxUsernamePasswordAuthenticationFilter
- * @description	： TODO(描述这个类的作用)
+ * 
+ * TODO
  * @author 		： <a href="https://github.com/vindell">vindell</a>
- * @date		： 2018年3月7日 下午2:05:58
- * @version 	V1.0
  */
 public class AjaxAwareLoginProcessingFilter extends UsernamePasswordAuthenticationFilter {
 	

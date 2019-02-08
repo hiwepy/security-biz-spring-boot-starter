@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication.rest;
+package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
 
@@ -28,13 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @date		： 2018年3月10日 下午11:05:52
  * @version 	V1.0
  */
-public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class HttpUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
 
 	private String captchaParameter = SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	
-	private static Logger logger = LoggerFactory.getLogger(RestUsernamePasswordAuthenticationFilter.class);
+	private static Logger logger = LoggerFactory.getLogger(HttpUsernamePasswordAuthenticationFilter.class);
 	private final ObjectMapper objectMapper;
 	private boolean captchaRequired = false;
 	private CaptchaResolver captchaResolver;
@@ -44,7 +44,7 @@ public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 	// ~ Constructors
 	// ===================================================================================================
 
-	public RestUsernamePasswordAuthenticationFilter(String defaultProcessUrl, ObjectMapper mapper) {
+	public HttpUsernamePasswordAuthenticationFilter(String defaultProcessUrl, ObjectMapper mapper) {
 		super();
 		this.objectMapper = mapper;
 	}
@@ -73,7 +73,7 @@ public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 			// XMLHttpRequest + Post
 			if(WebUtils.isPostRequest(request) && WebUtils.isAjaxRequest(request)) {
 				
-				RestLoginRequest loginRequest = objectMapper.readValue(request.getReader(), RestLoginRequest.class);
+				HttpLoginRequest loginRequest = objectMapper.readValue(request.getReader(), HttpLoginRequest.class);
 				if (!StringUtils.hasText(loginRequest.getUsername()) || !StringUtils.hasText(loginRequest.getPassword())) {
 					throw new AuthenticationServiceException("Username or Password not provided");
 				}

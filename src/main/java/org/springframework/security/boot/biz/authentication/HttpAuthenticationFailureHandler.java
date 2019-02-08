@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication.rest;
+package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
 
@@ -34,9 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @date		： 2018年3月10日 下午11:41:10
  * @version 	V1.0
  */
-public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class HttpAuthenticationFailureHandler implements AuthenticationFailureHandler {
    
-	private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationFailureHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(HttpAuthenticationFailureHandler.class);
 	
 	private PortMapper portMapper = new PortMapperImpl();
 	private PortResolver portResolver = new PortResolverImpl();
@@ -44,7 +44,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
 	private boolean forceHttps = false;
 	private final ObjectMapper mapper;
 	
-    public RestAuthenticationFailureHandler(final ObjectMapper mapper, final String failureUrl) {
+    public HttpAuthenticationFailureHandler(final ObjectMapper mapper, final String failureUrl) {
         this.mapper = mapper;
         this.failureUrl = failureUrl;
     }
@@ -62,12 +62,12 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
-				mapper.writeValue(response.getWriter(), RestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				mapper.writeValue(response.getWriter(), HttpErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-			    mapper.writeValue(response.getWriter(), RestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			    mapper.writeValue(response.getWriter(), HttpErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
 			}
 
-			mapper.writeValue(response.getWriter(), RestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+			mapper.writeValue(response.getWriter(), HttpErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
 			
 		} else {
 			response.sendRedirect(buildRedirectUrlToLoginPage(request, response, e));

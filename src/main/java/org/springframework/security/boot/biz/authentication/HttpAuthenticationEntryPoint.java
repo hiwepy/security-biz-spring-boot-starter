@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.security.boot.biz.authentication.rest;
+package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
 
@@ -31,10 +31,10 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class RestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+public class HttpAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
 	private final ObjectMapper mapper;
-	public RestAuthenticationEntryPoint(final ObjectMapper mapper, String loginFormUrl) {
+	public HttpAuthenticationEntryPoint(final ObjectMapper mapper, String loginFormUrl) {
 		super(loginFormUrl);
 		this.mapper = mapper;
 	}
@@ -50,12 +50,12 @@ public class RestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoi
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
-				mapper.writeValue(response.getWriter(), RestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				mapper.writeValue(response.getWriter(), HttpErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-			    mapper.writeValue(response.getWriter(), RestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			    mapper.writeValue(response.getWriter(), HttpErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
 			}
 
-			mapper.writeValue(response.getWriter(), RestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+			mapper.writeValue(response.getWriter(), HttpErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
 			
 		} else {
 			super.commence(request, response, e);

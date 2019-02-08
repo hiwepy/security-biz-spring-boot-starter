@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication.rest;
+package org.springframework.security.boot.biz.authentication;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Rest 模式登录认证绑定的参数对象Model
  */
-public class RestLoginRequest {
+public class HttpLoginRequest {
 	
     private String username;
     private String password;
     private String captcha;
 
     @JsonCreator
-    public RestLoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("captcha") String captcha) {
+    public HttpLoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("captcha") String captcha) {
         this.username = username;
         this.password = password;
     }

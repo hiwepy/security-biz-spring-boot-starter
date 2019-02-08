@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication.rest;
+package org.springframework.security.boot.biz.authentication;
 
 import java.util.Date;
 
@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
  *
  * Aug 3, 2016
  */
-public class RestErrorResponse {
+public class HttpErrorResponse {
 	
     // HTTP Response Status Code
     private final HttpStatus status;
@@ -21,14 +21,14 @@ public class RestErrorResponse {
 
     private final Date timestamp;
 
-    protected RestErrorResponse(final String message, HttpStatus status) {
+    protected HttpErrorResponse(final String message, HttpStatus status) {
         this.message = message;
         this.status = status;
         this.timestamp = new java.util.Date();
     }
 
-    public static RestErrorResponse of(final String message, HttpStatus status) {
-        return new RestErrorResponse(message, status);
+    public static HttpErrorResponse of(final String message, HttpStatus status) {
+        return new HttpErrorResponse(message, status);
     }
 
     public Integer getStatus() {
