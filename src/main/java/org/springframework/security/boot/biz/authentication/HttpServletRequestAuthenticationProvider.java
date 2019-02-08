@@ -20,13 +20,13 @@ import org.springframework.util.Assert;
  * @date		： 2018年3月10日 下午11:29:52
  * @version 	V1.0
  */
-public class HttpAuthenticationProvider implements AuthenticationProvider {
+public class HttpServletRequestAuthenticationProvider implements AuthenticationProvider {
 	
     private final BCryptPasswordEncoder encoder;
     private final LoginRequestUserDetailsService userService;
     
     @Autowired
-    public HttpAuthenticationProvider(final LoginRequestUserDetailsService userService, final BCryptPasswordEncoder encoder) {
+    public HttpServletRequestAuthenticationProvider(final LoginRequestUserDetailsService userService, final BCryptPasswordEncoder encoder) {
         this.userService = userService;
         this.encoder = encoder;
     }

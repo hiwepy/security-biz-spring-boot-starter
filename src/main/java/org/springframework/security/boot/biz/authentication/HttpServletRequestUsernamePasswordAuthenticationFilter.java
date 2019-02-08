@@ -28,13 +28,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @date		： 2018年3月10日 下午11:05:52
  * @version 	V1.0
  */
-public class HttpUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class HttpServletRequestUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
 
 	private String captchaParameter = SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	
-	private static Logger logger = LoggerFactory.getLogger(HttpUsernamePasswordAuthenticationFilter.class);
+	private static Logger logger = LoggerFactory.getLogger(HttpServletRequestUsernamePasswordAuthenticationFilter.class);
 	private final ObjectMapper objectMapper;
 	private boolean captchaRequired = false;
 	private CaptchaResolver captchaResolver;
@@ -44,7 +44,7 @@ public class HttpUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 	// ~ Constructors
 	// ===================================================================================================
 
-	public HttpUsernamePasswordAuthenticationFilter(String defaultProcessUrl, ObjectMapper mapper) {
+	public HttpServletRequestUsernamePasswordAuthenticationFilter(String defaultProcessUrl, ObjectMapper mapper) {
 		super();
 		this.objectMapper = mapper;
 	}
@@ -73,7 +73,7 @@ public class HttpUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 			// XMLHttpRequest + Post
 			if(WebUtils.isPostRequest(request) && WebUtils.isAjaxRequest(request)) {
 				
-				HttpLoginRequest loginRequest = objectMapper.readValue(request.getReader(), HttpLoginRequest.class);
+				HttpServletRequestLoginRequest loginRequest = objectMapper.readValue(request.getReader(), HttpServletRequestLoginRequest.class);
 				if (!StringUtils.hasText(loginRequest.getUsername()) || !StringUtils.hasText(loginRequest.getPassword())) {
 					throw new AuthenticationServiceException("Username or Password not provided");
 				}

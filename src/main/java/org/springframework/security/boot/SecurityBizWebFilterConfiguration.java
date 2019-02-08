@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.ajax.AjaxAwareLoginProcessingFilter;
+import org.springframework.security.boot.biz.authentication.HttpServletRequestAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.HttpServletRequestAuthenticationSuccessHandler;
+import org.springframework.security.boot.biz.authentication.HttpServletRequestLoginProcessingFilter;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -29,15 +29,14 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @AutoConfigureBefore(name = {
@@ -157,31 +156,17 @@ public class SecurityBizWebFilterConfiguration implements ApplicationContextAwar
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
 	public AuthenticationSuccessHandler successHandler() {
-		// Ajax Login
-		if(bizProperties.isLoginAjax()) {
-			return new AjaxAwareAuthenticationSuccessHandler(bizProperties.getSuccessUrl());
-		}
-		// Form Login
-		else {
-			SimpleUrlAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
-			successHandler.setDefaultTargetUrl(bizProperties.getSuccessUrl());
-			return successHandler;
-		}
+		HttpServletRequestAuthenticationSuccessHandler successHandler = new HttpServletRequestAuthenticationSuccessHandler();
+		successHandler.setDefaultTargetUrl(bizProperties.getSuccessUrl());
+		return successHandler;
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	public AuthenticationFailureHandler failureHandler() {
-		// Ajax Login
-		if(bizProperties.isLoginAjax()) {
-			return new AjaxAwareAuthenticationFailureHandler(bizProperties.getFailureUrl());
-		}
-		// Form Login
-		else {
-			return new SimpleUrlAuthenticationFailureHandler(bizProperties.getFailureUrl());
-		}
+	public AuthenticationFailureHandler failureHandler(ObjectMapper mapper) {
+		HttpServletRequestAuthenticationFailureHandler failureHandler = new HttpServletRequestAuthenticationFailureHandler(mapper);
+		failureHandler.setDefaultFailureUrl(bizProperties.getFailureUrl());
+		return failureHandler;
 	}
 
 	@Bean
@@ -210,7 +195,7 @@ public class SecurityBizWebFilterConfiguration implements ApplicationContextAwar
 		
 		// Ajax Login
 		if(bizProperties.isLoginAjax()) {
-			authenticationFilter = new AjaxAwareLoginProcessingFilter();
+			authenticationFilter = new HttpServletRequestLoginProcessingFilter();
 		} 
 		// Form Login
 		else {

@@ -31,10 +31,10 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class HttpAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+public class HttpServletRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
 	private final ObjectMapper mapper;
-	public HttpAuthenticationEntryPoint(final ObjectMapper mapper, String loginFormUrl) {
+	public HttpServletRequestAuthenticationEntryPoint(final ObjectMapper mapper, String loginFormUrl) {
 		super(loginFormUrl);
 		this.mapper = mapper;
 	}
@@ -50,13 +50,12 @@ public class HttpAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoi
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
-				mapper.writeValue(response.getWriter(), HttpErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-			    mapper.writeValue(response.getWriter(), HttpErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			    mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			} else {
+				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
 			}
-
-			mapper.writeValue(response.getWriter(), HttpErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
-			
 		} else {
 			super.commence(request, response, e);
 		}

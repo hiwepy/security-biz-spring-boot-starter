@@ -20,14 +20,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * TODO
  * @author 		： <a href="https://github.com/vindell">vindell</a>
  */
-public class AjaxAwareLoginProcessingFilter extends UsernamePasswordAuthenticationFilter {
+public class HttpServletRequestLoginProcessingFilter extends UsernamePasswordAuthenticationFilter {
 	
-    private static Logger logger = LoggerFactory.getLogger(AjaxAwareLoginProcessingFilter.class);
+    private static Logger logger = LoggerFactory.getLogger(HttpServletRequestLoginProcessingFilter.class);
     
     // ~ Constructors
  	// ===================================================================================================
 
- 	public AjaxAwareLoginProcessingFilter() {
+ 	public HttpServletRequestLoginProcessingFilter() {
  		super();
  	}
  	
