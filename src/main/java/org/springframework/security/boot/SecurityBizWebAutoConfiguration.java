@@ -52,8 +52,6 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
     private AbstractAuthenticationProcessingFilter authenticationFilter;
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private LogoutFilter logoutFilter;
     
     @Autowired
     private InvalidSessionStrategy invalidSessionStrategy;
@@ -93,17 +91,9 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
         
         
         http.csrf().disable();
-
-        http.authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/static/**").permitAll() 	// 不拦截静态资源
-                .antMatchers("/api/**").permitAll()  	// 不拦截对外API
-                .anyRequest().authenticated();  	// 未匹配资源需要登陆后才可以访问
         
-        http.logout()
-        .clearAuthentication(true)
-        .permitAll();  // 不拦截注销
-
+        http.logout().clearAuthentication(true).permitAll();  // 不拦截注销
+        	
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
         
@@ -143,17 +133,8 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
         	sessionManagement.maximumSessions(bizProperties.getMaximumSessions()).expiredSessionStrategy(expiredSessionStrategy).expiredUrl(bizProperties.getExpiredUrl()).maxSessionsPreventsLogin(bizProperties.isMaxSessionsPreventsLogin());
         }
         
-        http.addFilter(authenticationFilter)
-                .addFilterBefore(logoutFilter, LogoutFilter.class);
-
-        if(StringUtils.hasText(bizProperties.getAntPattern())) {
-        	http.antMatcher(bizProperties.getAntPattern());
-        } else if(StringUtils.hasText(bizProperties.getMvcPattern())) {
-        	http.mvcMatcher(bizProperties.getMvcPattern());
-        } else if(StringUtils.hasText(bizProperties.getRegexPattern())) {
-        	http.regexMatcher(bizProperties.getRegexPattern());
-        }
-        
+        http.addFilter(authenticationFilter);
+ 
     }
 	
 	@Override

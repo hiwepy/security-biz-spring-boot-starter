@@ -57,13 +57,6 @@ public class SecurityBizProperties {
 	 * Enable Security.
 	 */
 	private boolean enabled = false;
-
-	/** The Ant Pattern to match on (i.e. "/admin/**") */
-	private String antPattern = "/**";
-	/** The Spring MVC Pattern to match on (i.e. "/admin/**") */
-	private String mvcPattern;
-	/** The Regular Expression to match on (i.e. "/admin/.+") */
-	private String regexPattern;
 	
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl;
@@ -109,30 +102,6 @@ public class SecurityBizProperties {
     @NestedConfigurationProperty
    	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
     
-	public String getAntPattern() {
-		return antPattern;
-	}
-
-	public void setAntPattern(String antPattern) {
-		this.antPattern = antPattern;
-	}
-
-	public String getMvcPattern() {
-		return mvcPattern;
-	}
-
-	public void setMvcPattern(String mvcPattern) {
-		this.mvcPattern = mvcPattern;
-	}
-
-	public String getRegexPattern() {
-		return regexPattern;
-	}
-
-	public void setRegexPattern(String regexPattern) {
-		this.regexPattern = regexPattern;
-	}
-
 	public boolean isLoginAjax() {
 		return loginAjax;
 	}
