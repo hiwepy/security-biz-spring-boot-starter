@@ -12,7 +12,6 @@ import org.springframework.security.boot.biz.property.SecurityAnonymousPropertie
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
-import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -22,14 +21,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -58,37 +58,31 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
     @Autowired
     private SessionInformationExpiredStrategy expiredSessionStrategy;
     
-    @Bean
+	@Bean
 	@ConditionalOnMissingBean
-    public InvalidSessionStrategy invalidSessionStrategy(){
-		return new SimpleRedirectInvalidSessionStrategy(bizProperties.getRedirectUrl());
+	public RedirectStrategy redirectStrategy() {
+		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+		redirectStrategy.setContextRelative(bizProperties.getRedirect().isContextRelative());
+		return redirectStrategy;
+	}
+    
+	@Bean
+	@ConditionalOnMissingBean
+	public InvalidSessionStrategy invalidSessionStrategy() {
+		SimpleRedirectInvalidSessionStrategy invalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(bizProperties.getRedirectUrl());
+		invalidSessionStrategy.setCreateNewSession(bizProperties.getSessionMgt().isAllowSessionCreation());
+		return invalidSessionStrategy;
 	}
     
     @Bean
 	@ConditionalOnMissingBean
-    public SessionInformationExpiredStrategy expiredSessionStrategy(){
-		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getExpiredUrl());
+    public SessionInformationExpiredStrategy expiredSessionStrategy(RedirectStrategy redirectStrategy){
+		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getRedirectUrl(), redirectStrategy);
 	}
-    
-    
-    protected CorsConfigurationSource corsConfigurationSource() {
-    	CorsConfigurationSource s = new UrlBasedCorsConfigurationSource();
-    	return s;
-    }
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 		
-		HeadersConfigurer<HttpSecurity> headers = http.headers();
-        
-		if(null != bizProperties.getReferrerPolicy()) {
-			headers.referrerPolicy(bizProperties.getReferrerPolicy()).and();
-		}
-        
-		if(null != bizProperties.getFrameOptions()) {
-			headers.frameOptions().disable();
-		}
-        
         
         http.csrf().disable();
         
@@ -129,9 +123,10 @@ public class SecurityBizWebAutoConfiguration extends WebSecurityConfigurerAdapte
         //.sessionAuthenticationStrategy(sessionAuthenticationStrategy)
         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         
-        if(bizProperties.isMultipleSession()) {
-        	sessionManagement.maximumSessions(bizProperties.getMaximumSessions()).expiredSessionStrategy(expiredSessionStrategy).expiredUrl(bizProperties.getExpiredUrl()).maxSessionsPreventsLogin(bizProperties.isMaxSessionsPreventsLogin());
-        }
+    	sessionManagement.maximumSessions(bizProperties.getSessionMgt().getMaximumSessions())
+    					.expiredSessionStrategy(expiredSessionStrategy)
+    					.expiredUrl(bizProperties.getLoginUrl())
+    					.maxSessionsPreventsLogin(bizProperties.getSessionMgt().isMaxSessionsPreventsLogin());
         
         http.addFilter(authenticationFilter);
  

@@ -8,6 +8,5 @@ spring:
     baseline-version: 1.0.0
     baseline-description: 系统初始化 
  
-  security:
-    user:
-      name: 
+  security:    cors:      desc: 
+       

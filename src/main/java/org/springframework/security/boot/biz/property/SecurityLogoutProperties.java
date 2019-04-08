@@ -17,6 +17,7 @@ package org.springframework.security.boot.biz.property;
 
 public class SecurityLogoutProperties {
 
+	private boolean invalidateHttpSession = true;
 	/**
 	 */
 	private boolean clearAuthentication = true;
@@ -30,6 +31,14 @@ public class SecurityLogoutProperties {
 
 	public void setClearAuthentication(boolean clearAuthentication) {
 		this.clearAuthentication = clearAuthentication;
+	}
+	
+	public boolean isInvalidateHttpSession() {
+		return invalidateHttpSession;
+	}
+
+	public void setInvalidateHttpSession(boolean invalidateHttpSession) {
+		this.invalidateHttpSession = invalidateHttpSession;
 	}
 
 	public String getLogoutSuccessUrl() {

@@ -2,6 +2,8 @@ package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
+import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
+import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
@@ -22,31 +26,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
- * @className	： RestUsernamePasswordAuthenticationFilter
- * @description	： TODO(描述这个类的作用)
+ * 账号、密码、验证码认证过滤器
  * @author 		： <a href="https://github.com/vindell">vindell</a>
- * @date		： 2018年3月10日 下午11:05:52
- * @version 	V1.0
  */
-public class HttpServletRequestUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
-
+	public static final String DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME = "securityLoginFailureRetries";
 	private String captchaParameter = SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	
-	private static Logger logger = LoggerFactory.getLogger(HttpServletRequestUsernamePasswordAuthenticationFilter.class);
+	private static Logger logger = LoggerFactory.getLogger(HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter.class);
+	private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	private boolean captchaRequired = false;
 	private CaptchaResolver captchaResolver;
-	private boolean postOnly = true;
-	private boolean restOnly = false;
+	private AuthenticatingFailureCounter failureCounter;
+	 private String retryTimesKeyAttribute = DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
+	/** Maximum number of retry to login . */
+	private int retryTimesWhenAccessDenied = 3;
 	
 	// ~ Constructors
 	// ===================================================================================================
-
-	public HttpServletRequestUsernamePasswordAuthenticationFilter(String defaultProcessUrl, ObjectMapper mapper) {
+	
+	public HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter(ObjectMapper objectMapper) {
 		super();
-		this.objectMapper = mapper;
+		this.objectMapper = objectMapper;
 	}
 
 	// ~ Methods
@@ -63,46 +67,55 @@ public class HttpServletRequestUsernamePasswordAuthenticationFilter extends User
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
 		
-		if (isRestOnly() && !WebUtils.isAjaxRequest(request) ) {
-			throw new AuthenticationServiceException("Authentication Request support XMLHttpRequest only");
-		}
-
 		try {
 
 			UsernamePasswordAuthenticationToken authRequest = null;
-			// XMLHttpRequest + Post
-			if(WebUtils.isPostRequest(request) && WebUtils.isAjaxRequest(request)) {
+			// Post
+			if(WebUtils.isPostRequest(request)) {
 				
 				HttpServletRequestLoginRequest loginRequest = objectMapper.readValue(request.getReader(), HttpServletRequestLoginRequest.class);
 				if (!StringUtils.hasText(loginRequest.getUsername()) || !StringUtils.hasText(loginRequest.getPassword())) {
 					throw new AuthenticationServiceException("Username or Password not provided");
 				}
 				
-				if(isCaptchaRequired() ) {
-
-					if(!StringUtils.hasText(loginRequest.getCaptcha())) {
-						throw new AuthenticationServiceException("Captcha not provided");
+				// The retry limit has been exceeded and a reminder is required
+		        if(isOverRetryRemind(request, response)) {
+		        	throw new AuthenticationCaptchaNotFoundException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
+		        }
+		        
+		        // 验证码必填或者错误次数超出系统限制，则要求填入验证码
+		 		if(isCaptchaRequired() || isOverRetryTimes(request, response)) {
+		 			
+		 			if(!StringUtils.hasText(loginRequest.getCaptcha())) {
+						throw new AuthenticationCaptchaNotFoundException("Captcha not provided");
 					}  
-					
-					if(captchaResolver != null && !captchaResolver.validCaptcha(request, loginRequest.getCaptcha())) {
-						throw new AuthenticationServiceException("Invalid Captcha");
+		 	        // 进行验证	
+	 	        	boolean validation = captchaResolver.validCaptcha(request, loginRequest.getCaptcha());
+					if (!validation) {
+						throw new AuthenticationCaptchaIncorrectException("Captcha validation failed!");
 					}
 					
 				}
-				
+		 		 
 				authRequest = new UsernamePasswordAuthenticationToken( loginRequest.getUsername(), loginRequest.getPassword());
 
 			} else {
 				
-		 		String captcha = obtainCaptcha(request);
-		 		if(isCaptchaRequired() ) {
-
-					if(!StringUtils.hasText(captcha)) {
-						throw new AuthenticationServiceException("Captcha not provided");
+				// The retry limit has been exceeded and a reminder is required
+		        if(isOverRetryRemind(request, response)) {
+		        	throw new AuthenticationCaptchaNotFoundException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
+		        }
+		        // 验证码必填或者错误次数超出系统限制，则要求填入验证码
+		 		if(isCaptchaRequired() || isOverRetryTimes(request, response)) {
+		 			
+		 			String captcha = obtainCaptcha(request);
+		 			if(!StringUtils.hasText(captcha)) {
+						throw new AuthenticationCaptchaNotFoundException("Captcha not provided");
 					}  
-					
-					if(captchaResolver != null && !captchaResolver.validCaptcha(request, captcha)) {
-						throw new AuthenticationServiceException("Invalid Captcha");
+		 	        // 进行验证	
+	 	        	boolean validation = captchaResolver.validCaptcha(request, captcha);
+					if (!validation) {
+						throw new AuthenticationCaptchaIncorrectException("Captcha validation failed!");
 					}
 					
 				}
@@ -116,8 +129,6 @@ public class HttpServletRequestUsernamePasswordAuthenticationFilter extends User
 		 		if (password == null) {
 		 			password = "";
 		 		}
-
-		 		username = username.trim();
 				
 		 		if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
 		            throw new AuthenticationServiceException("Username or Password not provided");
@@ -170,18 +181,25 @@ public class HttpServletRequestUsernamePasswordAuthenticationFilter extends User
 		this.postOnly = postOnly;
 	}
 
+	protected boolean isOverRetryRemind(ServletRequest request, ServletResponse response) {
+		if (null != getFailureCounter() && getFailureCounter().get(request, response, getRetryTimesKeyAttribute()) == getRetryTimesWhenAccessDenied()) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean isOverRetryTimes(ServletRequest request, ServletResponse response) {
+		if (null != getFailureCounter() && getFailureCounter().get(request, response, getRetryTimesKeyAttribute()) >= getRetryTimesWhenAccessDenied()) {
+			return true;
+		}
+		return false;
+	}
+	
+	
 	public boolean isPostOnly() {
 		return postOnly;
 	}
 	
-	public boolean isRestOnly() {
-		return restOnly;
-	}
-
-	public void setRestOnly(boolean restOnly) {
-		this.restOnly = restOnly;
-	}
-
 	public boolean isCaptchaRequired() {
 		return captchaRequired;
 	}
@@ -204,6 +222,34 @@ public class HttpServletRequestUsernamePasswordAuthenticationFilter extends User
 
 	public void setCaptchaParameter(String captchaParameter) {
 		this.captchaParameter = captchaParameter;
+	}
+
+	public AuthenticatingFailureCounter getFailureCounter() {
+		return failureCounter;
+	}
+
+	public void setFailureCounter(AuthenticatingFailureCounter failureCounter) {
+		this.failureCounter = failureCounter;
+	}
+	
+	public String getRetryTimesKeyAttribute() {
+		return retryTimesKeyAttribute;
+	}
+
+	public void setRetryTimesKeyAttribute(String retryTimesKeyAttribute) {
+		this.retryTimesKeyAttribute = retryTimesKeyAttribute;
+	}
+
+	public int getRetryTimesWhenAccessDenied() {
+		return retryTimesWhenAccessDenied;
+	}
+
+	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
+		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
 	}
 	
 }

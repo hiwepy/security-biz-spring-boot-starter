@@ -29,14 +29,12 @@ import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.alibaba.fastjson.JSONObject;
 
 public class HttpServletRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
-	private final ObjectMapper mapper;
-	public HttpServletRequestAuthenticationEntryPoint(final ObjectMapper mapper, String loginFormUrl) {
+	public HttpServletRequestAuthenticationEntryPoint(String loginFormUrl) {
 		super(loginFormUrl);
-		this.mapper = mapper;
 	}
 
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
@@ -50,11 +48,11 @@ public class HttpServletRequestAuthenticationEntryPoint extends LoginUrlAuthenti
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
-				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-			    mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			    JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
 			} else {
-				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+				JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
 			}
 		} else {
 			super.commence(request, response, e);

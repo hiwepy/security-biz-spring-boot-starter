@@ -1,8 +1,9 @@
 package org.springframework.security.boot;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -10,16 +11,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.boot.biz.authentication.HttpServletRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.HttpServletRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.HttpServletRequestAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.HttpServletRequestLoginProcessingFilter;
+import org.springframework.security.boot.biz.authentication.HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter;
+import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -29,9 +32,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -45,9 +48,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class })
-public class SecurityBizWebFilterConfiguration implements ApplicationContextAware {
+public class SecurityBizWebFilterConfiguration implements ApplicationEventPublisherAware {
 
-	private ApplicationContext applicationContext;
+	private ApplicationEventPublisher eventPublisher;
 
 	@Autowired
 	private SecurityBizProperties bizProperties;
@@ -180,86 +183,94 @@ public class SecurityBizWebFilterConfiguration implements ApplicationContextAwar
 	public RememberMeServices rememberMeServices() {
 		return new NullRememberMeServices();
 	}
-
+	
 	@Bean
 	@ConditionalOnMissingBean
-	public AbstractAuthenticationProcessingFilter authenticationFilter(AuthenticationFailureHandler failureHandler,
-			AuthenticationManager authenticationManager, 
-			ApplicationEventPublisher publisher,
-			AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource,
-			AuthenticationSuccessHandler successHandler, 
-			RememberMeServices rememberMeServices,
-			SessionAuthenticationStrategy sessionStrategy) {
-		
-		UsernamePasswordAuthenticationFilter authenticationFilter = null;
-		
-		// Ajax Login
-		if(bizProperties.isLoginAjax()) {
-			authenticationFilter = new HttpServletRequestLoginProcessingFilter();
-		} 
-		// Form Login
-		else {
-			authenticationFilter = new UsernamePasswordAuthenticationFilter();
-		}
-		authenticationFilter.setAllowSessionCreation(bizProperties.isAllowSessionCreation());
-		authenticationFilter.setApplicationEventPublisher(publisher);
-		authenticationFilter.setAuthenticationDetailsSource(authenticationDetailsSource);
-		authenticationFilter.setAuthenticationFailureHandler(failureHandler);
-		authenticationFilter.setAuthenticationManager(authenticationManager);
-		authenticationFilter.setAuthenticationSuccessHandler(successHandler);
-		authenticationFilter.setContinueChainBeforeSuccessfulAuthentication(false);
-		if (StringUtils.hasText(bizProperties.getLoginUrlPatterns())) {
-			authenticationFilter.setFilterProcessesUrl(bizProperties.getLoginUrlPatterns());
-		}
-		// authenticationFilter.setMessageSource(messageSource);
-		authenticationFilter.setPasswordParameter(bizProperties.getPasswordParameter());
-		authenticationFilter.setPostOnly(bizProperties.isPostOnly());
-		authenticationFilter.setRememberMeServices(rememberMeServices);
-		authenticationFilter.setSessionAuthenticationStrategy(sessionStrategy);
-		authenticationFilter.setUsernameParameter(bizProperties.getUsernameParameter());
-
-		return authenticationFilter;
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
+	public AbstractAuthenticationProcessingFilter authenticationFilter(
+			AuthenticationManager authenticationManager, 
+			AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource,
+			AuthenticationSuccessHandler successHandler, 
+			AuthenticationFailureHandler failureHandler,
+			RememberMeServices rememberMeServices,
+			SessionAuthenticationStrategy sessionStrategy,
+			@Autowired(required = false) CaptchaResolver captchaResolver,
+			MessageSource messageSource,
+			ObjectMapper objectMapper) {
 		
-		LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint(bizProperties.getLoginUrl());
-		entryPoint.setForceHttps(bizProperties.isForceHttps());
-		entryPoint.setUseForward(bizProperties.isUseForward());
+		// Form Login With Captcha 
+		HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter authcFilter = new HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter(objectMapper);
+		
+		authcFilter.setCaptchaParameter(bizProperties.getCaptcha().getParamName());
+		// 是否验证码必填
+		authcFilter.setCaptchaRequired(bizProperties.getCaptcha().isRequired());
+		// 登陆失败重试次数，超出限制需要输入验证码
+		authcFilter.setRetryTimesWhenAccessDenied(bizProperties.getCaptcha().getRetryTimesWhenAccessDenied());
+		// 验证码解析器
+		authcFilter.setCaptchaResolver(captchaResolver);
+		
+		authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
+		authcFilter.setApplicationEventPublisher(eventPublisher);
+		authcFilter.setAuthenticationDetailsSource(authenticationDetailsSource);
+		authcFilter.setAuthenticationFailureHandler(failureHandler);
+		authcFilter.setAuthenticationManager(authenticationManager);
+		authcFilter.setAuthenticationSuccessHandler(successHandler);
+		authcFilter.setContinueChainBeforeSuccessfulAuthentication(false);
+		if (StringUtils.hasText(bizProperties.getLoginUrlPatterns())) {
+			authcFilter.setFilterProcessesUrl(bizProperties.getLoginUrlPatterns());
+		}
+		authcFilter.setMessageSource(messageSource);
+		authcFilter.setPasswordParameter(bizProperties.getAuthc().getPasswordParameter());
+		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
+		authcFilter.setRememberMeServices(rememberMeServices);
+		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
+		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
+
+		return authcFilter;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
+		
+		LoginUrlAuthenticationEntryPoint entryPoint = new HttpServletRequestAuthenticationEntryPoint(objectMapper, bizProperties.getLoginUrl());
+		entryPoint.setForceHttps(bizProperties.getAuthc().isForceHttps());
+		entryPoint.setUseForward(bizProperties.getAuthc().isUseForward());
 		
 		return entryPoint;
 	}
 	
-	/**
+	@Bean
+	@ConditionalOnMissingBean
+	public LogoutHandler logoutHandler() {
+		
+		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+		logoutHandler.setClearAuthentication(bizProperties.getLogout().isClearAuthentication());
+		logoutHandler.setInvalidateHttpSession(bizProperties.getLogout().isInvalidateHttpSession());
+		
+		return logoutHandler;
+	}
+	
+	/*
 	 * 系统登录注销过滤器；默认：org.springframework.security.web.authentication.logout.LogoutFilter
 	 */
 	@Bean
-	@ConditionalOnMissingBean
-	public LogoutFilter logoutFilter() {
+	@ConditionalOnMissingBean 
+	public LogoutFilter logoutFilter(List<LogoutHandler> logoutHandlers) {
 		// 登录注销后的重定向地址：直接进入登录页面
-		LogoutFilter logoutFilter = new LogoutFilter(bizProperties.getLoginUrl(), new SecurityContextLogoutHandler());
+		LogoutFilter logoutFilter = new LogoutFilter(bizProperties.getLoginUrl(), logoutHandlers.toArray(new LogoutHandler[logoutHandlers.size()]));
 		logoutFilter.setFilterProcessesUrl(bizProperties.getLogoutUrlPatterns());
 		return logoutFilter;
 	}
 
-	/*@Bean
-	public FilterRegistrationBean<HttpParamsFilter> httpParamsFilter() {
-		FilterRegistrationBean<HttpParamsFilter> filterRegistrationBean = new FilterRegistrationBean<HttpParamsFilter>();
-		filterRegistrationBean.setFilter(new HttpParamsFilter());
-		filterRegistrationBean.setOrder(-999);
-		filterRegistrationBean.addUrlPatterns("/");
-		return filterRegistrationBean;
-	}*/
-
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.eventPublisher = applicationEventPublisher;
 	}
 
 }

@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Ajax认证请求失败后的处理实现
+ * Post认证请求失败后的处理实现
  */
 public class HttpServletRequestAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 

@@ -12,14 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
-/**
- * 
- * @className	： RestAuthenticationProvider
- * @description	： TODO(描述这个类的作用)
- * @author 		： <a href="https://github.com/vindell">vindell</a>
- * @date		： 2018年3月10日 下午11:29:52
- * @version 	V1.0
- */
 public class HttpServletRequestAuthenticationProvider implements AuthenticationProvider {
 	
     private final BCryptPasswordEncoder encoder;

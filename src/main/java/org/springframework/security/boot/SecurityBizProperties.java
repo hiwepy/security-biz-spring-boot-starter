@@ -15,116 +15,62 @@
  */
 package org.springframework.security.boot;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
+import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
+import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter.XFrameOptionsMode;
+import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
+import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 public class SecurityBizProperties {
 
 	public static final String PREFIX = "spring.security";
-	
-	public static final String DEFAULT_SESSION_CAPTCHA_KEY = "KAPTCHA_SESSION_KEY";
 
-	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
-	public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
-	
-	/* ================================== Security Basic ================================= */
-	
-	/**
-	 * Indicates if the filter chain should be continued prior to delegation to
-	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
-	 * , which may be useful in certain environment (such as Tapestry applications).
-	 * Defaults to <code>false</code>.
+	/*
+	 * ================================== Security Basic
+	 * =================================
 	 */
-	private boolean continueChainBeforeSuccessfulAuthentication = false;
-	
-	/**
-     * 是否校验验证码
-     */
-	protected boolean validateCaptcha = false;
+
 	/**
 	 * Enable Security.
 	 */
 	private boolean enabled = false;
-	
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl;
 	private String loginUrlPatterns;
-	private boolean loginAjax = false;
-	private boolean allowSessionCreation = true;
-	/**  the parameter name. Defaults to "username". */
-	private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
-	/** the parameter name. Defaults to "password". */
-	private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
-	private boolean postOnly = true;
-	
 	/** 注销地址：会话注销后的重定向地址 */
 	private String logoutUrl;
 	private String logoutUrlPatterns;
-	private boolean forceHttps = false;
-	private boolean useForward = false;
-	
 	/** 重定向地址：会话注销后的重定向地址 */
-    private String redirectUrl;
+	private String redirectUrl;
 	/** 系统主页：登录成功后跳转路径 */
-    private String successUrl;
-    /** 未授权页面：无权限时的跳转路径 */
-    private String unauthorizedUrl;
-    /** 异常页面：认证失败时的跳转路径 */
-    private String failureUrl;
-    
-    private boolean multipleSession = false;
-    private Integer maximumSessions;
-	private String expiredUrl;
-	private boolean maxSessionsPreventsLogin;
-    
-    /** Referrer-Policy Default value is: Referrer-Policy: no-referrer */
-    private ReferrerPolicy referrerPolicy = ReferrerPolicy.NO_REFERRER;
-    private XFrameOptionsMode frameOptions = XFrameOptionsMode.ALLOW_FROM;
-    
-    @NestedConfigurationProperty
+	private String successUrl;
+	/** 未授权页面：无权限时的跳转路径 */
+	private String unauthorizedUrl;
+	/** 异常页面：认证失败时的跳转路径 */
+	private String failureUrl;
+
+	@NestedConfigurationProperty
+	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
+	@NestedConfigurationProperty
 	private SecurityAnonymousProperties anonymous = new SecurityAnonymousProperties();
-    @NestedConfigurationProperty
-   	private SecurityCorsProperties cors = new SecurityCorsProperties();
-    @NestedConfigurationProperty
+	@NestedConfigurationProperty
+	private SecurityCorsProperties cors = new SecurityCorsProperties();
+	@NestedConfigurationProperty
 	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
-    @NestedConfigurationProperty
-   	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
-    
-	public boolean isLoginAjax() {
-		return loginAjax;
-	}
-
-	public void setLoginAjax(boolean loginAjax) {
-		this.loginAjax = loginAjax;
-	}
-
-	public boolean isForceHttps() {
-		return forceHttps;
-	}
-
-	public void setForceHttps(boolean forceHttps) {
-		this.forceHttps = forceHttps;
-	}
-
-	public boolean isUseForward() {
-		return useForward;
-	}
-
-	public void setUseForward(boolean useForward) {
-		this.useForward = useForward;
-	}
+	@NestedConfigurationProperty
+	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
+	@NestedConfigurationProperty
+	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
+	@NestedConfigurationProperty
+	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
 
 	public boolean isEnabled() {
 		return enabled;
@@ -132,14 +78,6 @@ public class SecurityBizProperties {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-	}
-	
-	public boolean isValidateCaptcha() {
-		return validateCaptcha;
-	}
-
-	public void setValidateCaptcha(boolean validateCaptcha) {
-		this.validateCaptcha = validateCaptcha;
 	}
 
 	public String getLoginUrl() {
@@ -197,7 +135,7 @@ public class SecurityBizProperties {
 	public void setUnauthorizedUrl(String unauthorizedUrl) {
 		this.unauthorizedUrl = unauthorizedUrl;
 	}
-	
+
 	public String getFailureUrl() {
 		return failureUrl;
 	}
@@ -206,84 +144,12 @@ public class SecurityBizProperties {
 		this.failureUrl = failureUrl;
 	}
 
-	public ReferrerPolicy getReferrerPolicy() {
-		return referrerPolicy;
+	public SecurityAuthcProperties getAuthc() {
+		return authc;
 	}
 
-	public void setReferrerPolicy(ReferrerPolicy referrerPolicy) {
-		this.referrerPolicy = referrerPolicy;
-	}
-
-	public XFrameOptionsMode getFrameOptions() {
-		return frameOptions;
-	}
-
-	public void setFrameOptions(XFrameOptionsMode frameOptions) {
-		this.frameOptions = frameOptions;
-	}
-
-	public boolean isAllowSessionCreation() {
-		return allowSessionCreation;
-	}
-
-	public void setAllowSessionCreation(boolean allowSessionCreation) {
-		this.allowSessionCreation = allowSessionCreation;
-	}
-
-	public String getUsernameParameter() {
-		return usernameParameter;
-	}
-
-	public void setUsernameParameter(String usernameParameter) {
-		this.usernameParameter = usernameParameter;
-	}
-
-	public String getPasswordParameter() {
-		return passwordParameter;
-	}
-
-	public void setPasswordParameter(String passwordParameter) {
-		this.passwordParameter = passwordParameter;
-	}
-
-	public boolean isPostOnly() {
-		return postOnly;
-	}
-
-	public void setPostOnly(boolean postOnly) {
-		this.postOnly = postOnly;
-	}
-
-	public Integer getMaximumSessions() {
-		return maximumSessions;
-	}
-
-	public boolean isMultipleSession() {
-		return multipleSession;
-	}
-
-	public void setMultipleSession(boolean multipleSession) {
-		this.multipleSession = multipleSession;
-	}
-
-	public void setMaximumSessions(Integer maximumSessions) {
-		this.maximumSessions = maximumSessions;
-	}
-
-	public String getExpiredUrl() {
-		return expiredUrl;
-	}
-
-	public void setExpiredUrl(String expiredUrl) {
-		this.expiredUrl = expiredUrl;
-	}
-
-	public boolean isMaxSessionsPreventsLogin() {
-		return maxSessionsPreventsLogin;
-	}
-
-	public void setMaxSessionsPreventsLogin(boolean maxSessionsPreventsLogin) {
-		this.maxSessionsPreventsLogin = maxSessionsPreventsLogin;
+	public void setAuthc(SecurityAuthcProperties authc) {
+		this.authc = authc;
 	}
 
 	public SecurityAnonymousProperties getAnonymous() {
@@ -318,15 +184,28 @@ public class SecurityBizProperties {
 		this.logout = logout;
 	}
 
-	public boolean isContinueChainBeforeSuccessfulAuthentication() {
-		return continueChainBeforeSuccessfulAuthentication;
+	public SecurityRedirectProperties getRedirect() {
+		return redirect;
 	}
 
-	public void setContinueChainBeforeSuccessfulAuthentication(boolean continueChainBeforeSuccessfulAuthentication) {
-		this.continueChainBeforeSuccessfulAuthentication = continueChainBeforeSuccessfulAuthentication;
+	public void setRedirect(SecurityRedirectProperties redirect) {
+		this.redirect = redirect;
 	}
 
-	
-	
+	public SecuritySessionMgtProperties getSessionMgt() {
+		return sessionMgt;
+	}
+
+	public void setSessionMgt(SecuritySessionMgtProperties sessionMgt) {
+		this.sessionMgt = sessionMgt;
+	}
+
+	public SecurityCaptchaProperties getCaptcha() {
+		return captcha;
+	}
+
+	public void setCaptcha(SecurityCaptchaProperties captcha) {
+		this.captcha = captcha;
+	}
+
 }
-

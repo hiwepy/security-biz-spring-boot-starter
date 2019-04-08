@@ -17,8 +17,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * Ajax认证请求成功后的处理实现
- * 
+ * Post认证请求成功后的处理实现
  * @author ： <a href="https://github.com/vindell">vindell</a>
  */
 public class HttpServletRequestAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -30,13 +29,15 @@ public class HttpServletRequestAuthenticationSuccessHandler extends SavedRequest
 		 * if Rest request return 401 Unauthorized else rediect to specific page
 		 */
 		if (WebUtils.isPostRequest(request)) {
+			
 			Map<String, String> retMap = new HashMap<String, String>();
 			retMap.put("status", "1");
 			retMap.put("successUrl", getDefaultTargetUrl());
 
 			response.setStatus(HttpStatus.OK.value());
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			response.getWriter().write(JSONObject.toJSONString(retMap));
+			
+			JSONObject.writeJSONString(response.getWriter(), retMap);
 
 			clearAuthenticationAttributes(request);
 		} else {
