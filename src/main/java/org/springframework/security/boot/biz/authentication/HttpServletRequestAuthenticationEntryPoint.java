@@ -45,7 +45,7 @@ public class HttpServletRequestAuthenticationEntryPoint extends LoginUrlAuthenti
 		if (WebUtils.isPostRequest(request)) {
 			
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
 				JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));

@@ -37,17 +37,14 @@ public class HttpServletRequestAuthenticationFailureHandler extends SimpleUrlAut
 		if (WebUtils.isPostRequest(request)) {
 
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
 			if (e instanceof BadCredentialsException) {
-				mapper.writeValue(response.getWriter(),
-						HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-				mapper.writeValue(response.getWriter(),
-						HttpServletRequestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
 			} else {
-				mapper.writeValue(response.getWriter(),
-						HttpServletRequestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+				mapper.writeValue(response.getWriter(), HttpServletRequestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
 			}
 		} else {
 			super.onAuthenticationFailure(request, response, e);

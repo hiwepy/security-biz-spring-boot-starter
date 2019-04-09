@@ -238,7 +238,7 @@ public class SecurityBizWebFilterConfiguration implements ApplicationEventPublis
 	@ConditionalOnMissingBean
 	public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
 		
-		LoginUrlAuthenticationEntryPoint entryPoint = new HttpServletRequestAuthenticationEntryPoint(objectMapper, bizProperties.getLoginUrl());
+		LoginUrlAuthenticationEntryPoint entryPoint = new HttpServletRequestAuthenticationEntryPoint(bizProperties.getLoginUrl());
 		entryPoint.setForceHttps(bizProperties.getAuthc().isForceHttps());
 		entryPoint.setUseForward(bizProperties.getAuthc().isUseForward());
 		
