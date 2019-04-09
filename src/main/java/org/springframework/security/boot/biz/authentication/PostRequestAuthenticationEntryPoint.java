@@ -31,9 +31,9 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 import com.alibaba.fastjson.JSONObject;
 
-public class HttpServletRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
+public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
-	public HttpServletRequestAuthenticationEntryPoint(String loginFormUrl) {
+	public PostRequestAuthenticationEntryPoint(String loginFormUrl) {
 		super(loginFormUrl);
 	}
 
@@ -48,11 +48,11 @@ public class HttpServletRequestAuthenticationEntryPoint extends LoginUrlAuthenti
 			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
-				JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				JSONObject.writeJSONString(response.getWriter(), PostLoginResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-			    JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			    JSONObject.writeJSONString(response.getWriter(), PostLoginResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
 			} else {
-				JSONObject.writeJSONString(response.getWriter(), HttpServletRequestErrorResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+				JSONObject.writeJSONString(response.getWriter(), PostLoginResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
 			}
 		} else {
 			super.commence(request, response, e);

@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Rest 模式登录认证绑定的参数对象Model
  */
-public class HttpServletRequestLoginRequest {
+public class PostLoginRequest {
 	
     private String username;
     private String password;
     private String captcha;
 
     @JsonCreator
-    public HttpServletRequestLoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("captcha") String captcha) {
+    public PostLoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("captcha") String captcha) {
         this.username = username;
         this.password = password;
     }

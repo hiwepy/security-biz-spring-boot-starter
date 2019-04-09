@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
@@ -29,13 +30,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 账号、密码、验证码认证过滤器
  * @author 		： <a href="https://github.com/vindell">vindell</a>
  */
-public class HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class UsernamePasswordCaptchaAuthenticationProcessingFilter extends UsernamePasswordAuthenticationFilter {
 
 	public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
 	public static final String DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME = "securityLoginFailureRetries";
 	private String captchaParameter = SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	
-	private static Logger logger = LoggerFactory.getLogger(HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter.class);
+	private static Logger logger = LoggerFactory.getLogger(UsernamePasswordCaptchaAuthenticationProcessingFilter.class);
 	private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	private boolean captchaRequired = false;
@@ -48,7 +49,7 @@ public class HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter exten
 	// ~ Constructors
 	// ===================================================================================================
 	
-	public HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter(ObjectMapper objectMapper) {
+	public UsernamePasswordCaptchaAuthenticationProcessingFilter(ObjectMapper objectMapper) {
 		super();
 		this.objectMapper = objectMapper;
 	}
@@ -73,7 +74,7 @@ public class HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter exten
 			// Post
 			if(WebUtils.isPostRequest(request)) {
 				
-				HttpServletRequestLoginRequest loginRequest = objectMapper.readValue(request.getReader(), HttpServletRequestLoginRequest.class);
+				PostLoginRequest loginRequest = objectMapper.readValue(request.getReader(), PostLoginRequest.class);
 				if (!StringUtils.hasText(loginRequest.getUsername()) || !StringUtils.hasText(loginRequest.getPassword())) {
 					throw new AuthenticationServiceException("Username or Password not provided");
 				}
@@ -144,11 +145,11 @@ public class HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter exten
 			return this.getAuthenticationManager().authenticate(authRequest);
 
 		} catch (JsonParseException e) {
-			throw new AuthenticationServiceException(e.getMessage());
+			throw new InternalAuthenticationServiceException(e.getMessage());
 		} catch (JsonMappingException e) {
-			throw new AuthenticationServiceException(e.getMessage());
+			throw new InternalAuthenticationServiceException(e.getMessage());
 		} catch (IOException e) {
-			throw new AuthenticationServiceException(e.getMessage());
+			throw new InternalAuthenticationServiceException(e.getMessage());
 		}
 
 	}

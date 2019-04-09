@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
  *
  * Aug 3, 2016
  */
-public class HttpServletRequestErrorResponse {
+public class PostLoginResponse {
 	
     // HTTP Response Status Code
     private final HttpStatus status;
@@ -21,14 +21,14 @@ public class HttpServletRequestErrorResponse {
 
     private final Date timestamp;
 
-    protected HttpServletRequestErrorResponse(final String message, HttpStatus status) {
+    protected PostLoginResponse(final String message, HttpStatus status) {
         this.message = message;
         this.status = status;
         this.timestamp = new java.util.Date();
     }
 
-    public static HttpServletRequestErrorResponse of(final String message, HttpStatus status) {
-        return new HttpServletRequestErrorResponse(message, status);
+    public static PostLoginResponse of(final String message, HttpStatus status) {
+        return new PostLoginResponse(message, status);
     }
 
     public Integer getStatus() {

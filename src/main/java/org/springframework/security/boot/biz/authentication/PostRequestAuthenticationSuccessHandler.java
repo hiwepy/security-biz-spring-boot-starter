@@ -2,6 +2,7 @@ package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -20,11 +21,30 @@ import com.alibaba.fastjson.JSONObject;
  * Post认证请求成功后的处理实现
  * @author ： <a href="https://github.com/vindell">vindell</a>
  */
-public class HttpServletRequestAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+	
+	private List<AuthenticationListener> authenticationListeners;
+	
+	public PostRequestAuthenticationSuccessHandler(String defaultTargetUrl) {
+		this.setDefaultTargetUrl(defaultTargetUrl);
+	}
+	
+	public PostRequestAuthenticationSuccessHandler(List<AuthenticationListener> authenticationListeners, String defaultTargetUrl) {
+		this.setAuthenticationListeners(authenticationListeners);
+		this.setDefaultTargetUrl(defaultTargetUrl);
+	}
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
+		
+		//调用事件监听器
+		if(getAuthenticationListeners() != null && getAuthenticationListeners().size() > 0){
+			for (AuthenticationListener authenticationListener : getAuthenticationListeners()) {
+				authenticationListener.onSuccess(request, response, authentication);
+			}
+		}
+		
 		/*
 		 * if Rest request return 401 Unauthorized else rediect to specific page
 		 */
@@ -44,6 +64,14 @@ public class HttpServletRequestAuthenticationSuccessHandler extends SavedRequest
 			super.onAuthenticationSuccess(request, response, authentication);
 		}
 
+	}
+
+	public List<AuthenticationListener> getAuthenticationListeners() {
+		return authenticationListeners;
+	}
+
+	public void setAuthenticationListeners(List<AuthenticationListener> authenticationListeners) {
+		this.authenticationListeners = authenticationListeners;
 	}
 
 }

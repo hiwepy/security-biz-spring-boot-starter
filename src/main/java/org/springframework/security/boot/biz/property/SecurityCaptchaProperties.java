@@ -15,7 +15,7 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import org.springframework.security.boot.biz.authentication.HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter;
+import org.springframework.security.boot.biz.authentication.UsernamePasswordCaptchaAuthenticationProcessingFilter;
 
 public class SecurityCaptchaProperties {
 
@@ -24,7 +24,7 @@ public class SecurityCaptchaProperties {
 	/**
 	 * The request parameter name of the captcha
 	 */
-	private String paramName = HttpServletRequestUsernamePasswordCaptchaAuthenticationFilter.SPRING_SECURITY_FORM_CAPTCHA_KEY;
+	private String paramName = UsernamePasswordCaptchaAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	/** 
 	 * Maximum number of retry to login . 
 	 */

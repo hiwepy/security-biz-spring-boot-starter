@@ -17,20 +17,20 @@ package org.springframework.security.boot.biz.property;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 public class SecuritySessionMgtProperties {
 	
 	private boolean allowSessionCreation = true;
-	
-	/** If Session Stateless */
-	private boolean statelessSession = false;
+	/** if should allow the JSESSIONID to be rewritten into the URLs*/
+	private boolean enableSessionUrlRewriting;
 	/** the maximum number of sessions for a user */
 	private Integer maximumSessions;
 	private boolean maxSessionsPreventsLogin;
-	/** if should allow the JSESSIONID to be rewritten into the URLs*/
-	private boolean enableSessionUrlRewriting;
-
+	/** If Session Stateless */
+	private boolean statelessSession = false;
+	private SessionCreationPolicy sessionPolicy;
 
 	public boolean isAllowSessionCreation() {
 		return allowSessionCreation;
@@ -102,4 +102,14 @@ public class SecuritySessionMgtProperties {
 		this.statelessSession = statelessSession;
 	}
 
+	public SessionCreationPolicy getSessionPolicy() {
+		return sessionPolicy;
+	}
+
+	public void setSessionPolicy(SessionCreationPolicy sessionPolicy) {
+		this.sessionPolicy = sessionPolicy;
+	}
+
+	
+	
 }

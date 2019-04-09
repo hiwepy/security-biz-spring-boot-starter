@@ -38,6 +38,9 @@ public class SecurityCsrfProperties {
 	private String scope;
 
 	private boolean hasGrantType;
+	
+	private String ignoringAntMatchers;
+	
 
 	/* Map containing user defined parameters */
 	private Map<String, String> customParams = new HashMap<String, String>();
@@ -50,6 +53,18 @@ public class SecurityCsrfProperties {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	
+
+	public String getIgnoringAntMatchers() {
+		return ignoringAntMatchers;
+	}
+
+	public void setIgnoringAntMatchers(String ignoringAntMatchers) {
+		this.ignoringAntMatchers = ignoringAntMatchers;
+	}
+
+
 
 	private boolean withState;
 

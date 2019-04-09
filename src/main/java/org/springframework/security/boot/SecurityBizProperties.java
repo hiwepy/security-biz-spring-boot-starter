@@ -15,6 +15,9 @@
  */
 package org.springframework.security.boot;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
@@ -40,9 +43,6 @@ public class SecurityBizProperties {
 	 * Enable Security.
 	 */
 	private boolean enabled = false;
-	/** 登录地址：会话不存在时访问的地址 */
-	private String loginUrl;
-	private String loginUrlPatterns;
 	/** 注销地址：会话注销后的重定向地址 */
 	private String logoutUrl;
 	private String logoutUrlPatterns;
@@ -54,7 +54,11 @@ public class SecurityBizProperties {
 	private String unauthorizedUrl;
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl;
-
+	/**
+	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
+	 */
+	private Map<String /* pattern */, String /* Chain name */> chainDefinitionMap = new LinkedHashMap<String, String>();
+	
 	@NestedConfigurationProperty
 	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
 	@NestedConfigurationProperty
@@ -79,23 +83,7 @@ public class SecurityBizProperties {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
-	public String getLoginUrl() {
-		return loginUrl;
-	}
-
-	public void setLoginUrl(String loginUrl) {
-		this.loginUrl = loginUrl;
-	}
-
-	public String getLoginUrlPatterns() {
-		return loginUrlPatterns;
-	}
-
-	public void setLoginUrlPatterns(String loginUrlPatterns) {
-		this.loginUrlPatterns = loginUrlPatterns;
-	}
-
+	
 	public String getLogoutUrl() {
 		return logoutUrl;
 	}
@@ -142,6 +130,14 @@ public class SecurityBizProperties {
 
 	public void setFailureUrl(String failureUrl) {
 		this.failureUrl = failureUrl;
+	}
+	
+	public Map<String, String> getChainDefinitionMap() {
+		return chainDefinitionMap;
+	}
+
+	public void setChainDefinitionMap(Map<String, String> chainDefinitionMap) {
+		this.chainDefinitionMap = chainDefinitionMap;
 	}
 
 	public SecurityAuthcProperties getAuthc() {

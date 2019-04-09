@@ -18,7 +18,7 @@ package org.springframework.security.boot.biz.userdetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 
-public abstract class LoginRequestUserDetailsService implements AuthenticationUserDetailsService<Authentication> {
+public abstract class LoginAuthenticationUserDetailsService implements AuthenticationUserDetailsService<Authentication> {
 
  
 
