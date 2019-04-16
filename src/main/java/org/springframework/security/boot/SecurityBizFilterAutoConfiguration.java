@@ -278,10 +278,15 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		}
 		// 登录地址不拦截 
 		permitMatchers.add(bizProperties.getAuthc().getLoginUrlPatterns());
-				
+		
+		// role[rr,xxx,xxx]
+		
     	http.authorizeRequests()
     		//添加不需要认证的路径 
     		.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).permitAll()
+    		.antMatchers("").authenticated()
+    		.antMatchers("").hasAnyRole("")
+    		.anyRequest().fullyAuthenticated()
 	    	// Session 管理器配置
     		.and()
     		.sessionManagement()
@@ -303,14 +308,13 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         	.addLogoutHandler(securityContextLogoutHandler)
         	.clearAuthentication(true)
         	.permitAll()
-    		;
-    	
-    	http = http.requestCache()
+        	// Request 缓存配置
+        	.and()
+    		.requestCache()
 		        	.requestCache(requestCache)
 		        	.and()
 		        	.addFilterBefore(upcAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-		        	.addFilterBefore(mobileCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-		        	.and();  // 不拦截注销
+		        	.addFilterBefore(mobileCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
         
         http.exceptionHandling().authenticationEntryPoint(loginUrlAuthenticationEntryPoint);
  
@@ -340,10 +344,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         } else {
         	http = http.csrf().disable();
         }
-        
-			
-        
-        http.addFilter(authenticationFilter);
  
     }
 	
