@@ -37,8 +37,6 @@ import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -74,7 +72,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 
 	@Autowired
 	private SecurityBizProperties bizProperties;
-	
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -104,7 +101,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	}
 	
 	@Bean
-	@ConditionalOnMissingBean
 	public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPoint() {
 		
 		LoginUrlAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(bizProperties.getAuthc().getLoginUrl());
@@ -247,7 +243,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     private SessionInformationExpiredStrategy expiredSessionStrategy;
     @Autowired
     private SessionRegistry sessionRegistry;
-  
 	
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
