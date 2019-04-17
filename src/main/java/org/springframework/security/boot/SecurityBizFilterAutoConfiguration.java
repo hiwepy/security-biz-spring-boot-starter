@@ -287,7 +287,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
  
     }
 	
-	
 	@Override
 	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
 		this.eventPublisher = applicationEventPublisher;
