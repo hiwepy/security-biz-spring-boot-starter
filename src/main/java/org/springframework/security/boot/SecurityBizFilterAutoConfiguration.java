@@ -20,8 +20,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
-import org.springframework.security.boot.biz.authentication.MobileCodeAuthenticationProcessingFilter;
-import org.springframework.security.boot.biz.authentication.MobileCodeAuthenticationProvider;
+import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
+import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
@@ -152,7 +152,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	}
 	
     @Bean
-    public MobileCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter(
+    public IdentityCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter(
     		AuthenticationManager authenticationManager, 
 			AuthenticationSuccessHandler successHandler, 
 			AuthenticationFailureHandler failureHandler,
@@ -161,7 +161,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 			MessageSource messageSource,
 			ObjectMapper objectMapper) {
     	
-        MobileCodeAuthenticationProcessingFilter authcFilter = new MobileCodeAuthenticationProcessingFilter();
+        IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter();
 		
 		authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		authcFilter.setApplicationEventPublisher(eventPublisher);
@@ -220,11 +220,11 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Autowired
     private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
     @Autowired
-    private MobileCodeAuthenticationProvider mobileCodeAuthenticationProvider;
+    private IdentityCodeAuthenticationProvider mobileCodeAuthenticationProvider;
     @Autowired
     private UsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter;
     @Autowired
-    private MobileCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter;
+    private IdentityCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter;
     @Autowired
     private LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPoint;
     @Autowired

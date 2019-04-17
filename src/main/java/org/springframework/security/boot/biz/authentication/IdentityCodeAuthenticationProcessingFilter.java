@@ -28,7 +28,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-public class MobileCodeAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
 	public static final String SPRING_SECURITY_FORM_MOBILE_KEY = "mobile";
     public static final String SPRING_SECURITY_FORM_CODE_KEY = "code";
@@ -37,7 +37,7 @@ public class MobileCodeAuthenticationProcessingFilter extends AbstractAuthentica
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
     private boolean postOnly = true;
 
-    public MobileCodeAuthenticationProcessingFilter() {
+    public IdentityCodeAuthenticationProcessingFilter() {
         super(new AntPathRequestMatcher("/mobileCodeLogin", "POST"));
     }
 
@@ -63,7 +63,7 @@ public class MobileCodeAuthenticationProcessingFilter extends AbstractAuthentica
         mobile = mobile.trim();
         code = code.trim();
 
-        AbstractAuthenticationToken authRequest = new MobileCodeAuthenticationToken(mobile, code);
+        AbstractAuthenticationToken authRequest = new IdentityCodeAuthenticationToken(mobile, code);
 
         // Allow subclasses to set the "details" property
         setDetails(request, authRequest);

@@ -19,7 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.boot.biz.authentication.MobileCodeAuthenticationProcessingFilter;
+import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
@@ -45,9 +45,9 @@ public class SecurityAuthcProperties {
 	/** the password parameter name. Defaults to "password". */
 	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 	/** the mobile parameter name. Defaults to "username". */
-	private String mobileParameter = MobileCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_MOBILE_KEY;
+	private String mobileParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_MOBILE_KEY;
 	/** the code parameter name. Defaults to "password". */
-    private String codeParameter = MobileCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY;
+    private String codeParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY;
     private String targetUrlParameter = null;
     private String defaultTargetUrl = "/";
 	private boolean alwaysUseDefaultTargetUrl = false;

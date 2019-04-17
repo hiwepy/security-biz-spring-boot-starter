@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.boot.biz.authentication.MobileCodeAuthenticationProvider;
+import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.userdetails.LoginAuthenticationUserDetailsService;
 import org.springframework.security.core.session.SessionRegistry;
@@ -98,9 +98,9 @@ public class SecurityBizAutoConfiguration {
 	}
 
 	@Bean
-	public MobileCodeAuthenticationProvider mobileCodeAuthenticationProvider(
+	public IdentityCodeAuthenticationProvider mobileCodeAuthenticationProvider(
 			LoginAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-		return new MobileCodeAuthenticationProvider(userDetailsService, passwordEncoder);
+		return new IdentityCodeAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 
 }

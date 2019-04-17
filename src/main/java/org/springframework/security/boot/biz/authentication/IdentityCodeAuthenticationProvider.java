@@ -11,12 +11,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
-public class MobileCodeAuthenticationProvider implements AuthenticationProvider {
+public class IdentityCodeAuthenticationProvider implements AuthenticationProvider {
 	
     private final PasswordEncoder passwordEncoder;
     private final LoginAuthenticationUserDetailsService userDetailsService;
     
-    public MobileCodeAuthenticationProvider(final LoginAuthenticationUserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
+    public IdentityCodeAuthenticationProvider(final LoginAuthenticationUserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
