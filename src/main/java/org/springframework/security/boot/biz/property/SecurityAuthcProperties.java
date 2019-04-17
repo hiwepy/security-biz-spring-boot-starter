@@ -30,8 +30,8 @@ public class SecurityAuthcProperties {
 	private String loginUrl;
 	private String loginUrlPatterns;
 	/** 手机号码登录地址：会话不存在时访问的地址 */
-	private String mobileLoginUrl;
-	private String mobileLoginUrlPatterns;
+	private String identityLoginUrl;
+	private String identityLoginUrlPatterns;
 	
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
@@ -72,20 +72,20 @@ public class SecurityAuthcProperties {
 		this.loginUrlPatterns = loginUrlPatterns;
 	}
 
-	public String getMobileLoginUrl() {
-		return mobileLoginUrl;
+	public String getIdentityLoginUrl() {
+		return identityLoginUrl;
 	}
 
-	public void setMobileLoginUrl(String mobileLoginUrl) {
-		this.mobileLoginUrl = mobileLoginUrl;
+	public void setIdentityLoginUrl(String identityLoginUrl) {
+		this.identityLoginUrl = identityLoginUrl;
 	}
 
-	public String getMobileLoginUrlPatterns() {
-		return mobileLoginUrlPatterns;
+	public String getIdentityLoginUrlPatterns() {
+		return identityLoginUrlPatterns;
 	}
 
-	public void setMobileLoginUrlPatterns(String mobileLoginUrlPatterns) {
-		this.mobileLoginUrlPatterns = mobileLoginUrlPatterns;
+	public void setIdentityLoginUrlPatterns(String identityLoginUrlPatterns) {
+		this.identityLoginUrlPatterns = identityLoginUrlPatterns;
 	}
 
 	public boolean isContinueChainBeforeSuccessfulAuthentication() {

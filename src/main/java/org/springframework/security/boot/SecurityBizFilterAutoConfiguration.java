@@ -101,9 +101,9 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	}
 	
 	@Bean
-	public LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPoint() {
+	public PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint() {
 		
-		LoginUrlAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(bizProperties.getAuthc().getLoginUrl());
+		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(bizProperties.getAuthc().getLoginUrl());
 		entryPoint.setForceHttps(bizProperties.getAuthc().isForceHttps());
 		entryPoint.setUseForward(bizProperties.getAuthc().isUseForward());
 		
@@ -113,8 +113,8 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	@Bean
 	public PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
 			AuthenticationManager authenticationManager, 
-			AuthenticationSuccessHandler successHandler, 
-			AuthenticationFailureHandler failureHandler,
+			PostRequestAuthenticationSuccessHandler successHandler, 
+			PostRequestAuthenticationFailureHandler failureHandler,
 			RememberMeServices rememberMeServices,
 			SessionAuthenticationStrategy sessionStrategy,
 			@Autowired(required = false) CaptchaResolver captchaResolver,
@@ -152,16 +152,16 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	}
 	
     @Bean
-    public IdentityCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter(
+    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter(
     		AuthenticationManager authenticationManager, 
-			AuthenticationSuccessHandler successHandler, 
-			AuthenticationFailureHandler failureHandler,
+    		PostRequestAuthenticationSuccessHandler successHandler, 
+    		PostRequestAuthenticationFailureHandler failureHandler,
 			RememberMeServices rememberMeServices,
 			SessionAuthenticationStrategy sessionStrategy,
 			MessageSource messageSource,
 			ObjectMapper objectMapper) {
     	
-        IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter();
+        IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter( objectMapper);
 		
 		authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		authcFilter.setApplicationEventPublisher(eventPublisher);
@@ -170,8 +170,8 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		authcFilter.setAuthenticationSuccessHandler(successHandler);
 		authcFilter.setCodeParameter(bizProperties.getAuthc().getCodeParameter());
 		authcFilter.setContinueChainBeforeSuccessfulAuthentication(false);
-		if (StringUtils.hasText(bizProperties.getAuthc().getMobileLoginUrlPatterns())) {
-			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getMobileLoginUrlPatterns());
+		if (StringUtils.hasText(bizProperties.getAuthc().getIdentityLoginUrlPatterns())) {
+			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getIdentityLoginUrlPatterns());
 		}
 		authcFilter.setMessageSource(messageSource);
 		authcFilter.setMobileParameter(bizProperties.getAuthc().getMobileParameter());
@@ -214,19 +214,17 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     }
  
     @Autowired
-    private PostRequestAuthenticationSuccessHandler postRequestAuthenticationSuccessHandler;
-    @Autowired
     private PostRequestAuthenticationFailureHandler postRequestAuthenticationFailureHandler;
     @Autowired
     private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
     @Autowired
-    private IdentityCodeAuthenticationProvider mobileCodeAuthenticationProvider;
+    private PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint;
     @Autowired
     private PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter;
     @Autowired
-    private IdentityCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter;
+    private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
     @Autowired
-    private LoginUrlAuthenticationEntryPoint loginUrlAuthenticationEntryPoint;
+    private IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter;
     @Autowired
     private RequestCache requestCache;
     @Autowired
@@ -246,7 +244,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(mobileCodeAuthenticationProvider)
+        auth.authenticationProvider(identityCodeAuthenticationProvider)
             .authenticationProvider(postRequestAuthenticationProvider)
         	.userDetailsService(userDetailsService)
         	.passwordEncoder(passwordEncoder);
@@ -300,18 +298,18 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     		// Session 注销配置
     		.and()
     		.logout()
-        	.addLogoutHandler(securityContextLogoutHandler)
-        	.clearAuthentication(true)
+    		.addLogoutHandler(securityContextLogoutHandler)
+    		.clearAuthentication(logout.isClearAuthentication())
         	.permitAll()
         	// Request 缓存配置
         	.and()
     		.requestCache()
-		        	.requestCache(requestCache)
-		        	.and()
-		        	.addFilterBefore(upcAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-		        	.addFilterBefore(mobileCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
+        	.requestCache(requestCache)
+        	.and()
+        	.addFilterBefore(upcAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
+        	.addFilterBefore(identityCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
         
-        http.exceptionHandling().authenticationEntryPoint(loginUrlAuthenticationEntryPoint);
+        http.exceptionHandling().authenticationEntryPoint(postRequestAuthenticationEntryPoint);
  
         // 匿名登录配置
         SecurityAnonymousProperties anonymous = bizProperties.getAnonymous();

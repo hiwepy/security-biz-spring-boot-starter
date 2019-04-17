@@ -23,10 +23,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.boot.utils.StringUtils;
+import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -36,39 +43,71 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
     private String mobileParameter = SPRING_SECURITY_FORM_MOBILE_KEY;
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
     private boolean postOnly = true;
-
-    public IdentityCodeAuthenticationProcessingFilter() {
-        super(new AntPathRequestMatcher("/mobileCodeLogin", "POST"));
+	private final ObjectMapper objectMapper;
+	
+    public IdentityCodeAuthenticationProcessingFilter(ObjectMapper objectMapper) {
+    	super(new AntPathRequestMatcher("identity", "POST"));
+		this.objectMapper = objectMapper;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-        if (postOnly && !request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException(
-                    "Authentication method not supported: " + request.getMethod());
-        }
 
-        String mobile = obtainMobile(request);
-        String code = obtainCode(request);
+        if (isPostOnly() && !WebUtils.isPostRequest(request) ) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
+			}
+			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+		}
+        
+        try {
 
-        if (mobile == null) {
-            mobile = "";
-        }
+			AbstractAuthenticationToken authRequest = null;
+			// Post && JSON
+			if(WebUtils.isPostRequest(request) && WebUtils.isContentTypeJson(request)) {
+				
+				IdentityCodeRequest loginRequest = objectMapper.readValue(request.getReader(), IdentityCodeRequest.class);
+				if (!StringUtils.hasText(loginRequest.getMobile()) || !StringUtils.hasText(loginRequest.getCode())) {
+					throw new AuthenticationServiceException("Mobile or Code not provided");
+				}
 
-        if (code == null) {
-            code = "";
-        }
+		 		authRequest = this.authenticationToken( loginRequest.getMobile(), loginRequest.getCode());
+		 		
+			} else {
+				
+				String mobile = obtainMobile(request);
+		        String code = obtainCode(request);
 
-        mobile = mobile.trim();
-        code = code.trim();
+		        if (mobile == null) {
+		            mobile = "";
+		        }
 
-        AbstractAuthenticationToken authRequest = new IdentityCodeAuthenticationToken(mobile, code);
+		        if (code == null) {
+		            code = "";
+		        }
+				
+		 		if (!StringUtils.hasText(mobile) || !StringUtils.hasText(code)) {
+		            throw new AuthenticationServiceException("Mobile or Code not provided");
+		        }
+		 		
+		 		authRequest = this.authenticationToken( mobile, code);
+		 		
+			}
 
-        // Allow subclasses to set the "details" property
-        setDetails(request, authRequest);
+			// Allow subclasses to set the "details" property
+			setDetails(request, authRequest);
 
-        return this.getAuthenticationManager().authenticate(authRequest);
+			return this.getAuthenticationManager().authenticate(authRequest);
+
+		} catch (JsonParseException e) {
+			throw new InternalAuthenticationServiceException(e.getMessage());
+		} catch (JsonMappingException e) {
+			throw new InternalAuthenticationServiceException(e.getMessage());
+		} catch (IOException e) {
+			throw new InternalAuthenticationServiceException(e.getMessage());
+		}
+
     }
 
     protected String obtainMobile(HttpServletRequest request) {
@@ -79,11 +118,23 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
         return request.getParameter(codeParameter);
     }
 
-    protected void setDetails(HttpServletRequest request,
-            AbstractAuthenticationToken authRequest) {
-        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
-    }
-
+    /**
+	 * Provided so that subclasses may configure what is put into the authentication
+	 * request's details property.
+	 *
+	 * @param request that an authentication request is being created for
+	 * @param authRequest the authentication request object that should have its details
+	 * set
+	 */
+	protected void setDetails(HttpServletRequest request,
+			AbstractAuthenticationToken authRequest) {
+		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+	}
+	
+	protected AbstractAuthenticationToken authenticationToken(String mobile, String code) {
+		return new IdentityCodeAuthenticationToken( mobile, code);
+	}
+    
 	public String getMobileParameter() {
 		return mobileParameter;
 	}

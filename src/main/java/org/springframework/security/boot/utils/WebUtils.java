@@ -36,6 +36,10 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
         return request.getHeaderValues(X_REQUESTED_WITH).contains(XML_HTTP_REQUEST);
     }
 
+    public static boolean isContentTypeJson(HttpServletRequest request) {
+        return request.getHeader(CONTENT_TYPE).contains(CONTENT_TYPE_JSON);
+    }
+    
     public static boolean isContentTypeJson(SavedRequest request) {
         return request.getHeaderValues(CONTENT_TYPE).contains(CONTENT_TYPE_JSON);
     }

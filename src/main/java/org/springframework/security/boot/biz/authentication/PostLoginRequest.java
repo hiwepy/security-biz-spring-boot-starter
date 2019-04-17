@@ -16,6 +16,7 @@ public class PostLoginRequest {
     public PostLoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("captcha") String captcha) {
         this.username = username;
         this.password = password;
+        this.captcha = captcha;
     }
 
     public String getUsername() {

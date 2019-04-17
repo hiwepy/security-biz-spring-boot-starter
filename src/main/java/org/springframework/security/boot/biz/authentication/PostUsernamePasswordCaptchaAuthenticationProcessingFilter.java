@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -70,9 +71,9 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 		
 		try {
 
-			UsernamePasswordAuthenticationToken authRequest = null;
-			// Post
-			if(WebUtils.isPostRequest(request)) {
+			AbstractAuthenticationToken authRequest = null;
+			// Post && JSON
+			if(WebUtils.isPostRequest(request) && WebUtils.isContentTypeJson(request)) {
 				
 				PostLoginRequest loginRequest = objectMapper.readValue(request.getReader(), PostLoginRequest.class);
 				if (!StringUtils.hasText(loginRequest.getUsername()) || !StringUtils.hasText(loginRequest.getPassword())) {
@@ -97,8 +98,8 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 					}
 					
 				}
-		 		 
-				authRequest = new UsernamePasswordAuthenticationToken( loginRequest.getUsername(), loginRequest.getPassword());
+		 		
+		 		authRequest = this.authenticationToken( loginRequest.getUsername(), loginRequest.getPassword());
 
 			} else {
 				
@@ -135,7 +136,7 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 		            throw new AuthenticationServiceException("Username or Password not provided");
 		        }
 		 		
-		 		authRequest = new UsernamePasswordAuthenticationToken( username, password);
+		 		authRequest = this.authenticationToken( username, password);
 		 		
 			}
 
@@ -154,6 +155,23 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 
 	}
 
+	/**
+	 * Provided so that subclasses may configure what is put into the authentication
+	 * request's details property.
+	 *
+	 * @param request that an authentication request is being created for
+	 * @param authRequest the authentication request object that should have its details
+	 * set
+	 */
+	protected void setDetails(HttpServletRequest request,
+			AbstractAuthenticationToken authRequest) {
+		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+	}
+	
+	protected AbstractAuthenticationToken authenticationToken(String username, String password) {
+		return new UsernamePasswordAuthenticationToken( username, password);
+	}
+	
 	/**
 	 * Enables subclasses to override the composition of the captcha, such as by
 	 * including additional values and a separator.
