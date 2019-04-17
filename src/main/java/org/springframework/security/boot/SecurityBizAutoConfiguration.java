@@ -152,23 +152,25 @@ public class SecurityBizAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SecurityContextLogoutHandler securityContextLogoutHandler(SecurityBizProperties bizProperties) {
-		
+
 		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 		logoutHandler.setClearAuthentication(bizProperties.getLogout().isClearAuthentication());
 		logoutHandler.setInvalidateHttpSession(bizProperties.getLogout().isInvalidateHttpSession());
-		
+
 		return logoutHandler;
 	}
-	
+
 	@Bean
 	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
-			PostAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+			PostAuthenticationUserDetailsService userDetailsService, 
+			PasswordEncoder passwordEncoder) {
 		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 
 	@Bean
 	public IdentityCodeAuthenticationProvider mobileCodeAuthenticationProvider(
-			PostAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+			PostAuthenticationUserDetailsService userDetailsService, 
+			PasswordEncoder passwordEncoder) {
 		return new IdentityCodeAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 
