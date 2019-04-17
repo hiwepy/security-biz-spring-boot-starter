@@ -19,13 +19,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.PostUsernamePasswordCaptchaAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
@@ -40,10 +38,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -55,7 +51,6 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -74,47 +69,10 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	private SecurityBizProperties bizProperties;
 
 	@Bean
-	@ConditionalOnMissingBean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
-	}
-    
-	@Bean
-	public PostRequestAuthenticationSuccessHandler postRequestAuthenticationSuccessHandler(@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
-			RedirectStrategy redirectStrategy, RequestCache requestCache) {
-		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(authenticationListeners, bizProperties.getSuccessUrl());
-		successHandler.setRedirectStrategy(redirectStrategy);
-		successHandler.setRequestCache(requestCache);
-		successHandler.setTargetUrlParameter(bizProperties.getAuthc().getTargetUrlParameter());
-		successHandler.setUseReferer(bizProperties.getAuthc().isUseReferer());
-		return successHandler;
-	}
-	
-	@Bean
-	public PostRequestAuthenticationFailureHandler postRequestAuthenticationFailureHandler(@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
-			RedirectStrategy redirectStrategy) {
-		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(authenticationListeners, bizProperties.getFailureUrl());
-		failureHandler.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
-		failureHandler.setRedirectStrategy(redirectStrategy);
-		failureHandler.setUseForward(bizProperties.getAuthc().isUseForward());
-		return failureHandler;
-	}
-	
-	@Bean
-	public PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint() {
-		
-		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(bizProperties.getAuthc().getLoginUrl());
-		entryPoint.setForceHttps(bizProperties.getAuthc().isForceHttps());
-		entryPoint.setUseForward(bizProperties.getAuthc().isUseForward());
-		
-		return entryPoint;
-	}
-
-	@Bean
 	public PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
 			AuthenticationManager authenticationManager, 
-			PostRequestAuthenticationSuccessHandler successHandler, 
-			PostRequestAuthenticationFailureHandler failureHandler,
+			AuthenticationSuccessHandler successHandler, 
+    		AuthenticationFailureHandler failureHandler,
 			RememberMeServices rememberMeServices,
 			SessionAuthenticationStrategy sessionStrategy,
 			@Autowired(required = false) CaptchaResolver captchaResolver,
@@ -150,12 +108,12 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 
 		return authcFilter;
 	}
-	
+	 
     @Bean
     public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter(
     		AuthenticationManager authenticationManager, 
-    		PostRequestAuthenticationSuccessHandler successHandler, 
-    		PostRequestAuthenticationFailureHandler failureHandler,
+    		AuthenticationSuccessHandler successHandler, 
+    		AuthenticationFailureHandler failureHandler,
 			RememberMeServices rememberMeServices,
 			SessionAuthenticationStrategy sessionStrategy,
 			MessageSource messageSource,
@@ -182,15 +140,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         return authcFilter;
     }
     
-	@Bean
-	public SecurityContextLogoutHandler securityContextLogoutHandler() {
-		
-		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		logoutHandler.setClearAuthentication(bizProperties.getLogout().isClearAuthentication());
-		logoutHandler.setInvalidateHttpSession(bizProperties.getLogout().isInvalidateHttpSession());
-		
-		return logoutHandler;
-	}
+	
 	
 	/*
 	 * 系统登录注销过滤器；默认：org.springframework.security.web.authentication.logout.LogoutFilter
@@ -204,27 +154,24 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		return logoutFilter;
 	}
 	
-	private CorsConfigurationSource configurationSource;
-	
-	
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
- 
-    @Autowired
-    private PostRequestAuthenticationFailureHandler postRequestAuthenticationFailureHandler;
+    
     @Autowired
     private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
-    @Autowired
-    private PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint;
     @Autowired
     private PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter;
     @Autowired
     private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
     @Autowired
     private IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter;
+    @Autowired
+    private PostRequestAuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private PostRequestAuthenticationFailureHandler authenticationFailureHandler;
     @Autowired
     private RequestCache requestCache;
     @Autowired
@@ -293,7 +240,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 			.sessionRegistry(sessionRegistry)
 			.and()
     		.sessionAuthenticationErrorUrl(bizProperties.getFailureUrl())
-    		.sessionAuthenticationFailureHandler(postRequestAuthenticationFailureHandler)
+    		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
     		.sessionCreationPolicy(sessionMgt.getSessionPolicy())
     		// Session 注销配置
     		.and()
@@ -309,7 +256,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         	.addFilterBefore(upcAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
         	.addFilterBefore(identityCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
         
-        http.exceptionHandling().authenticationEntryPoint(postRequestAuthenticationEntryPoint);
+        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
  
         // 匿名登录配置
         SecurityAnonymousProperties anonymous = bizProperties.getAnonymous();
@@ -322,7 +269,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
        	SecurityCorsProperties cors = bizProperties.getCors();
        	if(cors.isEnabled()) {
        		http = http.cors()
-       				   .configurationSource(configurationSource)
+       				   //.configurationSource(configurationSource)
        				   .and();
         } else {
         	http = http.cors().disable();

@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication;
+package org.springframework.security.boot.biz.exception;
 
 import java.util.Date;
 
@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
  *
  * Aug 3, 2016
  */
-public class PostLoginResponse {
+public class ErrorResponse {
 	
     // HTTP Response Status Code
     private final HttpStatus status;
@@ -19,16 +19,20 @@ public class PostLoginResponse {
     // General Error message
     private final String message;
 
+    // Error code
+    private final ErrorCode code;
+
     private final Date timestamp;
 
-    protected PostLoginResponse(final String message, HttpStatus status) {
+    protected ErrorResponse(final String message, final ErrorCode code, HttpStatus status) {
         this.message = message;
+        this.code = code;
         this.status = status;
         this.timestamp = new java.util.Date();
     }
 
-    public static PostLoginResponse of(final String message, HttpStatus status) {
-        return new PostLoginResponse(message, status);
+    public static ErrorResponse of(final String message, final ErrorCode code, HttpStatus status) {
+        return new ErrorResponse(message, code, status);
     }
 
     public Integer getStatus() {
@@ -37,6 +41,10 @@ public class PostLoginResponse {
 
     public String getMessage() {
         return message;
+    }
+
+    public ErrorCode getCode() {
+        return code;
     }
 
     public Date getTimestamp() {

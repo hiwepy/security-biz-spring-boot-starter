@@ -25,6 +25,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.boot.biz.exception.AuthMethodNotSupportedException;
+import org.springframework.security.boot.biz.exception.AuthTokenExpiredException;
+import org.springframework.security.boot.biz.exception.AuthTokenIncorrectException;
+import org.springframework.security.boot.biz.exception.ErrorCode;
+import org.springframework.security.boot.biz.exception.ErrorResponse;
+import org.springframework.security.boot.biz.exception.IdentityCodeExpiredException;
+import org.springframework.security.boot.biz.exception.IdentityCodeIncorrectException;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -48,11 +54,19 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 			
 			if (e instanceof BadCredentialsException) {
-				JSONObject.writeJSONString(response.getWriter(), PostLoginResponse.of("Invalid username or password", HttpStatus.UNAUTHORIZED));
+				JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Invalid username or password", ErrorCode.AUTHENTICATION, HttpStatus.UNAUTHORIZED));
+			} else if (e instanceof IdentityCodeIncorrectException) {
+				JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Code was incorrect", ErrorCode.IDENTITY, HttpStatus.UNAUTHORIZED));
+			} else if (e instanceof IdentityCodeExpiredException) {
+				JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Code has expired", ErrorCode.IDENTITY, HttpStatus.UNAUTHORIZED));
+			} else if (e instanceof AuthTokenIncorrectException) {
+				JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Token was incorrect", ErrorCode.TOKEN, HttpStatus.UNAUTHORIZED));
+			} else if (e instanceof AuthTokenExpiredException) {
+				JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Token has expired", ErrorCode.TOKEN, HttpStatus.UNAUTHORIZED));
 			} else if (e instanceof AuthMethodNotSupportedException) {
-			    JSONObject.writeJSONString(response.getWriter(), PostLoginResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+			    JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of(e.getMessage(), ErrorCode.AUTHENTICATION, HttpStatus.UNAUTHORIZED));
 			} else {
-				JSONObject.writeJSONString(response.getWriter(), PostLoginResponse.of("Authentication failed", HttpStatus.UNAUTHORIZED));
+				JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Authentication failed", ErrorCode.AUTHENTICATION, HttpStatus.UNAUTHORIZED));
 			}
 		} else {
 			super.commence(request, response, e);
