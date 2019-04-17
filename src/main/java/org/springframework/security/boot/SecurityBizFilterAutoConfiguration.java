@@ -26,7 +26,7 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.UsernamePasswordCaptchaAuthenticationProcessingFilter;
+import org.springframework.security.boot.biz.authentication.PostUsernamePasswordCaptchaAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
@@ -111,7 +111,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	}
 
 	@Bean
-	public UsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
+	public PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
 			AuthenticationManager authenticationManager, 
 			AuthenticationSuccessHandler successHandler, 
 			AuthenticationFailureHandler failureHandler,
@@ -122,7 +122,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 			ObjectMapper objectMapper) {
 		
 		// Form Login With Captcha 
-		UsernamePasswordCaptchaAuthenticationProcessingFilter authcFilter = new UsernamePasswordCaptchaAuthenticationProcessingFilter(objectMapper);
+		PostUsernamePasswordCaptchaAuthenticationProcessingFilter authcFilter = new PostUsernamePasswordCaptchaAuthenticationProcessingFilter(objectMapper);
 		
 		authcFilter.setCaptchaParameter(bizProperties.getCaptcha().getParamName());
 		// 是否验证码必填
@@ -222,7 +222,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Autowired
     private IdentityCodeAuthenticationProvider mobileCodeAuthenticationProvider;
     @Autowired
-    private UsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter;
+    private PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter;
     @Autowired
     private IdentityCodeAuthenticationProcessingFilter mobileCodeAuthenticationProcessingFilter;
     @Autowired
