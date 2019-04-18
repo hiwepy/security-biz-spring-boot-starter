@@ -28,10 +28,10 @@ public class SecuritySessionMgtProperties {
 	/** the maximum number of sessions for a user */
 	private Integer maximumSessions;
 	private boolean maxSessionsPreventsLogin;
-	/** If Session Stateless */
-	private boolean statelessSession = false;
-	private SessionCreationPolicy sessionPolicy;
-
+	
+	private SessionCreationPolicy creationPolicy;
+	private SessionFixationPolicy fixationPolicy;
+	
 	public boolean isAllowSessionCreation() {
 		return allowSessionCreation;
 	}
@@ -94,22 +94,20 @@ public class SecuritySessionMgtProperties {
 		this.enableSessionUrlRewriting = enableSessionUrlRewriting;
 	}
 
-	public boolean isStatelessSession() {
-		return statelessSession;
+	public SessionCreationPolicy getCreationPolicy() {
+		return creationPolicy;
 	}
 
-	public void setStatelessSession(boolean statelessSession) {
-		this.statelessSession = statelessSession;
+	public void setCreationPolicy(SessionCreationPolicy creationPolicy) {
+		this.creationPolicy = creationPolicy;
 	}
 
-	public SessionCreationPolicy getSessionPolicy() {
-		return sessionPolicy;
+	public SessionFixationPolicy getFixationPolicy() {
+		return fixationPolicy;
 	}
 
-	public void setSessionPolicy(SessionCreationPolicy sessionPolicy) {
-		this.sessionPolicy = sessionPolicy;
+	public void setFixationPolicy(SessionFixationPolicy fixationPolicy) {
+		this.fixationPolicy = fixationPolicy;
 	}
-
-	
 	
 }

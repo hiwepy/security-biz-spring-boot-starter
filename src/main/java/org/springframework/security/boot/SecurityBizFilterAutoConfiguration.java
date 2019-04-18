@@ -103,6 +103,9 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		authcFilter.setPasswordParameter(bizProperties.getAuthc().getPasswordParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
 		authcFilter.setRememberMeServices(rememberMeServices);
+		
+		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
+		
 		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
 		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
 
@@ -187,8 +190,10 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Autowired
     private SessionInformationExpiredStrategy expiredSessionStrategy;
     @Autowired
+    private SessionAuthenticationStrategy sessionStrategy;
+    @Autowired
     private SessionRegistry sessionRegistry;
-	
+   
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(identityCodeAuthenticationProvider)
@@ -241,7 +246,13 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 			.and()
     		.sessionAuthenticationErrorUrl(bizProperties.getFailureUrl())
     		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
-    		.sessionCreationPolicy(sessionMgt.getSessionPolicy())
+    		.sessionAuthenticationStrategy(sessionStrategy)
+    		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
+    		//.sessionFixation()
+    		.sessionFixation().changeSessionId()
+    		.sessionFixation().migrateSession()
+    		.sessionFixation().newSession()
+    		.sessionFixation().none()   		
     		// Session 注销配置
     		.and()
     		.logout()
