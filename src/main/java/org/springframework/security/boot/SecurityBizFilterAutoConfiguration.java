@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -55,10 +55,7 @@ import org.springframework.util.CollectionUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@AutoConfigureBefore(name = {
-	"org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration" 
-})
-@ConditionalOnWebApplication
+@AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class })
 public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
