@@ -46,6 +46,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -269,28 +270,28 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         // 匿名登录配置
         SecurityAnonymousProperties anonymous = bizProperties.getAnonymous();
         if(anonymous.isEnabled()) {
-        	http = http.anonymous().and();
+        	http.anonymous().and();
         } else {
-        	http = http.anonymous().disable();
+        	http.anonymous().disable();
         }
         // CORS 配置
        	SecurityCorsProperties cors = bizProperties.getCors();
        	if(cors.isEnabled()) {
-       		http = http.cors()
+       		http.cors()
        				   //.configurationSource(configurationSource)
        				   .and();
         } else {
-        	http = http.cors().disable();
+        	http.cors().disable();
         }
        	// CSRF 配置
     	SecurityCsrfProperties csrf = bizProperties.getCsrf();
     	if(csrf.isEnabled()) {
-       		http = http.csrf()
-       				   .csrfTokenRepository(csrfTokenRepository)
-       				   .ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
-       				   .and();
+       		http.csrf()
+			   	.csrfTokenRepository(csrfTokenRepository)
+			   	.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         } else {
-        	http = http.csrf().disable();
+        	http.csrf().disable();
         }
  
     }

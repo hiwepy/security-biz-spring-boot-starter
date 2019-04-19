@@ -38,6 +38,10 @@ import org.springframework.security.web.authentication.session.ChangeSessionIdAu
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.csrf.LazyCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -94,6 +98,18 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public SessionInformationExpiredStrategy expiredSessionStrategy(RedirectStrategy redirectStrategy) {
 		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getRedirectUrl(), redirectStrategy);
+	}
+	
+	 
+	@Bean
+	@ConditionalOnMissingBean
+	public CsrfTokenRepository csrfTokenRepository() {
+		// Session 管理器配置参数
+		SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
+		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgt.getFixationPolicy())) {
+			return new CookieCsrfTokenRepository();
+		}
+		return new HttpSessionCsrfTokenRepository();
 	}
 
 	@Bean
