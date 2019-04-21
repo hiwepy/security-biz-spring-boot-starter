@@ -20,7 +20,7 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
-import org.springframework.security.boot.biz.userdetails.PostAuthenticationUserDetailsService;
+import org.springframework.security.boot.biz.userdetails.BaseAuthenticationUserDetailsService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -206,13 +206,13 @@ public class SecurityBizAutoConfiguration {
 
 	@Bean
 	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
-			PostAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+			BaseAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
 		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 
 	@Bean
 	public IdentityCodeAuthenticationProvider mobileCodeAuthenticationProvider(
-			PostAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+			BaseAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
 		return new IdentityCodeAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 

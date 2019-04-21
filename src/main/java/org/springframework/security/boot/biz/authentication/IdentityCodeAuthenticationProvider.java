@@ -3,7 +3,7 @@ package org.springframework.security.boot.biz.authentication;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.boot.biz.userdetails.PostAuthenticationUserDetailsService;
+import org.springframework.security.boot.biz.userdetails.BaseAuthenticationUserDetailsService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +14,9 @@ import org.springframework.util.Assert;
 public class IdentityCodeAuthenticationProvider implements AuthenticationProvider {
 	
     private final PasswordEncoder passwordEncoder;
-    private final PostAuthenticationUserDetailsService userDetailsService;
+    private final BaseAuthenticationUserDetailsService userDetailsService;
     
-    public IdentityCodeAuthenticationProvider(final PostAuthenticationUserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
+    public IdentityCodeAuthenticationProvider(final BaseAuthenticationUserDetailsService userDetailsService, final PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
