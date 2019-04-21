@@ -26,9 +26,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 @SuppressWarnings("serial")
-public class LoginUserDetails extends User {
+public class BaseUserDetails extends User {
 
-	public LoginUserDetails(String username, String password, String... roles) {
+	public BaseUserDetails(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
 	}
 	
@@ -44,11 +44,11 @@ public class LoginUserDetails extends User {
 		return authorities;
 	}
 	
-	public LoginUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+	public BaseUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 	}
 
-	public LoginUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
+	public BaseUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
 			boolean credentialsNonExpired, boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
