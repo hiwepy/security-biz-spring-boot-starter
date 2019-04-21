@@ -8,7 +8,7 @@ import java.util.Set;
  */
 @SuppressWarnings("serial")
 public class SecurityPrincipal implements Cloneable, Serializable {
-	
+
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
@@ -28,8 +28,8 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	/**
 	 * 用户密码盐：用于密码加解密
 	 */
-    protected String salt;
-    /**
+	protected String salt;
+	/**
 	 * 用户秘钥：用于用户JWT加解密
 	 */
 	private String secret;
@@ -48,21 +48,29 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	/**
 	 * 用户是否可用
 	 */
-    protected boolean disabled = Boolean.FALSE;
-    /**
+	protected boolean disabled = Boolean.FALSE;
+	/**
 	 * 用户是否锁定
 	 */
-    protected boolean locked = Boolean.FALSE;
-    
-    public SecurityPrincipal() {
-    }
+	protected boolean locked = Boolean.FALSE;
+	/**
+	 * 用户是否过期
+	 */
+	protected boolean accountExpired = Boolean.FALSE;
+	/**
+	 * 凭证是否过期
+	 */
+	protected boolean credentialsExpired = Boolean.FALSE;
 
-    public SecurityPrincipal(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+	public SecurityPrincipal() {
+	}
 
-    public String getUserid() {
+	public SecurityPrincipal(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+
+	public String getUserid() {
 		return userid;
 	}
 
@@ -95,16 +103,16 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	}
 
 	public String getSalt() {
-        return salt;
-    }
+		return salt;
+	}
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
 
-    public String getCredentialsSalt() {
-        return username + salt;
-    }
+	public String getCredentialsSalt() {
+		return username + salt;
+	}
 
 	public String getSecret() {
 		return secret;
@@ -113,7 +121,7 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	public void setSecret(String secret) {
 		this.secret = secret;
 	}
-	
+
 	public Set<String> getRoles() {
 		return roles;
 	}
@@ -129,7 +137,7 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	public void setPerms(Set<String> perms) {
 		this.perms = perms;
 	}
-	
+
 	public String getAlias() {
 		return alias;
 	}
@@ -153,30 +161,47 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	public void setLocked(boolean locked) {
 		this.locked = locked;
 	}
+	
+	public boolean isAccountExpired() {
+		return accountExpired;
+	}
+
+	public void setAccountExpired(boolean accountExpired) {
+		this.accountExpired = accountExpired;
+	}
+
+	public boolean isCredentialsExpired() {
+		return credentialsExpired;
+	}
+
+	public void setCredentialsExpired(boolean credentialsExpired) {
+		this.credentialsExpired = credentialsExpired;
+	}
 
 	@Override
-    public boolean equals(Object o) {
-        if (this == o) {
-        	return true;
-        }
-        if (o == null || getClass() != o.getClass()){
-        	return false;
-        }
-        SecurityPrincipal user = (SecurityPrincipal) o;
-        if (userid != null ? !userid.equals(user.getUserid()) : user.getUserid() != null){
-        	return false;
-        }
-        return true;
-    }
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		SecurityPrincipal user = (SecurityPrincipal) o;
+		if (userid != null ? !userid.equals(user.getUserid()) : user.getUserid() != null) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public int hashCode() {
-        return userid != null ? userid.hashCode() : 0;
-    }
+	@Override
+	public int hashCode() {
+		return userid != null ? userid.hashCode() : 0;
+	}
 
-    @Override
-    public String toString() {
-		return " User {" + "userid=" + userid + ", username='" + username + '\'' + ", password='" + password + '\'' + ", salt='" + salt + '\'' + ", disabled='" + disabled + '\'' + ", locked=" + locked + '}';
-    }
-    
+	@Override
+	public String toString() {
+		return " User {" + "userid=" + userid + ", username='" + username + '\'' + ", password='" + password + '\''
+				+ ", salt='" + salt + '\'' + ", disabled='" + disabled + '\'' + ", locked=" + locked + '}';
+	}
+
 }
