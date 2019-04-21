@@ -46,21 +46,21 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	 */
 	private Set<String> perms;
 	/**
-	 * 用户是否可用
+	 * 用户过期性 :true:没过期 false:过期
 	 */
-	protected boolean disabled = Boolean.FALSE;
+	protected boolean enabled = Boolean.TRUE;
 	/**
-	 * 用户是否锁定
+	 * 用户锁定性 :true:未锁定 false:已锁定
 	 */
-	protected boolean locked = Boolean.FALSE;
+	protected boolean accountNonLocked = Boolean.TRUE;
 	/**
-	 * 用户是否过期
+	 * 用户过期性 :true:没过期 false:过期
 	 */
-	protected boolean accountExpired = Boolean.FALSE;
+	protected boolean accountNonExpired = Boolean.TRUE;
 	/**
-	 * 凭证是否过期
+	 * 凭证有效性 :true:凭证有效 false:凭证无效
 	 */
-	protected boolean credentialsExpired = Boolean.FALSE;
+	protected boolean credentialsNonExpired = Boolean.TRUE;
 
 	public SecurityPrincipal() {
 	}
@@ -146,36 +146,36 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 		this.alias = alias;
 	}
 
-	public boolean isDisabled() {
-		return disabled;
+	public boolean isEnabled() {
+		return enabled;
 	}
 
-	public void setDisabled(boolean disabled) {
-		this.disabled = disabled;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
-	public boolean isLocked() {
-		return locked;
+	public boolean isAccountNonLocked() {
+		return accountNonLocked;
 	}
 
-	public void setLocked(boolean locked) {
-		this.locked = locked;
-	}
-	
-	public boolean isAccountExpired() {
-		return accountExpired;
+	public void setAccountNonLocked(boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
 	}
 
-	public void setAccountExpired(boolean accountExpired) {
-		this.accountExpired = accountExpired;
+	public boolean isAccountNonExpired() {
+		return accountNonExpired;
 	}
 
-	public boolean isCredentialsExpired() {
-		return credentialsExpired;
+	public void setAccountNonExpired(boolean accountNonExpired) {
+		this.accountNonExpired = accountNonExpired;
 	}
 
-	public void setCredentialsExpired(boolean credentialsExpired) {
-		this.credentialsExpired = credentialsExpired;
+	public boolean isCredentialsNonExpired() {
+		return credentialsNonExpired;
+	}
+
+	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
+		this.credentialsNonExpired = credentialsNonExpired;
 	}
 
 	@Override
@@ -201,7 +201,8 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	@Override
 	public String toString() {
 		return " User {" + "userid=" + userid + ", username='" + username + '\'' + ", password='" + password + '\''
-				+ ", salt='" + salt + '\'' + ", disabled='" + disabled + '\'' + ", locked=" + locked + '}';
+				+ ", salt='" + salt + '\'' + ", enabled='" + enabled + '\'' + ", accountNonExpired=" + accountNonExpired
+				+ ", credentialsNonExpired=" + credentialsNonExpired + ", accountNonLocked=" + accountNonLocked + '}';
 	}
 
 }
