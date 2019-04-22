@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +66,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher eventPublisher;
-
+	private Pattern rolePattern = Pattern.compile("role\\[(\\S)\\]");
+	
 	@Autowired
 	private SecurityBizProperties bizProperties;
 
@@ -223,7 +227,24 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		// 登录地址不拦截 
 		permitMatchers.add(bizProperties.getAuthc().getLoginUrlPatterns());
 		
-		// role[rr,xxx,xxx]
+		// https://www.jianshu.com/p/01498e0e0c83
+		Set<Object> keySet = groupingMap.keySet();
+		for (Object key : keySet) {
+			Matcher m = rolePattern.matcher(key.toString());
+			if (m.find()) {
+				
+				System.out.println("Found value: " + m.group(0));
+				System.out.println("Found value: " + m.group(1));
+				StringUtils.split(m.group(1), ",");
+
+				List<String> roleMatchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+					return mapper.getKey();
+				}).collect(Collectors.toList());
+
+				http.authorizeRequests().antMatchers(roleMatchers.toArray(new String[roleMatchers.size()]))
+						.hasAnyRole(StringUtils.split(m.group(1), ","));
+			}
+		}
 		
     	http.authorizeRequests()
     		//添加不需要认证的路径 

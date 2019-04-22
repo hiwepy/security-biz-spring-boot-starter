@@ -6,17 +6,13 @@ spring:
       '[/assets/**]' : anon
       '[/error*]' : anon
       '[/logo/**]' : anon
-      '[/swagger-ui.html**]' : headers
-      '[/swagger-resources/**]' : headers
-      '[/doc.html**]' : headers
-      '[/bycdao-ui/**]' : headers
-      '[/v2/**]' : headers
+      '[/swagger-ui.html**]' : anon
+      '[/swagger-resources/**]' : anon
+      '[/doc.html**]' : anon
+      '[/bycdao-ui/**]' : anon
+      '[/v2/**]' : anon
       '[/kaptcha*]' : anon
       '[/actuator*]' : anon
       '[/actuator/**]' : anon
-      '[/authz/login/stateful]' : authc
-      '[/authz/login/forget]' : anon
-      '[/logout]' : logout
-      '[/druid/*]' : authc,roles["1"]
-      '[/monitoring]' : authc,roles["1"]
-      '[/**]' : headers,authc
+      '[/druid/*]' : roles[1,admin]
+      '[/monitoring]' : roles[1,admin]
