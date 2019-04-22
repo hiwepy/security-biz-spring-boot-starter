@@ -1,12 +1,22 @@
-server:
-  port: 7900
-
 spring:
-  flyway: 
-    enabled: true
-    baseline-on-migrate: true
-    baseline-version: 1.0.0
-    baseline-description: 系统初始化 
- 
-  security:    cors:      desc: 
-       
+  security:    authc:      default-target-url: /login
+    filter-chain-definition-map:      '[/]' : anon
+      '[/**/favicon.ico]' : anon
+      '[/webjars/**]': anon
+      '[/assets/**]' : anon
+      '[/error*]' : anon
+      '[/logo/**]' : anon
+      '[/swagger-ui.html**]' : headers
+      '[/swagger-resources/**]' : headers
+      '[/doc.html**]' : headers
+      '[/bycdao-ui/**]' : headers
+      '[/v2/**]' : headers
+      '[/kaptcha*]' : anon
+      '[/actuator*]' : anon
+      '[/actuator/**]' : anon
+      '[/authz/login/stateful]' : authc
+      '[/authz/login/forget]' : anon
+      '[/logout]' : logout
+      '[/druid/*]' : authc,roles["1"]
+      '[/monitoring]' : authc,roles["1"]
+      '[/**]' : headers,authc

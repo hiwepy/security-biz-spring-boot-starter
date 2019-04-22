@@ -41,7 +41,8 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.csrf.LazyCsrfTokenRepository;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -148,6 +149,12 @@ public class SecurityBizAutoConfiguration {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	@ConditionalOnMissingBean
+	protected HttpFirewall httpFirewall() {
+		return new StrictHttpFirewall();
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	public AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource() {

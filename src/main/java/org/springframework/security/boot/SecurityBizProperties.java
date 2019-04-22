@@ -57,7 +57,7 @@ public class SecurityBizProperties {
 	/**
 	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
 	 */
-	private Map<String /* pattern */, String /* Chain name */> chainDefinitionMap = new LinkedHashMap<String, String>();
+	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 	
 	@NestedConfigurationProperty
 	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
@@ -132,12 +132,12 @@ public class SecurityBizProperties {
 		this.failureUrl = failureUrl;
 	}
 	
-	public Map<String, String> getChainDefinitionMap() {
-		return chainDefinitionMap;
+	public Map<String, String> getFilterChainDefinitionMap() {
+		return filterChainDefinitionMap;
 	}
 
-	public void setChainDefinitionMap(Map<String, String> chainDefinitionMap) {
-		this.chainDefinitionMap = chainDefinitionMap;
+	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
+		this.filterChainDefinitionMap = filterChainDefinitionMap;
 	}
 
 	public SecurityAuthcProperties getAuthc() {

@@ -34,6 +34,7 @@ import org.springframework.security.boot.biz.property.SecuritySessionMgtProperti
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -209,10 +210,10 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     	// Session 注销配置参数
     	SecurityLogoutProperties logout = bizProperties.getLogout();
     	// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getChainDefinitionMap().entrySet().stream()
+		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
     	
-		List<Entry<String, String>> noneEntries = groupingMap.get("none");
+		List<Entry<String, String>> noneEntries = groupingMap.get("anon");
 		List<String> permitMatchers = new ArrayList<String>();
 		if (!CollectionUtils.isEmpty(noneEntries)) {
 			permitMatchers = noneEntries.stream().map(mapper -> {
@@ -294,6 +295,29 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         	http.csrf().disable();
         }
  
+    }
+    
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+    	
+    	// 对过滤链按过滤器名称进行分组
+		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
+				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
+    	
+		List<Entry<String, String>> noneEntries = groupingMap.get("anon");
+		List<String> permitMatchers = new ArrayList<String>();
+		if (!CollectionUtils.isEmpty(noneEntries)) {
+			permitMatchers = noneEntries.stream().map(mapper -> {
+				return mapper.getKey();
+			}).collect(Collectors.toList());
+		}
+		// 登录地址不拦截 
+		permitMatchers.add(bizProperties.getAuthc().getLoginUrlPatterns());
+		
+    	web.ignoring().antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]));
+    	
+    	//web.httpFirewall(httpFirewall)
+    	
     }
 	
 	@Override
