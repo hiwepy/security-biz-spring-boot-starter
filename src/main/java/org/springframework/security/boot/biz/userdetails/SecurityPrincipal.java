@@ -1,13 +1,21 @@
-package org.springframework.security.boot.biz.authentication;
+package org.springframework.security.boot.biz.userdetails;
 
-import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * @author <a href="https://github.com/vindell">vindell</a>
  */
 @SuppressWarnings("serial")
-public class SecurityPrincipal implements Cloneable, Serializable {
+public class SecurityPrincipal extends User implements Cloneable {
 
 	/**
 	 * 用户ID（用户来源表Id）
@@ -17,14 +25,7 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	 * 用户Key
 	 */
 	protected String userkey;
-	/**
-	 * 用户名称
-	 */
-	protected String username;
-	/**
-	 * 用户密码
-	 */
-	protected String password;
+	
 	/**
 	 * 用户密码盐：用于密码加解密
 	 */
@@ -61,15 +62,33 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	 * 凭证有效性 :true:凭证有效 false:凭证无效
 	 */
 	protected boolean credentialsNonExpired = Boolean.TRUE;
-
-	public SecurityPrincipal() {
+	
+	public SecurityPrincipal(String username, String password, String... roles) {
+		super(username, password, roleAuthorities(Arrays.asList(roles)));
+	}
+	
+	public static Collection<? extends GrantedAuthority> roleAuthorities(List<String> roles){
+		
+		if (roles == null) { 
+			throw new InsufficientAuthenticationException("User has no roles assigned");
+		}
+        List<GrantedAuthority> authorities = roles.stream()
+                .map(authority -> new SimpleGrantedAuthority(authority))
+                .collect(Collectors.toList());
+        
+		return authorities;
+	}
+	
+	public SecurityPrincipal(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, authorities);
 	}
 
-	public SecurityPrincipal(String username, String password) {
-		this.username = username;
-		this.password = password;
+	public SecurityPrincipal(String username, String password, boolean enabled, boolean accountNonExpired,
+			boolean credentialsNonExpired, boolean accountNonLocked,
+			Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
-
+	
 	public String getUserid() {
 		return userid;
 	}
@@ -86,22 +105,6 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 		this.userkey = userkey;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getSalt() {
 		return salt;
 	}
@@ -111,7 +114,7 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 	}
 
 	public String getCredentialsSalt() {
-		return username + salt;
+		return salt;
 	}
 
 	public String getSecret() {
@@ -200,7 +203,7 @@ public class SecurityPrincipal implements Cloneable, Serializable {
 
 	@Override
 	public String toString() {
-		return " User {" + "userid=" + userid + ", username='" + username + '\'' + ", password='" + password + '\''
+		return " User {" + "userid=" + userid + ", username='" + getUsername() + '\'' + ", password='" + getPassword() + '\''
 				+ ", salt='" + salt + '\'' + ", enabled='" + enabled + '\'' + ", accountNonExpired=" + accountNonExpired
 				+ ", credentialsNonExpired=" + credentialsNonExpired + ", accountNonLocked=" + accountNonLocked + '}';
 	}
