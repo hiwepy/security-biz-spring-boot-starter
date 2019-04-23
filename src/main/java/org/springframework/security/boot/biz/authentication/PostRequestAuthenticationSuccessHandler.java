@@ -46,7 +46,7 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 		}
 		
 		/*
-		 * if Rest request return 401 Unauthorized else rediect to specific page
+		 * 判断是否Post请求
 		 */
 		if (WebUtils.isPostRequest(request)) {
 			
@@ -55,7 +55,7 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 			retMap.put("successUrl", getDefaultTargetUrl());
 
 			response.setStatus(HttpStatus.OK.value());
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 			
 			JSONObject.writeJSONString(response.getWriter(), retMap);
 
