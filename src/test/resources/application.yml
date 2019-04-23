@@ -1,6 +1,9 @@
 spring:
-  security:    authc:      default-target-url: /login
-    filter-chain-definition-map:      '[/]' : anon
+  security:
+    authc:
+      default-target-url: /login
+    filter-chain-definition-map:
+      '[/]' : anon
       '[/**/favicon.ico]' : anon
       '[/webjars/**]': anon
       '[/assets/**]' : anon
@@ -14,5 +17,10 @@ spring:
       '[/kaptcha*]' : anon
       '[/actuator*]' : anon
       '[/actuator/**]' : anon
-      '[/druid/*]' : roles[1,admin]
-      '[/monitoring]' : roles[1,admin]
+      '[/druid/*]' : ipaddr[192.168.1.0/24]
+      '[/monitoring]' : roles[admin]
+      '[/monitoring2]' : roles[1,admin]
+      '[/monitoring3]' : perms[1,admin]
+      '[/monitoring4]' : perms[1]
+      
+      

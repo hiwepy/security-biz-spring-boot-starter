@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -39,6 +40,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -68,7 +70,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher eventPublisher;
-	private Pattern rolePattern = Pattern.compile("role\\[(\\S)\\]");
+	private Pattern rolesPattern = Pattern.compile("roles\\[(\\S)\\]");
+	private Pattern permsPattern = Pattern.compile("perms\\[(\\S)\\]");
+	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S)\\]");
 	
 	@Autowired
 	private SecurityBizProperties bizProperties;
@@ -108,9 +112,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		authcFilter.setPasswordParameter(bizProperties.getAuthc().getPasswordParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
 		authcFilter.setRememberMeServices(rememberMeServices);
-		
-		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
-		
 		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
 		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
 
@@ -219,6 +220,11 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
     	
+
+		ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry
+			registry = http.authorizeRequests();
+		
+		
 		List<Entry<String, String>> noneEntries = groupingMap.get("anon");
 		List<String> permitMatchers = new ArrayList<String>();
 		if (!CollectionUtils.isEmpty(noneEntries)) {
@@ -229,34 +235,80 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		// 登录地址不拦截 
 		permitMatchers.add(bizProperties.getAuthc().getLoginUrlPatterns());
 		
+		//添加不需要认证的路径 
+		registry.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).permitAll();
+		
 		// https://www.jianshu.com/p/01498e0e0c83
 		Set<Object> keySet = groupingMap.keySet();
 		for (Object key : keySet) {
-			Matcher m = rolePattern.matcher(key.toString());
-			if (m.find()) {
+			// Ant表达式 = roles[xxx] 
+			Matcher rolesMatcher = rolesPattern.matcher(key.toString());
+			if (rolesMatcher.find()) {
 				
-				System.out.println("Found value: " + m.group(0));
-				System.out.println("Found value: " + m.group(1));
-				StringUtils.split(m.group(1), ",");
+				System.out.println("Found value: " + rolesMatcher.group(0));
+				System.out.println("Found value: " + rolesMatcher.group(1));
 
-				List<String> roleMatchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+				List<String> matchers = groupingMap.get(key.toString()).stream().map(mapper -> {
 					return mapper.getKey();
 				}).collect(Collectors.toList());
+				// 角色
+				String[] roles = StringUtils.split(rolesMatcher.group(1), ",");
+				if (ArrayUtils.isNotEmpty(roles)) {
+					if (roles.length > 1) {
+						// 如果用户具备给定角色中的某一个的话，就允许访问
+						registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyRole(roles);
+					} else {
+						// 如果用户具备给定角色的话，就允许访问
+						registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasRole(roles[0]);
+					}
+				}
+			}
+			// Ant表达式 = perms[xxx] 
+			Matcher permsMatcher = permsPattern.matcher(key.toString());
+			if (permsMatcher.find()) {
+				
+				System.out.println("Found value: " + permsMatcher.group(0));
+				System.out.println("Found value: " + permsMatcher.group(1));
 
-				http.authorizeRequests().antMatchers(roleMatchers.toArray(new String[roleMatchers.size()]))
-						.hasAnyRole(StringUtils.split(m.group(1), ","));
+				List<String> matchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+					return mapper.getKey();
+				}).collect(Collectors.toList());
+				// 权限标记
+				String[] perms = StringUtils.split(permsMatcher.group(1), ",");
+				if (ArrayUtils.isNotEmpty(perms)) {
+					if (perms.length > 1) {
+						// 如果用户具备给定全权限的某一个的话，就允许访问
+						registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyAuthority(perms);
+					} else {
+						// 如果用户具备给定权限的话，就允许访问
+						registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasAuthority(perms[0]);
+					}
+				}
+			}
+			// Ant表达式 = ipaddr[192.168.1.0/24] 
+			Matcher ipMatcher = ipaddrPattern.matcher(key.toString());
+			if (rolesMatcher.find()) {
+				
+				System.out.println("Found value: " + ipMatcher.group(0));
+				System.out.println("Found value: " + ipMatcher.group(1));
+
+				List<String> matchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+					return mapper.getKey();
+				}).collect(Collectors.toList());
+				// ipaddress
+				String ipaddr = rolesMatcher.group(1);
+				if (StringUtils.hasText(ipaddr)) {
+					// 如果请求来自给定IP地址的话，就允许访问
+					registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasIpAddress(ipaddr);
+				}
 			}
 		}
 		
-    	http.authorizeRequests()
-    		//添加不需要认证的路径 
-    		.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).permitAll()
-    		.antMatchers("").authenticated()
-    		.antMatchers("").hasAnyRole("")
-    		.anyRequest().fullyAuthenticated()
-	    	// Session 管理器配置
-    		.and()
-    		.sessionManagement()
+		//允许认证过的用户访问
+		registry.anyRequest().authenticated();
+		
+	    // Session 管理器配置
+    	http.sessionManagement()
     		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
     		.invalidSessionStrategy(invalidSessionStrategy)
     		.invalidSessionUrl(bizProperties.getLogoutUrl())
@@ -270,17 +322,11 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
     		.sessionAuthenticationStrategy(sessionStrategy)
     		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
-    		//.sessionFixation()
-    		.sessionFixation().changeSessionId()
-    		.sessionFixation().migrateSession()
-    		.sessionFixation().newSession()
-    		.sessionFixation().none()   		
     		// Session 注销配置
     		.and()
     		.logout()
     		.addLogoutHandler(securityContextLogoutHandler)
     		.clearAuthentication(logout.isClearAuthentication())
-        	.permitAll()
         	// Request 缓存配置
         	.and()
     		.requestCache()
@@ -294,7 +340,8 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         // 匿名登录配置
         SecurityAnonymousProperties anonymous = bizProperties.getAnonymous();
         if(anonymous.isEnabled()) {
-        	http.anonymous().and();
+        	//允许匿名用户访问
+        	http.anonymous();
         } else {
         	http.anonymous().disable();
         }
