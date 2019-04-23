@@ -6,12 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
@@ -53,8 +55,8 @@ import org.springframework.security.web.session.SimpleRedirectSessionInformation
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@AutoConfigureBefore(name = { "org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration" })
-@ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
+@AutoConfigureBefore(SecurityAutoConfiguration.class)
+@ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
 @EnableConfigurationProperties({ SecurityBizProperties.class })
 public class SecurityBizAutoConfiguration {
 

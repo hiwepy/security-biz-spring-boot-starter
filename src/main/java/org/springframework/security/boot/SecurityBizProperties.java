@@ -38,11 +38,6 @@ public class SecurityBizProperties {
 	 * ================================== Security Basic
 	 * =================================
 	 */
-
-	/**
-	 * Enable Security.
-	 */
-	private boolean enabled = false;
 	/** 注销地址：会话注销后的重定向地址 */
 	private String logoutUrl;
 	private String logoutUrlPatterns;
@@ -76,14 +71,6 @@ public class SecurityBizProperties {
 	@NestedConfigurationProperty
 	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-	
 	public String getLogoutUrl() {
 		return logoutUrl;
 	}
