@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAut
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -28,8 +29,8 @@ import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenti
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
@@ -78,19 +79,51 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	
 	@Autowired
 	private SecurityBizProperties bizProperties;
-	
+	@Autowired
+	private AuthenticatingFailureCounter authenticatingFailureCounter;
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	@Autowired
+	private AuthenticationSuccessHandler successHandler;
+	@Autowired
+	private AuthenticationFailureHandler failureHandler;
+	@Autowired
+	private RememberMeServices rememberMeServices;
+	@Autowired
+	private SessionAuthenticationStrategy sessionStrategy;
+	@Autowired
+	private MessageSource messageSource;
+    @Autowired(required = false) 
+    private CaptchaResolver captchaResolver;
+    @Autowired
+	private  ObjectMapper objectMapper;
+    @Autowired
+    private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
+    @Autowired
+    private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
+    @Autowired
+    private PostRequestAuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private PostRequestAuthenticationFailureHandler authenticationFailureHandler;
+    @Autowired
+    private RequestCache requestCache;
+    @Autowired
+    private SecurityContextLogoutHandler securityContextLogoutHandler;
+    @Autowired
+    private CsrfTokenRepository csrfTokenRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private UserDetailsService userDetailsService;
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+    @Autowired
+    private SessionInformationExpiredStrategy expiredSessionStrategy;
+    @Autowired
+    private SessionRegistry sessionRegistry;
+    
 	@Bean
-	public PostRequestAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
-				AuthenticatingFailureCounter authenticatingFailureCounter,
-			    AuthenticationManager authenticationManager,
-			    AuthenticationSuccessHandler successHandler, 
-			    AuthenticationFailureHandler failureHandler,
-			    RememberMeServices rememberMeServices,
-			    SessionAuthenticationStrategy sessionStrategy,
-			    //MessageSource messageSource,
-			    @Autowired(required = false) 
-			    CaptchaResolver captchaResolver,
-			    ObjectMapper objectMapper ) {
+	public PostRequestAuthenticationProcessingFilter postRequestAuthenticationProcessingFilter() {
 		
 		// Form Login With Captcha
 		PostRequestAuthenticationProcessingFilter authcFilter = new PostRequestAuthenticationProcessingFilter(
@@ -115,7 +148,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		if (StringUtils.hasText(bizProperties.getAuthc().getLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getLoginUrlPatterns());
 		}
-		// authcFilter.setMessageSource(messageSource);
+		authcFilter.setMessageSource(messageSource);
 		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
 		authcFilter.setPasswordParameter(bizProperties.getAuthc().getPasswordParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
@@ -126,14 +159,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	}
 	
     @Bean
-    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter(
-		    AuthenticationManager authenticationManager,
-		    AuthenticationSuccessHandler successHandler, 
-		    AuthenticationFailureHandler failureHandler,
-		    RememberMeServices rememberMeServices,
-		    SessionAuthenticationStrategy sessionStrategy,
-		    //MessageSource messageSource,
-		    ObjectMapper objectMapper ) {
+    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter() {
     	
 		IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
 				objectMapper);
@@ -147,7 +173,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		if (StringUtils.hasText(bizProperties.getAuthc().getIdentityLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getIdentityLoginUrlPatterns());
 		}
-		// authcFilter.setMessageSource(messageSource);
+		authcFilter.setMessageSource(messageSource);
 		authcFilter.setMobileParameter(bizProperties.getAuthc().getMobileParameter());
 		authcFilter.setCodeParameter(bizProperties.getAuthc().getCodeParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
@@ -177,36 +203,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         return super.authenticationManagerBean();
     }
     
-    @Autowired
-    private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
-    @Autowired
-    private PostRequestAuthenticationProcessingFilter postRequestAuthenticationProcessingFilter;
-    @Autowired
-    private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
-    @Autowired
-    private IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter;
-    @Autowired
-    private PostRequestAuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private PostRequestAuthenticationFailureHandler authenticationFailureHandler;
-    @Autowired
-    private RequestCache requestCache;
-    @Autowired
-    private SecurityContextLogoutHandler securityContextLogoutHandler;
-    @Autowired
-    private CsrfTokenRepository csrfTokenRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-	@Autowired
-	private UserDetailsService userDetailsService;
-    @Autowired
-    private InvalidSessionStrategy invalidSessionStrategy;
-    @Autowired
-    private SessionInformationExpiredStrategy expiredSessionStrategy;
-    @Autowired
-    private SessionRegistry sessionRegistry;
-    @Autowired
-    private SessionAuthenticationStrategy sessionStrategy;
+   
     
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -340,8 +337,8 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     		.requestCache()
         	.requestCache(requestCache)
         	.and()
-        	.addFilterBefore(postRequestAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
-        	.addFilterBefore(identityCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
+        	.addFilterBefore(postRequestAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+        	.addFilterBefore(identityCodeAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
         
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
  

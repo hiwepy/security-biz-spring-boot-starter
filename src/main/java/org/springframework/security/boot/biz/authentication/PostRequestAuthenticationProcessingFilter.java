@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,7 +55,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 	/** Maximum number of retry to login . */
 	private int retryTimesWhenAccessDenied = 3;
 	
-	private final ObjectMapper objectMapper;
+	private ObjectMapper objectMapper = new ObjectMapper();
 	private AuthenticatingFailureCounter failureCounter;
 	
 	// ~ Constructors
