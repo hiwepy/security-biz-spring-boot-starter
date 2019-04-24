@@ -15,9 +15,6 @@
  */
 package org.springframework.security.boot;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
@@ -33,26 +30,6 @@ import org.springframework.security.boot.biz.property.SecuritySessionMgtProperti
 public class SecurityBizProperties {
 
 	public static final String PREFIX = "spring.security";
-
-	/*
-	 * ================================== Security Basic
-	 * =================================
-	 */
-	/** 注销地址：会话注销后的重定向地址 */
-	private String logoutUrl;
-	private String logoutUrlPatterns;
-	/** 重定向地址：会话注销后的重定向地址 */
-	private String redirectUrl;
-	/** 系统主页：登录成功后跳转路径 */
-	private String successUrl;
-	/** 未授权页面：无权限时的跳转路径 */
-	private String unauthorizedUrl;
-	/** 异常页面：认证失败时的跳转路径 */
-	private String failureUrl;
-	/**
-	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
-	 */
-	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 	
 	@NestedConfigurationProperty
 	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
@@ -70,63 +47,7 @@ public class SecurityBizProperties {
 	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	@NestedConfigurationProperty
 	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
-
-	public String getLogoutUrl() {
-		return logoutUrl;
-	}
-
-	public void setLogoutUrl(String logoutUrl) {
-		this.logoutUrl = logoutUrl;
-	}
-
-	public String getLogoutUrlPatterns() {
-		return logoutUrlPatterns;
-	}
-
-	public void setLogoutUrlPatterns(String logoutUrlPatterns) {
-		this.logoutUrlPatterns = logoutUrlPatterns;
-	}
-
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	public void setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
-	}
-
-	public String getSuccessUrl() {
-		return successUrl;
-	}
-
-	public void setSuccessUrl(String successUrl) {
-		this.successUrl = successUrl;
-	}
-
-	public String getUnauthorizedUrl() {
-		return unauthorizedUrl;
-	}
-
-	public void setUnauthorizedUrl(String unauthorizedUrl) {
-		this.unauthorizedUrl = unauthorizedUrl;
-	}
-
-	public String getFailureUrl() {
-		return failureUrl;
-	}
-
-	public void setFailureUrl(String failureUrl) {
-		this.failureUrl = failureUrl;
-	}
 	
-	public Map<String, String> getFilterChainDefinitionMap() {
-		return filterChainDefinitionMap;
-	}
-
-	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
-		this.filterChainDefinitionMap = filterChainDefinitionMap;
-	}
-
 	public SecurityAuthcProperties getAuthc() {
 		return authc;
 	}

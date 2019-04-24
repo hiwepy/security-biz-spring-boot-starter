@@ -26,11 +26,11 @@ public class SecuritySessionMgtProperties {
 	/** if should allow the JSESSIONID to be rewritten into the URLs*/
 	private boolean enableSessionUrlRewriting;
 	/** the maximum number of sessions for a user */
-	private Integer maximumSessions;
-	private boolean maxSessionsPreventsLogin;
+	private Integer maximumSessions = Integer.MAX_VALUE;
+	private boolean maxSessionsPreventsLogin = false;
 	
-	private SessionCreationPolicy creationPolicy;
-	private SessionFixationPolicy fixationPolicy;
+	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.IF_REQUIRED;
+	private SessionFixationPolicy fixationPolicy = SessionFixationPolicy.NONE;
 	
 	public boolean isAllowSessionCreation() {
 		return allowSessionCreation;

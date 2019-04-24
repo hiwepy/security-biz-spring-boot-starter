@@ -19,16 +19,17 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAut
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
-import org.springframework.security.boot.biz.authentication.PostUsernamePasswordCaptchaAuthenticationProcessingFilter;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
 import org.springframework.security.boot.biz.property.SecurityCorsProperties;
@@ -67,6 +68,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
 @EnableConfigurationProperties({ SecurityBizProperties.class })
+@Order(105)
 public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher eventPublisher;
@@ -76,21 +78,24 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	
 	@Autowired
 	private SecurityBizProperties bizProperties;
-
+	
 	@Bean
-	public PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
-			AuthenticationManager authenticationManager, 
-			AuthenticationSuccessHandler successHandler, 
-    		AuthenticationFailureHandler failureHandler,
-			RememberMeServices rememberMeServices,
-			SessionAuthenticationStrategy sessionStrategy,
-			@Autowired(required = false) CaptchaResolver captchaResolver,
-			MessageSource messageSource,
-			ObjectMapper objectMapper) {
+	public PostRequestAuthenticationProcessingFilter upcAuthenticationProcessingFilter(
+				AuthenticatingFailureCounter authenticatingFailureCounter,
+			    AuthenticationManager authenticationManager,
+			    AuthenticationSuccessHandler successHandler, 
+			    AuthenticationFailureHandler failureHandler,
+			    RememberMeServices rememberMeServices,
+			    SessionAuthenticationStrategy sessionStrategy,
+			    //MessageSource messageSource,
+			    @Autowired(required = false) 
+			    CaptchaResolver captchaResolver,
+			    ObjectMapper objectMapper ) {
 		
-		// Form Login With Captcha 
-		PostUsernamePasswordCaptchaAuthenticationProcessingFilter authcFilter = new PostUsernamePasswordCaptchaAuthenticationProcessingFilter(objectMapper);
-		
+		// Form Login With Captcha
+		PostRequestAuthenticationProcessingFilter authcFilter = new PostRequestAuthenticationProcessingFilter(
+				objectMapper);
+
 		authcFilter.setCaptchaParameter(bizProperties.getCaptcha().getParamName());
 		// 是否验证码必填
 		authcFilter.setCaptchaRequired(bizProperties.getCaptcha().isRequired());
@@ -98,50 +103,53 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		authcFilter.setRetryTimesWhenAccessDenied(bizProperties.getCaptcha().getRetryTimesWhenAccessDenied());
 		// 验证码解析器
 		authcFilter.setCaptchaResolver(captchaResolver);
-		
+		// 认证失败计数器
+		authcFilter.setFailureCounter(authenticatingFailureCounter);
+
 		authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		authcFilter.setApplicationEventPublisher(eventPublisher);
 		authcFilter.setAuthenticationFailureHandler(failureHandler);
 		authcFilter.setAuthenticationManager(authenticationManager);
 		authcFilter.setAuthenticationSuccessHandler(successHandler);
-		authcFilter.setContinueChainBeforeSuccessfulAuthentication(false);
+		authcFilter.setContinueChainBeforeSuccessfulAuthentication(bizProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
 		if (StringUtils.hasText(bizProperties.getAuthc().getLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getLoginUrlPatterns());
 		}
-		authcFilter.setMessageSource(messageSource);
+		// authcFilter.setMessageSource(messageSource);
+		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
 		authcFilter.setPasswordParameter(bizProperties.getAuthc().getPasswordParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
 		authcFilter.setRememberMeServices(rememberMeServices);
 		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
-		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
 
 		return authcFilter;
 	}
-	 
+	
     @Bean
     public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter(
-    		AuthenticationManager authenticationManager, 
-    		AuthenticationSuccessHandler successHandler, 
-    		AuthenticationFailureHandler failureHandler,
-			RememberMeServices rememberMeServices,
-			SessionAuthenticationStrategy sessionStrategy,
-			MessageSource messageSource,
-			ObjectMapper objectMapper) {
+		    AuthenticationManager authenticationManager,
+		    AuthenticationSuccessHandler successHandler, 
+		    AuthenticationFailureHandler failureHandler,
+		    RememberMeServices rememberMeServices,
+		    SessionAuthenticationStrategy sessionStrategy,
+		    //MessageSource messageSource,
+		    ObjectMapper objectMapper ) {
     	
-        IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter( objectMapper);
+		IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
+				objectMapper);
 		
 		authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		authcFilter.setApplicationEventPublisher(eventPublisher);
 		authcFilter.setAuthenticationFailureHandler(failureHandler);
 		authcFilter.setAuthenticationManager(authenticationManager);
 		authcFilter.setAuthenticationSuccessHandler(successHandler);
-		authcFilter.setCodeParameter(bizProperties.getAuthc().getCodeParameter());
-		authcFilter.setContinueChainBeforeSuccessfulAuthentication(false);
+		authcFilter.setContinueChainBeforeSuccessfulAuthentication(bizProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
 		if (StringUtils.hasText(bizProperties.getAuthc().getIdentityLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getIdentityLoginUrlPatterns());
 		}
-		authcFilter.setMessageSource(messageSource);
+		// authcFilter.setMessageSource(messageSource);
 		authcFilter.setMobileParameter(bizProperties.getAuthc().getMobileParameter());
+		authcFilter.setCodeParameter(bizProperties.getAuthc().getCodeParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
 		authcFilter.setRememberMeServices(rememberMeServices);
 		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
@@ -158,8 +166,8 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	@ConditionalOnMissingBean 
 	public LogoutFilter logoutFilter(List<LogoutHandler> logoutHandlers) {
 		// 登录注销后的重定向地址：直接进入登录页面
-		LogoutFilter logoutFilter = new LogoutFilter(bizProperties.getLogoutUrl(), logoutHandlers.toArray(new LogoutHandler[logoutHandlers.size()]));
-		logoutFilter.setFilterProcessesUrl(bizProperties.getLogoutUrlPatterns());
+		LogoutFilter logoutFilter = new LogoutFilter(bizProperties.getLogout().getLogoutUrl(), logoutHandlers.toArray(new LogoutHandler[logoutHandlers.size()]));
+		logoutFilter.setFilterProcessesUrl(bizProperties.getLogout().getLogoutUrlPatterns());
 		return logoutFilter;
 	}
 	
@@ -172,7 +180,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Autowired
     private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
     @Autowired
-    private PostUsernamePasswordCaptchaAuthenticationProcessingFilter upcAuthenticationProcessingFilter;
+    private PostRequestAuthenticationProcessingFilter postRequestAuthenticationProcessingFilter;
     @Autowired
     private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
     @Autowired
@@ -196,10 +204,10 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Autowired
     private SessionInformationExpiredStrategy expiredSessionStrategy;
     @Autowired
-    private SessionAuthenticationStrategy sessionStrategy;
-    @Autowired
     private SessionRegistry sessionRegistry;
-   
+    @Autowired
+    private SessionAuthenticationStrategy sessionStrategy;
+    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(identityCodeAuthenticationProvider)
@@ -217,7 +225,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     	// Session 注销配置参数
     	SecurityLogoutProperties logout = bizProperties.getLogout();
     	// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
+		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getAuthc().getFilterChainDefinitionMap().entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
     	
 
@@ -311,14 +319,14 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     	http.sessionManagement()
     		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
     		.invalidSessionStrategy(invalidSessionStrategy)
-    		.invalidSessionUrl(bizProperties.getLogoutUrl())
+    		.invalidSessionUrl(bizProperties.getLogout().getLogoutUrl())
     		.maximumSessions(sessionMgt.getMaximumSessions())
     		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
     		.expiredSessionStrategy(expiredSessionStrategy)
-			.expiredUrl(bizProperties.getLogoutUrl())
+			.expiredUrl(bizProperties.getLogout().getLogoutUrl())
 			.sessionRegistry(sessionRegistry)
 			.and()
-    		.sessionAuthenticationErrorUrl(bizProperties.getFailureUrl())
+    		.sessionAuthenticationErrorUrl(bizProperties.getAuthc().getFailureUrl())
     		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
     		.sessionAuthenticationStrategy(sessionStrategy)
     		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
@@ -332,7 +340,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     		.requestCache()
         	.requestCache(requestCache)
         	.and()
-        	.addFilterBefore(upcAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
+        	.addFilterBefore(postRequestAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class)
         	.addFilterBefore(identityCodeAuthenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
         
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
@@ -371,7 +379,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     public void configure(WebSecurity web) throws Exception {
     	
     	// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
+		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getAuthc().getFilterChainDefinitionMap().entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
     	
 		List<Entry<String, String>> noneEntries = groupingMap.get("anon");

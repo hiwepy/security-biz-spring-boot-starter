@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
@@ -27,11 +29,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -92,7 +91,7 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public InvalidSessionStrategy invalidSessionStrategy() {
 		SimpleRedirectInvalidSessionStrategy invalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(
-				bizProperties.getRedirectUrl());
+				bizProperties.getAuthc().getRedirectUrl());
 		invalidSessionStrategy.setCreateNewSession(bizProperties.getSessionMgt().isAllowSessionCreation());
 		return invalidSessionStrategy;
 	}
@@ -100,7 +99,7 @@ public class SecurityBizAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public SessionInformationExpiredStrategy expiredSessionStrategy(RedirectStrategy redirectStrategy) {
-		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getRedirectUrl(), redirectStrategy);
+		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getAuthc().getRedirectUrl(), redirectStrategy);
 	}
 	
 	 
@@ -165,11 +164,11 @@ public class SecurityBizAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AuthenticationSuccessHandler authenticationSuccessHandler(
+	public PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			RedirectStrategy redirectStrategy, RequestCache requestCache) {
 		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
-				authenticationListeners, bizProperties.getSuccessUrl());
+				authenticationListeners, bizProperties.getAuthc().getSuccessUrl());
 		successHandler.setRedirectStrategy(redirectStrategy);
 		successHandler.setRequestCache(requestCache);
 		successHandler.setTargetUrlParameter(bizProperties.getAuthc().getTargetUrlParameter());
@@ -179,11 +178,11 @@ public class SecurityBizAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AuthenticationFailureHandler authenticationFailureHandler(
+	public PostRequestAuthenticationFailureHandler authenticationFailureHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			RedirectStrategy redirectStrategy) {
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, bizProperties.getFailureUrl());
+				authenticationListeners, bizProperties.getAuthc().getFailureUrl());
 		failureHandler.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		failureHandler.setRedirectStrategy(redirectStrategy);
 		failureHandler.setUseForward(bizProperties.getAuthc().isUseForward());
@@ -192,7 +191,7 @@ public class SecurityBizAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
+	public PostRequestAuthenticationEntryPoint authenticationEntryPoint() {
 
 		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(
 				bizProperties.getAuthc().getLoginUrl());
@@ -212,7 +211,15 @@ public class SecurityBizAutoConfiguration {
 
 		return logoutHandler;
 	}
-
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public AuthenticatingFailureCounter authenticatingFailureCounter() {
+		AuthenticatingFailureRequestCounter  failureCounter = new AuthenticatingFailureRequestCounter();
+		failureCounter.setRetryTimesKeyParameter(bizProperties.getAuthc().getRetryTimesKeyParameter());
+		return failureCounter;
+	}
+	
 	@Bean
 	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
 			BaseAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {

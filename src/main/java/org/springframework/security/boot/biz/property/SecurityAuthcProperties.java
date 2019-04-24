@@ -15,10 +15,14 @@
  */
 package org.springframework.security.boot.biz.property;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,12 +31,19 @@ import org.springframework.util.Assert;
 public class SecurityAuthcProperties {
 
 	/** 登录地址：会话不存在时访问的地址 */
-	private String loginUrl;
-	private String loginUrlPatterns;
+	private String loginUrl = "/authz/login";;
+	private String loginUrlPatterns = "/login";;
 	/** 手机号码登录地址：会话不存在时访问的地址 */
 	private String identityLoginUrl;
 	private String identityLoginUrlPatterns;
-	
+	/** 重定向地址：会话注销后的重定向地址 */
+	private String redirectUrl = "/";
+	/** 系统主页：登录成功后跳转路径 */
+	private String successUrl = "/index";;
+	/** 未授权页面：无权限时的跳转路径 */
+	private String unauthorizedUrl = "/error";
+	/** 异常页面：认证失败时的跳转路径 */
+	private String failureUrl = "/error";
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
 	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
@@ -49,13 +60,18 @@ public class SecurityAuthcProperties {
 	/** the code parameter name. Defaults to "password". */
     private String codeParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY;
     private String targetUrlParameter = null;
-    private String defaultTargetUrl = "/";
 	private boolean alwaysUseDefaultTargetUrl = false;
 	private boolean useReferer = false;
 	private boolean postOnly = true;
 	private boolean forceHttps = false;
 	private boolean useForward = false;
 
+    private String retryTimesKeyParameter = AuthenticatingFailureCounter.DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
+	/**
+	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
+	 */
+	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+	
 	public String getLoginUrl() {
 		return loginUrl;
 	}
@@ -87,12 +103,51 @@ public class SecurityAuthcProperties {
 	public void setIdentityLoginUrlPatterns(String identityLoginUrlPatterns) {
 		this.identityLoginUrlPatterns = identityLoginUrlPatterns;
 	}
+	
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+
+	public String getSuccessUrl() {
+		return successUrl;
+	}
+
+	public void setSuccessUrl(String successUrl) {
+		this.successUrl = successUrl;
+	}
+
+	public String getUnauthorizedUrl() {
+		return unauthorizedUrl;
+	}
+
+	public void setUnauthorizedUrl(String unauthorizedUrl) {
+		this.unauthorizedUrl = unauthorizedUrl;
+	}
+
+	public String getFailureUrl() {
+		return failureUrl;
+	}
+
+	public void setFailureUrl(String failureUrl) {
+		this.failureUrl = failureUrl;
+	}
 
 	public boolean isContinueChainBeforeSuccessfulAuthentication() {
 		return continueChainBeforeSuccessfulAuthentication;
 	}
 
-	public void setContinueChainBeforeSuccessfulAuthentication(boolean continueChainBeforeSuccessfulAuthentication) {
+	/**
+	 * Indicates if the filter chain should be continued prior to delegation to
+	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
+	 * , which may be useful in certain environment (such as Tapestry applications).
+	 * Defaults to <code>false</code>.
+	 */
+	public void setContinueChainBeforeSuccessfulAuthentication(
+			boolean continueChainBeforeSuccessfulAuthentication) {
 		this.continueChainBeforeSuccessfulAuthentication = continueChainBeforeSuccessfulAuthentication;
 	}
 
@@ -146,14 +201,6 @@ public class SecurityAuthcProperties {
 		return targetUrlParameter;
 	}
 	
-	public String getDefaultTargetUrl() {
-		return defaultTargetUrl;
-	}
-
-	public void setDefaultTargetUrl(String defaultTargetUrl) {
-		this.defaultTargetUrl = defaultTargetUrl;
-	}
-
 	public boolean isAlwaysUseDefaultTargetUrl() {
 		return alwaysUseDefaultTargetUrl;
 	}
@@ -192,6 +239,22 @@ public class SecurityAuthcProperties {
 
 	public void setUseForward(boolean useForward) {
 		this.useForward = useForward;
+	}
+	
+	public String getRetryTimesKeyParameter() {
+		return retryTimesKeyParameter;
+	}
+
+	public void setRetryTimesKeyParameter(String retryTimesKeyParameter) {
+		this.retryTimesKeyParameter = retryTimesKeyParameter;
+	}
+
+	public Map<String, String> getFilterChainDefinitionMap() {
+		return filterChainDefinitionMap;
+	}
+
+	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
+		this.filterChainDefinitionMap = filterChainDefinitionMap;
 	}
 
 }

@@ -25,8 +25,6 @@ import org.springframework.web.util.WebUtils;
 
 public class AuthenticatingFailureRequestCounter implements AuthenticatingFailureCounter {
 
-	public static final String DEFAULT_RETRY_TIMES_KEY_PARAM_NAME = "failureRetries";
-
     private String retryTimesKeyParameter = DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
     
 	@Override

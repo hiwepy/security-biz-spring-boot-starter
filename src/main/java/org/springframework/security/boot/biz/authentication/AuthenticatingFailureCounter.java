@@ -20,6 +20,8 @@ import javax.servlet.ServletResponse;
 
 public interface AuthenticatingFailureCounter {
 
+	public static final String DEFAULT_RETRY_TIMES_KEY_PARAM_NAME = "failureRetries";
+
 	int get(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute);
 	
 	void increment(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute);

@@ -20,7 +20,9 @@ import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -31,29 +33,39 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 账号、密码、验证码认证过滤器
  * @author 		： <a href="https://github.com/vindell">vindell</a>
  */
-public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends UsernamePasswordAuthenticationFilter {
+public class PostRequestAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
+	// ~ Static fields/initializers
+	// =====================================================================================
+	private static Logger logger = LoggerFactory.getLogger(PostRequestAuthenticationProcessingFilter.class);
+
+	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
+	public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 	public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
 	public static final String DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME = "securityLoginFailureRetries";
-	private String captchaParameter = SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	
-	private static Logger logger = LoggerFactory.getLogger(PostUsernamePasswordCaptchaAuthenticationProcessingFilter.class);
-	private boolean postOnly = true;
-	private final ObjectMapper objectMapper;
+	private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
+	private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
 	private boolean captchaRequired = false;
+	private String captchaParameter = SPRING_SECURITY_FORM_CAPTCHA_KEY;
 	private CaptchaResolver captchaResolver;
-	private AuthenticatingFailureCounter failureCounter;
-	 private String retryTimesKeyAttribute = DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
+	private boolean postOnly = true;
+	private String retryTimesKeyAttribute = DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
 	/** Maximum number of retry to login . */
 	private int retryTimesWhenAccessDenied = 3;
+	
+	private final ObjectMapper objectMapper;
+	private AuthenticatingFailureCounter failureCounter;
 	
 	// ~ Constructors
 	// ===================================================================================================
 	
-	public PostUsernamePasswordCaptchaAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-		super();
+	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper) {
+		super(new AntPathRequestMatcher("/login", "POST"));
 		this.objectMapper = objectMapper;
 	}
+	
+	
 
 	// ~ Methods
 	// ========================================================================================================
@@ -155,19 +167,6 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 
 	}
 
-	/**
-	 * Provided so that subclasses may configure what is put into the authentication
-	 * request's details property.
-	 *
-	 * @param request that an authentication request is being created for
-	 * @param authRequest the authentication request object that should have its details
-	 * set
-	 */
-	protected void setDetails(HttpServletRequest request,
-			AbstractAuthenticationToken authRequest) {
-		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
-	}
-	
 	protected AbstractAuthenticationToken authenticationToken(String username, String password) {
 		return new UsernamePasswordAuthenticationToken( username, password);
 	}
@@ -185,6 +184,74 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 		return request.getParameter(captchaParameter);
 	}
 	
+	
+	/**
+	 * Enables subclasses to override the composition of the password, such as by
+	 * including additional values and a separator.
+	 * <p>
+	 * This might be used for example if a postcode/zipcode was required in addition to
+	 * the password. A delimiter such as a pipe (|) should be used to separate the
+	 * password and extended value(s). The <code>AuthenticationDao</code> will need to
+	 * generate the expected password in a corresponding manner.
+	 * </p>
+	 *
+	 * @param request so that request attributes can be retrieved
+	 *
+	 * @return the password that will be presented in the <code>Authentication</code>
+	 * request token to the <code>AuthenticationManager</code>
+	 */
+	protected String obtainPassword(HttpServletRequest request) {
+		return request.getParameter(passwordParameter);
+	}
+
+	/**
+	 * Enables subclasses to override the composition of the username, such as by
+	 * including additional values and a separator.
+	 *
+	 * @param request so that request attributes can be retrieved
+	 *
+	 * @return the username that will be presented in the <code>Authentication</code>
+	 * request token to the <code>AuthenticationManager</code>
+	 */
+	protected String obtainUsername(HttpServletRequest request) {
+		return request.getParameter(usernameParameter);
+	}
+
+	/**
+	 * Provided so that subclasses may configure what is put into the authentication
+	 * request's details property.
+	 *
+	 * @param request that an authentication request is being created for
+	 * @param authRequest the authentication request object that should have its details
+	 * set
+	 */
+	protected void setDetails(HttpServletRequest request,
+			AbstractAuthenticationToken authRequest) {
+		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+	}
+
+	/**
+	 * Sets the parameter name which will be used to obtain the username from the login
+	 * request.
+	 *
+	 * @param usernameParameter the parameter name. Defaults to "username".
+	 */
+	public void setUsernameParameter(String usernameParameter) {
+		Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
+		this.usernameParameter = usernameParameter;
+	}
+
+	/**
+	 * Sets the parameter name which will be used to obtain the password from the login
+	 * request..
+	 *
+	 * @param passwordParameter the parameter name. Defaults to "password".
+	 */
+	public void setPasswordParameter(String passwordParameter) {
+		Assert.hasText(passwordParameter, "Password parameter must not be empty or null");
+		this.passwordParameter = passwordParameter;
+	}
+
 	/**
 	 * Defines whether only HTTP POST requests will be allowed by this filter. If set to
 	 * true, and an authentication request is received which is not a POST request, an
@@ -194,11 +261,18 @@ public class PostUsernamePasswordCaptchaAuthenticationProcessingFilter extends U
 	 * <p>
 	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
 	 */
-	@Override
 	public void setPostOnly(boolean postOnly) {
-		super.setPostOnly(postOnly);
 		this.postOnly = postOnly;
 	}
+
+	public final String getUsernameParameter() {
+		return usernameParameter;
+	}
+
+	public final String getPasswordParameter() {
+		return passwordParameter;
+	}
+	
 
 	protected boolean isOverRetryRemind(ServletRequest request, ServletResponse response) {
 		if (null != getFailureCounter() && getFailureCounter().get(request, response, getRetryTimesKeyAttribute()) == getRetryTimesWhenAccessDenied()) {
