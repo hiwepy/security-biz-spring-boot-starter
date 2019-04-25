@@ -31,8 +31,6 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
-import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
-import org.springframework.security.boot.biz.property.SecurityCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
@@ -219,7 +217,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     	// Session 注销配置参数
     	SecurityLogoutProperties logout = bizProperties.getLogout();
     	// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getAuthc().getFilterChainDefinitionMap().entrySet().stream()
+		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
     	
 
@@ -338,24 +336,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         	.addFilterBefore(identityCodeAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
         
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
- 
-        // 匿名登录配置
-        SecurityAnonymousProperties anonymous = bizProperties.getAnonymous();
-        if(anonymous.isEnabled()) {
-        	//允许匿名用户访问
-        	http.anonymous();
-        } else {
-        	http.anonymous().disable();
-        }
-        // CORS 配置
-       	SecurityCorsProperties cors = bizProperties.getCors();
-       	if(cors.isEnabled()) {
-       		http.cors()
-       				   //.configurationSource(configurationSource)
-       				   .and();
-        } else {
-        	http.cors().disable();
-        }
+        
        	// CSRF 配置
     	SecurityCsrfProperties csrf = bizProperties.getCsrf();
     	if(csrf.isEnabled()) {
@@ -373,7 +354,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     public void configure(WebSecurity web) throws Exception {
     	
     	// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getAuthc().getFilterChainDefinitionMap().entrySet().stream()
+		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
     	
 		List<Entry<String, String>> noneEntries = groupingMap.get("anon");

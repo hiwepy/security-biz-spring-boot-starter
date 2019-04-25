@@ -15,9 +15,6 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,11 +68,6 @@ public class SecurityAuthcProperties {
     private String retryTimesKeyAttribute = PostRequestAuthenticationProcessingFilter.DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
 	/** Maximum number of retry to login . */
 	private int retryTimesWhenAccessDenied = 3;
-	
-	/**
-	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
-	 */
-	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 	
 	public String getLoginUrl() {
 		return loginUrl;
@@ -270,12 +262,4 @@ public class SecurityAuthcProperties {
 		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
 	}
 
-	public Map<String, String> getFilterChainDefinitionMap() {
-		return filterChainDefinitionMap;
-	}
-
-	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
-		this.filterChainDefinitionMap = filterChainDefinitionMap;
-	}
-	
 }

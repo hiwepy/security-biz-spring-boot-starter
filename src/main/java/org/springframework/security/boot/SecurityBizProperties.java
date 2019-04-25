@@ -15,6 +15,9 @@
  */
 package org.springframework.security.boot;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
@@ -32,12 +35,6 @@ public class SecurityBizProperties {
 	public static final String PREFIX = "spring.security";
 	
 	@NestedConfigurationProperty
-	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
-	@NestedConfigurationProperty
-	private SecurityAnonymousProperties anonymous = new SecurityAnonymousProperties();
-	@NestedConfigurationProperty
-	private SecurityCorsProperties cors = new SecurityCorsProperties();
-	@NestedConfigurationProperty
 	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
 	@NestedConfigurationProperty
 	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
@@ -46,7 +43,15 @@ public class SecurityBizProperties {
 	@NestedConfigurationProperty
 	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	@NestedConfigurationProperty
+	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
+	@NestedConfigurationProperty
 	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
+	
+	/**
+	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
+	 */
+	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+	
 	
 	public SecurityAuthcProperties getAuthc() {
 		return authc;
@@ -56,21 +61,6 @@ public class SecurityBizProperties {
 		this.authc = authc;
 	}
 
-	public SecurityAnonymousProperties getAnonymous() {
-		return anonymous;
-	}
-
-	public void setAnonymous(SecurityAnonymousProperties anonymous) {
-		this.anonymous = anonymous;
-	}
-
-	public SecurityCorsProperties getCors() {
-		return cors;
-	}
-
-	public void setCors(SecurityCorsProperties cors) {
-		this.cors = cors;
-	}
 
 	public SecurityCsrfProperties getCsrf() {
 		return csrf;
@@ -111,5 +101,15 @@ public class SecurityBizProperties {
 	public void setCaptcha(SecurityCaptchaProperties captcha) {
 		this.captcha = captcha;
 	}
+	
+
+	public Map<String, String> getFilterChainDefinitionMap() {
+		return filterChainDefinitionMap;
+	}
+
+	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
+		this.filterChainDefinitionMap = filterChainDefinitionMap;
+	}
+	
 
 }
