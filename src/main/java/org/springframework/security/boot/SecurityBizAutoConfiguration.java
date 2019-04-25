@@ -2,17 +2,15 @@ package org.springframework.security.boot;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
@@ -25,15 +23,9 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
 import org.springframework.security.boot.biz.userdetails.BaseAuthenticationUserDetailsService;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.authentication.NullRememberMeServices;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
@@ -42,8 +34,6 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -51,28 +41,21 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Configuration
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
-@EnableConfigurationProperties({ SecurityBizProperties.class })
+@ConditionalOnProperty(prefix = SecurityBizUpcProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizUpcProperties.class })
 public class SecurityBizAutoConfiguration {
-
+	
 	@Autowired
-	private SecurityBizProperties bizProperties;
-
-	@Bean
-	@ConditionalOnMissingBean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
-	}
+	private SecurityBizUpcProperties bizUpcProperties;
 
 	@Bean
 	@ConditionalOnMissingBean
 	public RedirectStrategy redirectStrategy() {
 		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-		redirectStrategy.setContextRelative(bizProperties.getRedirect().isContextRelative());
+		redirectStrategy.setContextRelative(bizUpcProperties.getRedirect().isContextRelative());
 		return redirectStrategy;
 	}
 
@@ -80,7 +63,7 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public RequestCache requestCache() {
 		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-		requestCache.setCreateSessionAllowed(bizProperties.getSessionMgt().isAllowSessionCreation());
+		requestCache.setCreateSessionAllowed(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
 		// requestCache.setPortResolver(portResolver);
 		// requestCache.setRequestMatcher(requestMatcher);
 		// requestCache.setSessionAttrName(sessionAttrName);
@@ -91,23 +74,22 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public InvalidSessionStrategy invalidSessionStrategy() {
 		SimpleRedirectInvalidSessionStrategy invalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(
-				bizProperties.getAuthc().getRedirectUrl());
-		invalidSessionStrategy.setCreateNewSession(bizProperties.getSessionMgt().isAllowSessionCreation());
+				bizUpcProperties.getAuthc().getRedirectUrl());
+		invalidSessionStrategy.setCreateNewSession(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
 		return invalidSessionStrategy;
 	}
 
 	@Bean
 	@ConditionalOnMissingBean
 	public SessionInformationExpiredStrategy expiredSessionStrategy(RedirectStrategy redirectStrategy) {
-		return new SimpleRedirectSessionInformationExpiredStrategy(bizProperties.getAuthc().getRedirectUrl(), redirectStrategy);
+		return new SimpleRedirectSessionInformationExpiredStrategy(bizUpcProperties.getAuthc().getRedirectUrl(), redirectStrategy);
 	}
 	
-	 
 	@Bean
 	@ConditionalOnMissingBean
 	public CsrfTokenRepository csrfTokenRepository() {
 		// Session 管理器配置参数
-		SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
+		SecuritySessionMgtProperties sessionMgt = bizUpcProperties.getSessionMgt();
 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgt.getFixationPolicy())) {
 			return new CookieCsrfTokenRepository();
 		}
@@ -118,7 +100,7 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public SessionAuthenticationStrategy sessionStrategy() {
 		// Session 管理器配置参数
-		SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
+		SecuritySessionMgtProperties sessionMgt = bizUpcProperties.getSessionMgt();
 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgt.getFixationPolicy())) {
 			return new ChangeSessionIdAuthenticationStrategy();
 		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgt.getFixationPolicy())) {
@@ -134,45 +116,15 @@ public class SecurityBizAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SessionRegistry sessionRegistry() {
-		return new SessionRegistryImpl();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public RememberMeServices rememberMeServices() {
-		return new NullRememberMeServices();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	protected PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	protected HttpFirewall httpFirewall() {
-		return new StrictHttpFirewall();
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource() {
-		return new WebAuthenticationDetailsSource();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
 	public PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			RedirectStrategy redirectStrategy, RequestCache requestCache) {
 		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
-				authenticationListeners, bizProperties.getAuthc().getSuccessUrl());
+				authenticationListeners, bizUpcProperties.getAuthc().getSuccessUrl());
 		successHandler.setRedirectStrategy(redirectStrategy);
 		successHandler.setRequestCache(requestCache);
-		successHandler.setTargetUrlParameter(bizProperties.getAuthc().getTargetUrlParameter());
-		successHandler.setUseReferer(bizProperties.getAuthc().isUseReferer());
+		successHandler.setTargetUrlParameter(bizUpcProperties.getAuthc().getTargetUrlParameter());
+		successHandler.setUseReferer(bizUpcProperties.getAuthc().isUseReferer());
 		return successHandler;
 	}
 
@@ -182,10 +134,10 @@ public class SecurityBizAutoConfiguration {
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			RedirectStrategy redirectStrategy) {
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, bizProperties.getAuthc().getFailureUrl());
-		failureHandler.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
+				authenticationListeners, bizUpcProperties.getAuthc().getFailureUrl());
+		failureHandler.setAllowSessionCreation(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
 		failureHandler.setRedirectStrategy(redirectStrategy);
-		failureHandler.setUseForward(bizProperties.getAuthc().isUseForward());
+		failureHandler.setUseForward(bizUpcProperties.getAuthc().isUseForward());
 		return failureHandler;
 	}
 
@@ -194,9 +146,9 @@ public class SecurityBizAutoConfiguration {
 	public PostRequestAuthenticationEntryPoint authenticationEntryPoint() {
 
 		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(
-				bizProperties.getAuthc().getLoginUrl());
-		entryPoint.setForceHttps(bizProperties.getAuthc().isForceHttps());
-		entryPoint.setUseForward(bizProperties.getAuthc().isUseForward());
+				bizUpcProperties.getAuthc().getLoginUrl());
+		entryPoint.setForceHttps(bizUpcProperties.getAuthc().isForceHttps());
+		entryPoint.setUseForward(bizUpcProperties.getAuthc().isUseForward());
 
 		return entryPoint;
 	}
@@ -206,8 +158,8 @@ public class SecurityBizAutoConfiguration {
 	public SecurityContextLogoutHandler securityContextLogoutHandler() {
 
 		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		logoutHandler.setClearAuthentication(bizProperties.getLogout().isClearAuthentication());
-		logoutHandler.setInvalidateHttpSession(bizProperties.getLogout().isInvalidateHttpSession());
+		logoutHandler.setClearAuthentication(bizUpcProperties.getLogout().isClearAuthentication());
+		logoutHandler.setInvalidateHttpSession(bizUpcProperties.getLogout().isInvalidateHttpSession());
 
 		return logoutHandler;
 	}
@@ -216,7 +168,7 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public AuthenticatingFailureCounter authenticatingFailureCounter() {
 		AuthenticatingFailureRequestCounter  failureCounter = new AuthenticatingFailureRequestCounter();
-		failureCounter.setRetryTimesKeyParameter(bizProperties.getAuthc().getRetryTimesKeyParameter());
+		failureCounter.setRetryTimesKeyParameter(bizUpcProperties.getAuthc().getRetryTimesKeyParameter());
 		return failureCounter;
 	}
 	

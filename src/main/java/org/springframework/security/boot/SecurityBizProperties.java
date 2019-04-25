@@ -19,89 +19,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.security.boot.biz.property.SecurityAnonymousProperties;
-import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
-import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
-import org.springframework.security.boot.biz.property.SecurityCorsProperties;
-import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
-import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
-import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 public class SecurityBizProperties {
 
 	public static final String PREFIX = "spring.security";
 	
-	@NestedConfigurationProperty
-	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
-	@NestedConfigurationProperty
-	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
-	@NestedConfigurationProperty
-	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
-	@NestedConfigurationProperty
-	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
-	@NestedConfigurationProperty
-	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
-	@NestedConfigurationProperty
-	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
-	
 	/**
 	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
 	 */
 	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-	
-	
-	public SecurityAuthcProperties getAuthc() {
-		return authc;
-	}
-
-	public void setAuthc(SecurityAuthcProperties authc) {
-		this.authc = authc;
-	}
-
-
-	public SecurityCsrfProperties getCsrf() {
-		return csrf;
-	}
-
-	public void setCsrf(SecurityCsrfProperties csrf) {
-		this.csrf = csrf;
-	}
-
-	public SecurityLogoutProperties getLogout() {
-		return logout;
-	}
-
-	public void setLogout(SecurityLogoutProperties logout) {
-		this.logout = logout;
-	}
-
-	public SecurityRedirectProperties getRedirect() {
-		return redirect;
-	}
-
-	public void setRedirect(SecurityRedirectProperties redirect) {
-		this.redirect = redirect;
-	}
-
-	public SecuritySessionMgtProperties getSessionMgt() {
-		return sessionMgt;
-	}
-
-	public void setSessionMgt(SecuritySessionMgtProperties sessionMgt) {
-		this.sessionMgt = sessionMgt;
-	}
-
-	public SecurityCaptchaProperties getCaptcha() {
-		return captcha;
-	}
-
-	public void setCaptcha(SecurityCaptchaProperties captcha) {
-		this.captcha = captcha;
-	}
-	
 
 	public Map<String, String> getFilterChainDefinitionMap() {
 		return filterChainDefinitionMap;
@@ -110,6 +37,5 @@ public class SecurityBizProperties {
 	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
 		this.filterChainDefinitionMap = filterChainDefinitionMap;
 	}
-	
 
 }
