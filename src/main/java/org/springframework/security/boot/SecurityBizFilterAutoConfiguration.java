@@ -19,7 +19,6 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAut
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -91,8 +90,8 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	private RememberMeServices rememberMeServices;
 	@Autowired
 	private SessionAuthenticationStrategy sessionStrategy;
-	@Autowired
-	private MessageSource messageSource;
+	//@Autowired
+	//private MessageSource messageSource;
     @Autowired(required = false) 
     private CaptchaResolver captchaResolver;
     @Autowired
@@ -148,13 +147,14 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		if (StringUtils.hasText(bizProperties.getAuthc().getLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getLoginUrlPatterns());
 		}
-		authcFilter.setMessageSource(messageSource);
+		//authcFilter.setMessageSource(messageSource);
 		authcFilter.setUsernameParameter(bizProperties.getAuthc().getUsernameParameter());
 		authcFilter.setPasswordParameter(bizProperties.getAuthc().getPasswordParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());
 		authcFilter.setRememberMeServices(rememberMeServices);
+		authcFilter.setRetryTimesKeyAttribute(bizProperties.getAuthc().getRetryTimesKeyAttribute());
+		authcFilter.setRetryTimesWhenAccessDenied(bizProperties.getAuthc().getRetryTimesWhenAccessDenied());
 		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
-
 		return authcFilter;
 	}
 	
@@ -173,7 +173,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		if (StringUtils.hasText(bizProperties.getAuthc().getIdentityLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizProperties.getAuthc().getIdentityLoginUrlPatterns());
 		}
-		authcFilter.setMessageSource(messageSource);
+		//authcFilter.setMessageSource(messageSource);
 		authcFilter.setMobileParameter(bizProperties.getAuthc().getMobileParameter());
 		authcFilter.setCodeParameter(bizProperties.getAuthc().getCodeParameter());
 		authcFilter.setPostOnly(bizProperties.getAuthc().isPostOnly());

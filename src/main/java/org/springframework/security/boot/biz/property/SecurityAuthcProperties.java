@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
@@ -67,6 +68,10 @@ public class SecurityAuthcProperties {
 	private boolean useForward = false;
 
     private String retryTimesKeyParameter = AuthenticatingFailureCounter.DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
+    private String retryTimesKeyAttribute = PostRequestAuthenticationProcessingFilter.DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
+	/** Maximum number of retry to login . */
+	private int retryTimesWhenAccessDenied = 3;
+	
 	/**
 	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
 	 */
@@ -248,6 +253,22 @@ public class SecurityAuthcProperties {
 	public void setRetryTimesKeyParameter(String retryTimesKeyParameter) {
 		this.retryTimesKeyParameter = retryTimesKeyParameter;
 	}
+	
+	public String getRetryTimesKeyAttribute() {
+		return retryTimesKeyAttribute;
+	}
+
+	public void setRetryTimesKeyAttribute(String retryTimesKeyAttribute) {
+		this.retryTimesKeyAttribute = retryTimesKeyAttribute;
+	}
+
+	public int getRetryTimesWhenAccessDenied() {
+		return retryTimesWhenAccessDenied;
+	}
+
+	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
+		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
+	}
 
 	public Map<String, String> getFilterChainDefinitionMap() {
 		return filterChainDefinitionMap;
@@ -256,5 +277,5 @@ public class SecurityAuthcProperties {
 	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
 		this.filterChainDefinitionMap = filterChainDefinitionMap;
 	}
-
+	
 }
