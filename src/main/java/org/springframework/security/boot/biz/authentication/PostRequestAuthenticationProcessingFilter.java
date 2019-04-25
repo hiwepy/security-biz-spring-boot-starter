@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
+import org.springframework.security.boot.biz.exception.AuthMethodNotSupportedException;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
+import org.springframework.security.boot.biz.exception.AuthenticationOverRetryRemindException;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
@@ -24,7 +25,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,7 +79,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 			if (logger.isDebugEnabled()) {
 				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
 			}
-			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+			throw new AuthMethodNotSupportedException("Authentication method not supported: " + request.getMethod());
 		}
 		
 		try {
@@ -89,13 +89,10 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 			if(WebUtils.isPostRequest(request) && WebUtils.isContentTypeJson(request)) {
 				
 				PostLoginRequest loginRequest = objectMapper.readValue(request.getReader(), PostLoginRequest.class);
-				if (!StringUtils.hasText(loginRequest.getUsername()) || !StringUtils.hasText(loginRequest.getPassword())) {
-					throw new AuthenticationServiceException("Username or Password not provided");
-				}
 				
 				// The retry limit has been exceeded and a reminder is required
 		        if(isOverRetryRemind(request, response)) {
-		        	throw new AuthenticationCaptchaNotFoundException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
+		        	throw new AuthenticationOverRetryRemindException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
 		        }
 		        
 		        // 验证码必填或者错误次数超出系统限制，则要求填入验证码
@@ -118,7 +115,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 				
 				// The retry limit has been exceeded and a reminder is required
 		        if(isOverRetryRemind(request, response)) {
-		        	throw new AuthenticationCaptchaNotFoundException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
+		        	throw new AuthenticationOverRetryRemindException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
 		        }
 		        // 验证码必填或者错误次数超出系统限制，则要求填入验证码
 		 		if(isCaptchaRequired() || isOverRetryTimes(request, response)) {
@@ -136,20 +133,19 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 				}
 		 		
 		 		String username = obtainUsername(request);
-		 		String password = obtainPassword(request);
-		 		if (username == null) {
-		 			username = "";
-		 		}
+				String password = obtainPassword(request);
 
-		 		if (password == null) {
-		 			password = "";
-		 		}
-				
-		 		if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
-		            throw new AuthenticationServiceException("Username or Password not provided");
-		        }
-		 		
-		 		authRequest = this.authenticationToken( username, password);
+				if (username == null) {
+					username = "";
+				}
+
+				if (password == null) {
+					password = "";
+				}
+
+				username = username.trim();
+
+				authRequest = this.authenticationToken( username, password);
 		 		
 			}
 

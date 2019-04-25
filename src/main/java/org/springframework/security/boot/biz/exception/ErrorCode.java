@@ -11,9 +11,11 @@ public enum ErrorCode {
 
     AUTHENTICATION(10), 
     
-    IDENTITY(11), 
+    CAPTCHA(11), 
     
-    TOKEN(12);
+    IDENTITY(12), 
+    
+    TOKEN(13);
     
     private int errorCode;
 

@@ -11,7 +11,6 @@ import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -26,7 +25,7 @@ public class SubjectUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends UserDetails> T getPrincipal(Class<T> clazz){
+	public static <T> T getPrincipal(Class<T> clazz){
 		Object principal = getAuthentication().getPrincipal();
 		// 自身类.class.isAssignableFrom(自身类或子类.class) 
 		if( clazz.isAssignableFrom(principal.getClass()) ) {
@@ -35,8 +34,8 @@ public class SubjectUtils {
 		return null;
 	}
 	
-	public static UserDetails getPrincipal(){
-		return (UserDetails) getAuthentication().getPrincipal();
+	public static Object getPrincipal(){
+		return getAuthentication().getPrincipal();
 	}
 	
 	public static boolean isAuthenticated(){

@@ -203,8 +203,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         return super.authenticationManagerBean();
     }
     
-   
-    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(identityCodeAuthenticationProvider)
@@ -212,7 +210,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
         	.userDetailsService(userDetailsService)
         	.passwordEncoder(passwordEncoder);
     }
-    
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -395,6 +392,14 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     	
     }
 	
+	/**
+	 * 	这里需要提供UserDetailsService的原因是RememberMeServices需要用到
+	 * 	@return UserDetailsService
+	@Override
+	protected UserDetailsService userDetailsService() {
+		return userDetailsService;
+	} */
+    
 	@Override
 	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
 		this.eventPublisher = applicationEventPublisher;

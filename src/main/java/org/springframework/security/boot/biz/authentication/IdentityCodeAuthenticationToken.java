@@ -25,7 +25,7 @@ public class IdentityCodeAuthenticationToken extends AbstractAuthenticationToken
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
     
     private final Object principal;
-    private String credentials;
+    private Object credentials;
 
     public IdentityCodeAuthenticationToken(Object principal, String credentials) {
         super(null);
@@ -34,17 +34,17 @@ public class IdentityCodeAuthenticationToken extends AbstractAuthenticationToken
         setAuthenticated(false);
     }
     
-    public IdentityCodeAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
+    public IdentityCodeAuthenticationToken(Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        this.credentials = null;
+        this.credentials = credentials;
         super.setAuthenticated(true); // must use super, as we override
     }
 
     // ~ Methods
     // ========================================================================================================
 
-    public String getCredentials() {
+    public Object getCredentials() {
         return this.credentials;
     }
 

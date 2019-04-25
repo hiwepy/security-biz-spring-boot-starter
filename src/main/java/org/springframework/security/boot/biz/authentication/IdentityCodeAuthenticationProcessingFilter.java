@@ -22,9 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.boot.utils.StringUtils;
+import org.springframework.security.boot.biz.exception.AuthMethodNotSupportedException;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -58,7 +57,7 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
 			if (logger.isDebugEnabled()) {
 				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
 			}
-			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+			throw new AuthMethodNotSupportedException("Authentication method not supported: " + request.getMethod());
 		}
         
         try {
@@ -68,10 +67,6 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
 			if(WebUtils.isPostRequest(request) && WebUtils.isContentTypeJson(request)) {
 				
 				IdentityCodeRequest loginRequest = objectMapper.readValue(request.getReader(), IdentityCodeRequest.class);
-				if (!StringUtils.hasText(loginRequest.getMobile()) || !StringUtils.hasText(loginRequest.getCode())) {
-					throw new AuthenticationServiceException("Mobile or Code not provided");
-				}
-
 		 		authRequest = this.authenticationToken( loginRequest.getMobile(), loginRequest.getCode());
 		 		
 			} else {
@@ -85,10 +80,6 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
 
 		        if (code == null) {
 		            code = "";
-		        }
-				
-		 		if (!StringUtils.hasText(mobile) || !StringUtils.hasText(code)) {
-		            throw new AuthenticationServiceException("Mobile or Code not provided");
 		        }
 		 		
 		 		authRequest = this.authenticationToken( mobile, code);
