@@ -22,7 +22,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 
 public class SecuritySessionMgtProperties {
 	
-	private boolean allowSessionCreation = true;
+	private boolean allowSessionCreation = false;
 	/** if should allow the JSESSIONID to be rewritten into the URLs*/
 	private boolean enableSessionUrlRewriting;
 	/** the maximum number of sessions for a user */
