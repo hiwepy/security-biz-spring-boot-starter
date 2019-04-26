@@ -33,7 +33,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -66,8 +65,6 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private ObjectMapper objectMapper;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private RememberMeServices rememberMeServices;
 	@Autowired
@@ -159,8 +156,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(postRequestAuthenticationProvider)
-        	.userDetailsService(userDetailsService)
-        	.passwordEncoder(passwordEncoder);
+        	.userDetailsService(userDetailsService);
     }
     
     @Override
