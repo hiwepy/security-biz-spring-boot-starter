@@ -178,7 +178,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 			.expiredUrl(bizUpcProperties.getLogout().getLogoutUrl())
 			.sessionRegistry(sessionRegistry)
 			.and()
-    		.sessionAuthenticationErrorUrl(bizUpcProperties.getAuthc().getFailureUrl())
+    		.sessionAuthenticationErrorUrl(sessionMgt.getFailureUrl())
     		.sessionAuthenticationFailureHandler(postRequestAuthenticationFailureHandler)
     		.sessionAuthenticationStrategy(upcSessionAuthenticationStrategy)
     		.sessionCreationPolicy(sessionMgt.getCreationPolicy())

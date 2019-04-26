@@ -22,9 +22,12 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 
 public class SecuritySessionMgtProperties {
 	
+	
 	private boolean allowSessionCreation = false;
 	/** if should allow the JSESSIONID to be rewritten into the URLs*/
 	private boolean enableSessionUrlRewriting;
+	/**  */
+	private String failureUrl = "/error";
 	/** the maximum number of sessions for a user */
 	private Integer maximumSessions = Integer.MAX_VALUE;
 	private boolean maxSessionsPreventsLogin = false;
@@ -40,6 +43,14 @@ public class SecuritySessionMgtProperties {
 		this.allowSessionCreation = allowSessionCreation;
 	}
 	
+	public String getFailureUrl() {
+		return failureUrl;
+	}
+
+	public void setFailureUrl(String failureUrl) {
+		this.failureUrl = failureUrl;
+	}
+
 	public Integer getMaximumSessions() {
 		return maximumSessions;
 	}
