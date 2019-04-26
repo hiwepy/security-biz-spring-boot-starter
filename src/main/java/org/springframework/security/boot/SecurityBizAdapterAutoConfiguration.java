@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -46,7 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
-@EnableConfigurationProperties({ SecurityBizProperties.class})
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizUpcProperties.class})
 @Order(104)
 public class SecurityBizAdapterAutoConfiguration extends WebSecurityConfigurerAdapter{
 
@@ -61,21 +62,20 @@ public class SecurityBizAdapterAutoConfiguration extends WebSecurityConfigurerAd
 	
 	@Bean
 	@ConditionalOnMissingBean
-	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
+	public AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource() {
+		return new WebAuthenticationDetailsSource();
 	}
 
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SessionRegistry sessionRegistry() {
-		return new SessionRegistryImpl();
-	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public RememberMeServices rememberMeServices() {
-		return new NullRememberMeServices();
+	protected HttpFirewall httpFirewall() {
+		return new StrictHttpFirewall();
 	}
 
 	@Bean
@@ -86,14 +86,20 @@ public class SecurityBizAdapterAutoConfiguration extends WebSecurityConfigurerAd
 
 	@Bean
 	@ConditionalOnMissingBean
-	protected HttpFirewall httpFirewall() {
-		return new StrictHttpFirewall();
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
 	}
-	
+
 	@Bean
 	@ConditionalOnMissingBean
-	public AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource() {
-		return new WebAuthenticationDetailsSource();
+	public RememberMeServices rememberMeServices() {
+		return new NullRememberMeServices();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public SessionRegistry sessionRegistry() {
+		return new SessionRegistryImpl();
 	}
 	  
     @Override

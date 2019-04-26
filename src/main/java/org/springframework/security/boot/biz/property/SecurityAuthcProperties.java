@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
-import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -31,9 +30,6 @@ public class SecurityAuthcProperties {
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl = "/authz/login";;
 	private String loginUrlPatterns = "/login";;
-	/** 手机号码登录地址：会话不存在时访问的地址 */
-	private String identityLoginUrl;
-	private String identityLoginUrlPatterns;
 	/** 重定向地址：会话注销后的重定向地址 */
 	private String redirectUrl = "/";
 	/** 系统主页：登录成功后跳转路径 */
@@ -53,10 +49,6 @@ public class SecurityAuthcProperties {
 	private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
 	/** the password parameter name. Defaults to "password". */
 	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
-	/** the mobile parameter name. Defaults to "username". */
-	private String mobileParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_MOBILE_KEY;
-	/** the code parameter name. Defaults to "password". */
-    private String codeParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY;
     private String targetUrlParameter = null;
 	private boolean alwaysUseDefaultTargetUrl = false;
 	private boolean useReferer = false;
@@ -85,22 +77,6 @@ public class SecurityAuthcProperties {
 		this.loginUrlPatterns = loginUrlPatterns;
 	}
 
-	public String getIdentityLoginUrl() {
-		return identityLoginUrl;
-	}
-
-	public void setIdentityLoginUrl(String identityLoginUrl) {
-		this.identityLoginUrl = identityLoginUrl;
-	}
-
-	public String getIdentityLoginUrlPatterns() {
-		return identityLoginUrlPatterns;
-	}
-
-	public void setIdentityLoginUrlPatterns(String identityLoginUrlPatterns) {
-		this.identityLoginUrlPatterns = identityLoginUrlPatterns;
-	}
-	
 	public String getRedirectUrl() {
 		return redirectUrl;
 	}
@@ -162,22 +138,6 @@ public class SecurityAuthcProperties {
 
 	public void setPasswordParameter(String passwordParameter) {
 		this.passwordParameter = passwordParameter;
-	}
-	
-	public String getMobileParameter() {
-		return mobileParameter;
-	}
-
-	public void setMobileParameter(String mobileParameter) {
-		this.mobileParameter = mobileParameter;
-	}
-
-	public String getCodeParameter() {
-		return codeParameter;
-	}
-
-	public void setCodeParameter(String codeParameter) {
-		this.codeParameter = codeParameter;
 	}
 	
 	/**

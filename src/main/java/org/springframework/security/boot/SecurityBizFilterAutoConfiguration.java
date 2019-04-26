@@ -3,6 +3,7 @@ package org.springframework.security.boot;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -16,12 +17,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
-import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProcessingFilter;
-import org.springframework.security.boot.biz.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
@@ -34,8 +34,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -63,48 +61,51 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	
 	@Autowired
 	private SecurityBizUpcProperties bizUpcProperties;
-	@Autowired
-	private AuthenticatingFailureCounter authenticatingFailureCounter;
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	@Autowired
-	private AuthenticationSuccessHandler successHandler;
+	private ObjectMapper objectMapper;
 	@Autowired
-	private AuthenticationFailureHandler failureHandler;
+	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private RememberMeServices rememberMeServices;
 	@Autowired
-	private SessionAuthenticationStrategy sessionStrategy;
-	//@Autowired
-	//private MessageSource messageSource;
-    @Autowired(required = false) 
+    private SessionRegistry sessionRegistry;
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	@Qualifier("upcAuthenticatingFailureCounter")
+	private AuthenticatingFailureCounter upcAuthenticatingFailureCounter;
+	@Autowired
+	@Qualifier("upcSessionAuthenticationStrategy")
+	private SessionAuthenticationStrategy upcSessionAuthenticationStrategy;
+    @Autowired
+    @Qualifier("upcCsrfTokenRepository")
+	private CsrfTokenRepository upcCsrfTokenRepository;
+    @Autowired
+    @Qualifier("upcExpiredSessionStrategy")
+    private SessionInformationExpiredStrategy upcExpiredSessionStrategy;
+    @Autowired
+    @Qualifier("upcRequestCache")
+    private RequestCache upcRequestCache;
+    @Autowired
+    @Qualifier("upcInvalidSessionStrategy")
+    private InvalidSessionStrategy upcInvalidSessionStrategy;
+    @Autowired
+    @Qualifier("upcSecurityContextLogoutHandler") 
+    private SecurityContextLogoutHandler upcSecurityContextLogoutHandler;
+    @Autowired(required = false)
     private CaptchaResolver captchaResolver;
     @Autowired
-	private  ObjectMapper objectMapper;
+	private PostRequestAuthenticationSuccessHandler postRequestAuthenticationSuccessHandler;
+	@Autowired
+	private PostRequestAuthenticationFailureHandler postRequestAuthenticationFailureHandler;
     @Autowired
     private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
     @Autowired
-    private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
-    @Autowired
-    private PostRequestAuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private PostRequestAuthenticationFailureHandler authenticationFailureHandler;
-    @Autowired
-    private RequestCache requestCache;
-    @Autowired
-    private SecurityContextLogoutHandler securityContextLogoutHandler;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-	@Autowired
-	private UserDetailsService userDetailsService;
-    @Autowired
-    private InvalidSessionStrategy invalidSessionStrategy;
-    @Autowired
-    private SessionInformationExpiredStrategy expiredSessionStrategy;
-    @Autowired
-    private SessionRegistry sessionRegistry;
-    @Autowired
-	private CsrfTokenRepository csrfTokenRepository;
+    private PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint;
     
 	@Bean
 	public PostRequestAuthenticationProcessingFilter postRequestAuthenticationProcessingFilter() {
@@ -121,13 +122,13 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		// 验证码解析器
 		authcFilter.setCaptchaResolver(captchaResolver);
 		// 认证失败计数器
-		authcFilter.setFailureCounter(authenticatingFailureCounter);
+		authcFilter.setFailureCounter(upcAuthenticatingFailureCounter);
 
 		authcFilter.setAllowSessionCreation(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
 		authcFilter.setApplicationEventPublisher(eventPublisher);
-		authcFilter.setAuthenticationFailureHandler(failureHandler);
+		authcFilter.setAuthenticationFailureHandler(postRequestAuthenticationFailureHandler);
 		authcFilter.setAuthenticationManager(authenticationManager);
-		authcFilter.setAuthenticationSuccessHandler(successHandler);
+		authcFilter.setAuthenticationSuccessHandler(postRequestAuthenticationSuccessHandler);
 		authcFilter.setContinueChainBeforeSuccessfulAuthentication(bizUpcProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
 		if (StringUtils.hasText(bizUpcProperties.getAuthc().getLoginUrlPatterns())) {
 			authcFilter.setFilterProcessesUrl(bizUpcProperties.getAuthc().getLoginUrlPatterns());
@@ -139,36 +140,9 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		authcFilter.setRememberMeServices(rememberMeServices);
 		authcFilter.setRetryTimesKeyAttribute(bizUpcProperties.getAuthc().getRetryTimesKeyAttribute());
 		authcFilter.setRetryTimesWhenAccessDenied(bizUpcProperties.getAuthc().getRetryTimesWhenAccessDenied());
-		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
+		authcFilter.setSessionAuthenticationStrategy(upcSessionAuthenticationStrategy);
 		return authcFilter;
 	}
-	
-    @Bean
-    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter() {
-    	
-		IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
-				objectMapper);
-		
-		authcFilter.setAllowSessionCreation(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
-		authcFilter.setApplicationEventPublisher(eventPublisher);
-		authcFilter.setAuthenticationFailureHandler(failureHandler);
-		authcFilter.setAuthenticationManager(authenticationManager);
-		authcFilter.setAuthenticationSuccessHandler(successHandler);
-		authcFilter.setContinueChainBeforeSuccessfulAuthentication(bizUpcProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
-		if (StringUtils.hasText(bizUpcProperties.getAuthc().getIdentityLoginUrlPatterns())) {
-			authcFilter.setFilterProcessesUrl(bizUpcProperties.getAuthc().getIdentityLoginUrlPatterns());
-		}
-		//authcFilter.setMessageSource(messageSource);
-		authcFilter.setMobileParameter(bizUpcProperties.getAuthc().getMobileParameter());
-		authcFilter.setCodeParameter(bizUpcProperties.getAuthc().getCodeParameter());
-		authcFilter.setPostOnly(bizUpcProperties.getAuthc().isPostOnly());
-		authcFilter.setRememberMeServices(rememberMeServices);
-		authcFilter.setSessionAuthenticationStrategy(sessionStrategy);
-		
-        return authcFilter;
-    }
-    
-	
 	
 	/*
 	 * 系统登录注销过滤器；默认：org.springframework.security.web.authentication.logout.LogoutFilter
@@ -181,17 +155,10 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 		logoutFilter.setFilterProcessesUrl(bizUpcProperties.getLogout().getLogoutUrlPatterns());
 		return logoutFilter;
 	}
-	
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
     
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(identityCodeAuthenticationProvider)
-            .authenticationProvider(postRequestAuthenticationProvider)
+        auth.authenticationProvider(postRequestAuthenticationProvider)
         	.userDetailsService(userDetailsService)
         	.passwordEncoder(passwordEncoder);
     }
@@ -207,39 +174,38 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
 	    // Session 管理器配置
     	http.sessionManagement()
     		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
-    		.invalidSessionStrategy(invalidSessionStrategy)
+    		.invalidSessionStrategy(upcInvalidSessionStrategy)
     		.invalidSessionUrl(bizUpcProperties.getLogout().getLogoutUrl())
     		.maximumSessions(sessionMgt.getMaximumSessions())
     		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
-    		.expiredSessionStrategy(expiredSessionStrategy)
+    		.expiredSessionStrategy(upcExpiredSessionStrategy)
 			.expiredUrl(bizUpcProperties.getLogout().getLogoutUrl())
 			.sessionRegistry(sessionRegistry)
 			.and()
     		.sessionAuthenticationErrorUrl(bizUpcProperties.getAuthc().getFailureUrl())
-    		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
-    		.sessionAuthenticationStrategy(sessionStrategy)
+    		.sessionAuthenticationFailureHandler(postRequestAuthenticationFailureHandler)
+    		.sessionAuthenticationStrategy(upcSessionAuthenticationStrategy)
     		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
     		// Session 注销配置
     		.and()
     		.logout()
-    		.addLogoutHandler(securityContextLogoutHandler)
+    		.addLogoutHandler(upcSecurityContextLogoutHandler)
     		.clearAuthentication(logout.isClearAuthentication())
         	// Request 缓存配置
         	.and()
     		.requestCache()
-        	.requestCache(requestCache)
+        	.requestCache(upcRequestCache)
         	.and()
-        	.addFilterBefore(postRequestAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-        	.addFilterBefore(identityCodeAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);  // 不拦截注销
+        	.addFilterBefore(postRequestAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
         
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+        http.exceptionHandling().authenticationEntryPoint(postRequestAuthenticationEntryPoint);
  
 
        	// CSRF 配置
     	SecurityCsrfProperties csrf = bizUpcProperties.getCsrf();
     	if(csrf.isEnabled()) {
        		http.csrf()
-			   	.csrfTokenRepository(csrfTokenRepository)
+			   	.csrfTokenRepository(upcCsrfTokenRepository)
 			   	.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         } else {

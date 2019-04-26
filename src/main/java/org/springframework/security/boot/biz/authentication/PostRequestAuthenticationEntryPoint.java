@@ -31,8 +31,6 @@ import org.springframework.security.boot.biz.exception.AuthenticationCaptchaInco
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
 import org.springframework.security.boot.biz.exception.ErrorCode;
 import org.springframework.security.boot.biz.exception.ErrorResponse;
-import org.springframework.security.boot.biz.exception.IdentityCodeExpiredException;
-import org.springframework.security.boot.biz.exception.IdentityCodeIncorrectException;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -73,10 +71,6 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 			JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of(e.getMessage(), ErrorCode.CAPTCHA, HttpStatus.UNAUTHORIZED));
 		}  else if (e instanceof AuthenticationCaptchaIncorrectException) {
 			JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of(e.getMessage(), ErrorCode.CAPTCHA, HttpStatus.UNAUTHORIZED));
-		} else if (e instanceof IdentityCodeIncorrectException) {
-			JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Code was incorrect", ErrorCode.IDENTITY, HttpStatus.UNAUTHORIZED));
-		} else if (e instanceof IdentityCodeExpiredException) {
-			JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Code has expired", ErrorCode.IDENTITY, HttpStatus.UNAUTHORIZED));
 		} else if (e instanceof AuthTokenIncorrectException) {
 			JSONObject.writeJSONString(response.getWriter(), ErrorResponse.of("Token was incorrect", ErrorCode.TOKEN, HttpStatus.UNAUTHORIZED));
 		} else if (e instanceof AuthTokenExpiredException) {

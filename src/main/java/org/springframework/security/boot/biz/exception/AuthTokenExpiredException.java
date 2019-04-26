@@ -2,6 +2,7 @@ package org.springframework.security.boot.biz.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
+@SuppressWarnings("serial")
 public class AuthTokenExpiredException extends AuthenticationException {
 
 	// ~ Constructors

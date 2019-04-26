@@ -62,7 +62,7 @@ public class SecurityBizUpcProperties {
 	public void setAuthc(SecurityAuthcProperties authc) {
 		this.authc = authc;
 	}
-	
+
 	public SecurityCsrfProperties getCsrf() {
 		return csrf;
 	}
