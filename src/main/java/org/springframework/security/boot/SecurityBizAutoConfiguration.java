@@ -61,7 +61,7 @@ public class SecurityBizAutoConfiguration {
 	public RequestCache upcRequestCache() {
 		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
 		requestCache.setCreateSessionAllowed(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
-		// requestCache.setPortResolver(portResolver);
+		requestCache.setSessionAttrName(bizUpcProperties.getSessionMgt().getSessionAttrName());
 		// requestCache.setRequestMatcher(requestMatcher);
 		// requestCache.setSessionAttrName(sessionAttrName);
 		return requestCache;

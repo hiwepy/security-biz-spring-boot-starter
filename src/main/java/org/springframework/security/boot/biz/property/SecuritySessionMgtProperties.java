@@ -35,6 +35,8 @@ public class SecuritySessionMgtProperties {
 	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.IF_REQUIRED;
 	private SessionFixationPolicy fixationPolicy = SessionFixationPolicy.NONE;
 	
+	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
+	
 	public boolean isAllowSessionCreation() {
 		return allowSessionCreation;
 	}
@@ -119,6 +121,22 @@ public class SecuritySessionMgtProperties {
 
 	public void setFixationPolicy(SessionFixationPolicy fixationPolicy) {
 		this.fixationPolicy = fixationPolicy;
+	}
+	
+
+	/**
+	 * If the {@code sessionAttrName} property is set, the request is stored in
+	 * the session using this attribute name. Default is
+	 * "SPRING_SECURITY_SAVED_REQUEST".
+	 *
+	 * @param sessionAttrName a new session attribute name.
+	 */
+	public void setSessionAttrName(String sessionAttrName) {
+		this.sessionAttrName = sessionAttrName;
+	}
+
+	public String getSessionAttrName() {
+		return sessionAttrName;
 	}
 	
 }
