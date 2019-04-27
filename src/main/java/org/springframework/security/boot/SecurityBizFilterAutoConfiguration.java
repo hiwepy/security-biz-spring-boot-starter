@@ -23,6 +23,7 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
+import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
@@ -93,7 +94,7 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     @Autowired
     @Qualifier("upcSecurityContextLogoutHandler") 
     private SecurityContextLogoutHandler upcSecurityContextLogoutHandler;
-    @Autowired(required = false)
+    @Autowired
     private CaptchaResolver captchaResolver;
     @Autowired
 	private PostRequestAuthenticationSuccessHandler postRequestAuthenticationSuccessHandler;
@@ -103,6 +104,12 @@ public class SecurityBizFilterAutoConfiguration extends WebSecurityConfigurerAda
     private PostRequestAuthenticationProvider postRequestAuthenticationProvider;
     @Autowired
     private PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint;
+    
+    @Bean
+	@ConditionalOnMissingBean 
+	public CaptchaResolver captchaResolver() {
+		return new NullCaptchaResolver();
+	}
     
 	@Bean
 	public PostRequestAuthenticationProcessingFilter postRequestAuthenticationProcessingFilter() {
