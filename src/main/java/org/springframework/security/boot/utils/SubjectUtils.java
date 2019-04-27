@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.boot.web.servlet.server.Session;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
 
 public class SubjectUtils {
 
@@ -50,6 +52,9 @@ public class SubjectUtils {
 		return getRequestAttributes().getRequest();   
 	}
 	 
+	public static HttpServletResponse getResponse() {
+		return ((ServletWebRequest)RequestContextHolder.getRequestAttributes()).getResponse();
+	}
 	
 	public static HttpSession getSession(boolean create){
 		return getRequest().getSession(create);

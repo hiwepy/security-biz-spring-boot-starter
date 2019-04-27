@@ -30,6 +30,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -101,6 +103,12 @@ public class SecurityBizAdapterAutoConfiguration extends WebSecurityConfigurerAd
 	public SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
 	}
+	
+	@Bean
+   	@ConditionalOnMissingBean
+   	public GrantedAuthoritiesMapper authoritiesMapper() {
+   		return new NullAuthoritiesMapper();
+   	}
 	  
     @Override
     protected void configure(HttpSecurity http) throws Exception {
