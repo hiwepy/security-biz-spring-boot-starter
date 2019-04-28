@@ -46,22 +46,6 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 * 用户权限标记列表
 	 */
 	private Set<String> perms;
-	/**
-	 * 用户过期性 :true:没过期 false:过期
-	 */
-	protected boolean enabled = Boolean.TRUE;
-	/**
-	 * 用户锁定性 :true:未锁定 false:已锁定
-	 */
-	protected boolean accountNonLocked = Boolean.TRUE;
-	/**
-	 * 用户过期性 :true:没过期 false:过期
-	 */
-	protected boolean accountNonExpired = Boolean.TRUE;
-	/**
-	 * 凭证有效性 :true:凭证有效 false:凭证无效
-	 */
-	protected boolean credentialsNonExpired = Boolean.TRUE;
 	
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
@@ -149,38 +133,6 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.alias = alias;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-	public boolean isAccountNonLocked() {
-		return accountNonLocked;
-	}
-
-	public void setAccountNonLocked(boolean accountNonLocked) {
-		this.accountNonLocked = accountNonLocked;
-	}
-
-	public boolean isAccountNonExpired() {
-		return accountNonExpired;
-	}
-
-	public void setAccountNonExpired(boolean accountNonExpired) {
-		this.accountNonExpired = accountNonExpired;
-	}
-
-	public boolean isCredentialsNonExpired() {
-		return credentialsNonExpired;
-	}
-
-	public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-		this.credentialsNonExpired = credentialsNonExpired;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -204,8 +156,8 @@ public class SecurityPrincipal extends User implements Cloneable {
 	@Override
 	public String toString() {
 		return " User {" + "userid=" + userid + ", username='" + getUsername() + '\'' + ", password='" + getPassword() + '\''
-				+ ", salt='" + salt + '\'' + ", enabled='" + enabled + '\'' + ", accountNonExpired=" + accountNonExpired
-				+ ", credentialsNonExpired=" + credentialsNonExpired + ", accountNonLocked=" + accountNonLocked + '}';
+				+ ", salt='" + salt + '\'' + ", enabled='" + isEnabled() + '\'' + ", accountNonExpired=" + isAccountNonExpired()
+				+ ", credentialsNonExpired=" + isCredentialsNonExpired() + ", accountNonLocked=" + isAccountNonLocked() + '}';
 	}
 
 }
