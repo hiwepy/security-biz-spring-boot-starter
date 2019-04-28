@@ -21,11 +21,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -96,6 +98,13 @@ public class SecurityBizAutoConfiguration {
    	public GrantedAuthoritiesMapper authoritiesMapper() {
    		return new NullAuthoritiesMapper();
    	}
+	
+	@Bean
+   	@ConditionalOnMissingBean
+   	public PermissionEvaluator permissionEvaluator() {
+   		return new AuthorizationPermissionEvaluator();
+   	}
+	
 	
 	@Configuration
 	@ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
