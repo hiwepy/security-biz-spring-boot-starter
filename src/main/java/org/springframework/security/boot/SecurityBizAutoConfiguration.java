@@ -23,7 +23,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -99,12 +101,11 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
    	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizUpcProperties.class })
 	@Order(103)
-   	static class BizWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+   	static class BizWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter { 
     	
 		private Pattern rolesPattern = Pattern.compile("roles\\[(\\S)\\]");
 		private Pattern permsPattern = Pattern.compile("perms\\[(\\S)\\]");
 		private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S)\\]");
-		
         private final SecurityBizProperties bizProperties;
 	    private final SecurityBizUpcProperties bizUpcProperties;
 
@@ -119,7 +120,17 @@ public class SecurityBizAutoConfiguration {
    		@Override
    		@Bean
    		public AuthenticationManager authenticationManagerBean() throws Exception {
-   			return super.authenticationManagerBean();
+   			Map<String, AuthenticationProvider> providerMap = getApplicationContext().getBeansOfType(AuthenticationProvider.class);
+   			if(CollectionUtils.isEmpty(providerMap)) {
+   				return super.authenticationManagerBean();
+   			}
+   			
+   			ProviderManager authenticationManager = new ProviderManager(providerMap.values().stream().collect(Collectors.toList()),
+   					super.authenticationManagerBean());
+      		 //不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
+      		authenticationManager.setEraseCredentialsAfterAuthentication(false);
+      		
+   			return authenticationManager;
    		}
    		
    		@Override
@@ -240,7 +251,8 @@ public class SecurityBizAutoConfiguration {
    	    	//web.httpFirewall(httpFirewall)
    	    	
    	    }
-
+ 
+   	    
    	}
 
 }
