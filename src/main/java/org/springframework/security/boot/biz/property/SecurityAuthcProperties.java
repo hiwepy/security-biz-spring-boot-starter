@@ -49,7 +49,7 @@ public class SecurityAuthcProperties {
 	private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
 	/** the password parameter name. Defaults to "password". */
 	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
-    private String targetUrlParameter = null;
+	private String targetUrlParameter = "target";
 	private boolean alwaysUseDefaultTargetUrl = false;
 	private boolean useReferer = false;
 	private boolean postOnly = true;
