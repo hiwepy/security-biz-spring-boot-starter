@@ -32,7 +32,7 @@ public class SecuritySessionMgtProperties {
 	private Integer maximumSessions = Integer.MAX_VALUE;
 	private boolean maxSessionsPreventsLogin = false;
 	
-	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.IF_REQUIRED;
+	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.STATELESS;
 	private SessionFixationPolicy fixationPolicy = SessionFixationPolicy.NONE;
 	
 	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
