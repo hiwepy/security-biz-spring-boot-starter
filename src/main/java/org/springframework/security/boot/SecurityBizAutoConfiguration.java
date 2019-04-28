@@ -98,7 +98,7 @@ public class SecurityBizAutoConfiguration {
 	@Configuration
 	@ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
    	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizUpcProperties.class })
-	@Order(104)
+	@Order(103)
    	static class BizWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
 		private Pattern rolesPattern = Pattern.compile("roles\\[(\\S)\\]");

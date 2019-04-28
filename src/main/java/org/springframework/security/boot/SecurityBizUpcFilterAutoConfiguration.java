@@ -80,7 +80,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
 	@Configuration
     @ConditionalOnProperty(prefix = SecurityBizUpcProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityBizUpcProperties.class, SecurityBizProperties.class })
-	@Order(105)
+	@Order(104)
    	static class UpcWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
     	
     	private ApplicationEventPublisher eventPublisher;
