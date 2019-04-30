@@ -21,7 +21,7 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
-import org.springframework.security.boot.biz.userdetails.AuthcUserDetailsService;
+import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -163,8 +163,8 @@ public class SecurityBizUpcAutoConfiguration {
 
 	@Bean
 	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
-			AuthcUserDetailsService authcUserDetailsService, PasswordEncoder passwordEncoder) {
-		return new PostRequestAuthenticationProvider(authcUserDetailsService, passwordEncoder);
+			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
+		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 
 

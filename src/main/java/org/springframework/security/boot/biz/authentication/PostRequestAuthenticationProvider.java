@@ -7,8 +7,8 @@ import org.springframework.security.authentication.AccountStatusUserDetailsCheck
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.boot.biz.userdetails.AuthcUserDetailsService;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
+import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
@@ -23,11 +23,11 @@ public class PostRequestAuthenticationProvider implements AuthenticationProvider
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 	private final Logger logger = LoggerFactory.getLogger(getClass());
     private final PasswordEncoder passwordEncoder;
-    private final AuthcUserDetailsService authcUserDetailsService;
+    private final UserDetailsServiceAdapter userDetailsService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     
-    public PostRequestAuthenticationProvider(final AuthcUserDetailsService authcUserDetailsService, final PasswordEncoder passwordEncoder) {
-        this.authcUserDetailsService = authcUserDetailsService;
+    public PostRequestAuthenticationProvider(final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -61,7 +61,7 @@ public class PostRequestAuthenticationProvider implements AuthenticationProvider
 			throw new BadCredentialsException("No credentials found in request.");
 		}
         
-        UserDetails ud = getAuthcUserDetailsService().loadUserDetails(authentication);
+        UserDetails ud = getUserDetailsService().loadUserDetails(authentication);
         if (!passwordEncoder.matches(password, ud.getPassword())) {
             throw new BadCredentialsException("Authentication Failed. Username or Password not valid.");
         }
@@ -97,8 +97,8 @@ public class PostRequestAuthenticationProvider implements AuthenticationProvider
 		return passwordEncoder;
 	}
 
-	public AuthcUserDetailsService getAuthcUserDetailsService() {
-		return authcUserDetailsService;
+	public UserDetailsServiceAdapter getUserDetailsService() {
+		return userDetailsService;
 	}
 	
 }
