@@ -9,13 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
-import org.springframework.security.boot.biz.exception.AuthMethodNotSupportedException;
+import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
+import org.springframework.security.boot.biz.exception.AuthenticationMethodNotSupportedException;
 import org.springframework.security.boot.biz.exception.AuthenticationOverRetryRemindException;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
@@ -39,7 +42,8 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 	// ~ Static fields/initializers
 	// =====================================================================================
 	private static Logger logger = LoggerFactory.getLogger(PostRequestAuthenticationProcessingFilter.class);
-
+	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
+	
 	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 	public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 	public static final String SPRING_SECURITY_FORM_CAPTCHA_KEY = "captcha";
@@ -82,7 +86,8 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 			if (logger.isDebugEnabled()) {
 				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
 			}
-			throw new AuthMethodNotSupportedException("Authentication method not supported: " + request.getMethod());
+			throw new AuthenticationMethodNotSupportedException(messages.getMessage(AuthResponseCode.SC_AUTHC_METHOD_NOT_ALLOWED.getMsgKey(), new Object[] { request.getMethod() }, 
+					"Authentication method not supported. Request method:" + request.getMethod()));
 		}
 		
 		try {
@@ -95,19 +100,22 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 				
 				// The retry limit has been exceeded and a reminder is required
 		        if(isOverRetryRemind(request, response)) {
-		        	throw new AuthenticationOverRetryRemindException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
+		        	throw new AuthenticationOverRetryRemindException(messages.getMessage(AuthResponseCode.SC_AUTHC_OVER_RETRY_REMIND.getMsgKey(),
+		        			"The number of login errors exceeds the maximum retry limit and a verification code is required."));
 		        }
 		        
 		        // 验证码必填或者错误次数超出系统限制，则要求填入验证码
 		 		if(isCaptchaRequired() || isOverRetryTimes(request, response)) {
 		 			
 		 			if(!StringUtils.hasText(loginRequest.getCaptcha())) {
-						throw new AuthenticationCaptchaNotFoundException("Captcha not provided");
+						throw new AuthenticationCaptchaNotFoundException(messages.getMessage(AuthResponseCode.SC_AUTHC_CAPTCHA_REQUIRED.getMsgKey(), 
+								"Captcha not provided"));
 					}  
 		 	        // 进行验证	
 	 	        	boolean validation = captchaResolver.validCaptcha(request, loginRequest.getCaptcha());
 					if (!validation) {
-						throw new AuthenticationCaptchaIncorrectException("Captcha validation failed!");
+						throw new AuthenticationCaptchaIncorrectException(messages.getMessage(AuthResponseCode.SC_AUTHC_CAPTCHA_INCORRECT.getMsgKey(), 
+								"Captcha was incorrect."));
 					}
 					
 				}
@@ -118,19 +126,22 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 				
 				// The retry limit has been exceeded and a reminder is required
 		        if(isOverRetryRemind(request, response)) {
-		        	throw new AuthenticationOverRetryRemindException("The number of login errors exceeds the maximum retry limit and a verification code is required.");
+		        	throw new AuthenticationOverRetryRemindException(messages.getMessage(AuthResponseCode.SC_AUTHC_OVER_RETRY_REMIND.getMsgKey(),
+		        			"The number of login errors exceeds the maximum retry limit and a verification code is required."));
 		        }
 		        // 验证码必填或者错误次数超出系统限制，则要求填入验证码
 		 		if(isCaptchaRequired() || isOverRetryTimes(request, response)) {
 		 			
 		 			String captcha = obtainCaptcha(request);
 		 			if(!StringUtils.hasText(captcha)) {
-						throw new AuthenticationCaptchaNotFoundException("Captcha not provided");
+						throw new AuthenticationCaptchaNotFoundException(messages.getMessage(AuthResponseCode.SC_AUTHC_CAPTCHA_REQUIRED.getMsgKey(), 
+								"Captcha not provided."));
 					}  
 		 	        // 进行验证	
 	 	        	boolean validation = captchaResolver.validCaptcha(request, captcha);
 					if (!validation) {
-						throw new AuthenticationCaptchaIncorrectException("Captcha validation failed!");
+						throw new AuthenticationCaptchaIncorrectException(messages.getMessage(AuthResponseCode.SC_AUTHC_CAPTCHA_INCORRECT.getMsgKey(), 
+								"Captcha was incorrect."));
 					}
 					
 				}
