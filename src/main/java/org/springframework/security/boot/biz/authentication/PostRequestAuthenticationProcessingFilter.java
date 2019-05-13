@@ -66,7 +66,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 	// ===================================================================================================
 	
 	public PostRequestAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-		super(new AntPathRequestMatcher("/login", "POST"));
+		super(new AntPathRequestMatcher("/login"));
 		this.objectMapper = objectMapper;
 	}
 	
