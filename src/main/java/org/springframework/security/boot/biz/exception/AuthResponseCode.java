@@ -26,14 +26,20 @@ public enum AuthResponseCode {
 	
 	SC_AUTHZ_SUCCESS("0", "spring.security.authz.success"),
 	SC_AUTHZ_FAIL("10021", "spring.security.authz.fail"),
-	SC_AUTHZ_TOKEN_REQUIRED("10022", "spring.security.authz.token.required"),
-	SC_AUTHZ_TOKEN_EXPIRED("10023", "spring.security.authz.token.expired"),
-	SC_AUTHZ_TOKEN_INVALID("10024", "spring.security.authz.token.invalid"),
-	SC_AUTHZ_TOKEN_INCORRECT("10025", "spring.security.authz.token.incorrect"),
-	
-	SC_AUTHZ_THIRD_PARTY_EXPIRED("10026", "spring.security.authz.code.expired"),
-	SC_AUTHZ_THIRD_PARTY_SERVICE("10027", "spring.security.authz.server.error"),
-	SC_AUTHZ_THIRD_PARTY_INCORRECT("10028", "spring.security.authz.code.incorrect");
+	SC_AUTHZ_CODE_REQUIRED("10022", "spring.security.authz.code.required"),
+	SC_AUTHZ_CODE_EXPIRED("10023", "spring.security.authz.code.expired"),
+	SC_AUTHZ_CODE_INVALID("10024", "spring.security.authz.code.invalid"),
+	SC_AUTHZ_CODE_INCORRECT("10025", "spring.security.authz.code.incorrect"),
+	SC_AUTHZ_DINGTALK_REQUIRED("10026", "spring.security.authz.dingtalk.required"),
+	SC_AUTHZ_DINGTALK_EXPIRED("10027", "spring.security.authz.dingtalk.expired"),
+	SC_AUTHZ_DINGTALK_INVALID("10028", "spring.security.authz.dingtalk.invalid"),
+	SC_AUTHZ_DINGTALK_INCORRECT("10029", "spring.security.authz.dingtalk.incorrect"),
+	SC_AUTHZ_TOKEN_ISSUED("10030", "spring.security.authz.token.issued"),
+	SC_AUTHZ_TOKEN_REQUIRED("10031", "spring.security.authz.token.required"),
+	SC_AUTHZ_TOKEN_EXPIRED("10032", "spring.security.authz.token.expired"),
+	SC_AUTHZ_TOKEN_INVALID("10033", "spring.security.authz.token.invalid"),
+	SC_AUTHZ_TOKEN_INCORRECT("10034", "spring.security.authz.token.incorrect"),
+	SC_AUTHZ_THIRD_PARTY_SERVICE("10035", "spring.security.authz.server.error");
 	
 	private final String code;
 	private final String msgKey;

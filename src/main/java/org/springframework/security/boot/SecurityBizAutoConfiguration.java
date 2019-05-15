@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,6 +30,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -105,6 +109,19 @@ public class SecurityBizAutoConfiguration {
    		return new AuthorizationPermissionEvaluator();
    	}
 	
+	@Bean
+	@ConditionalOnMissingBean
+	public PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint(
+			SecurityBizProperties bizProperties,
+			@Autowired(required = false) List<MatchedAuthenticationEntryPoint> entryPoints) {
+
+		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(entryPoints);
+		entryPoint.setForceHttps(bizProperties.getEntryPoint().isForceHttps());
+		entryPoint.setUseForward(bizProperties.getEntryPoint().isUseForward());
+
+		return entryPoint;
+	}
+	
 	
 	@Configuration
 	@ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
@@ -117,10 +134,15 @@ public class SecurityBizAutoConfiguration {
 		private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S)\\]");
         private final SecurityBizProperties bizProperties;
 	    private final SecurityBizUpcProperties bizUpcProperties;
-
-		public BizWebSecurityConfigurerAdapter(SecurityBizProperties bizProperties,
+	    private final PostRequestAuthenticationEntryPoint authenticationEntryPoint;
+	    
+		public BizWebSecurityConfigurerAdapter(
+   				ObjectProvider<PostRequestAuthenticationEntryPoint> authenticationEntryPointProvider,
+				SecurityBizProperties bizProperties,
 				SecurityBizUpcProperties bizUpcProperties) {
-
+			
+			this.authenticationEntryPoint = authenticationEntryPointProvider.getIfAvailable();
+			
 			this.bizProperties = bizProperties;
 			this.bizUpcProperties = bizUpcProperties;
 
@@ -232,7 +254,9 @@ public class SecurityBizAutoConfiguration {
    					}
    				}
    			}
-   			
+
+   	        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+   	        
    			//允许认证过的用户访问
    			//registry.anyRequest().authenticated();
 

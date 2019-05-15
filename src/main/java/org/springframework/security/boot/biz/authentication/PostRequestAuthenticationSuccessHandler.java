@@ -11,11 +11,13 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -28,15 +30,19 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<AuthenticationListener> authenticationListeners;
+	private List<MatchedAuthenticationSuccessHandler> successHandlers;
 
-	public PostRequestAuthenticationSuccessHandler(String defaultTargetUrl) {
+	public PostRequestAuthenticationSuccessHandler(String defaultTargetUrl,
+			List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.setDefaultTargetUrl(defaultTargetUrl);
+		this.setSuccessHandlers(successHandlers);
 	}
 
 	public PostRequestAuthenticationSuccessHandler(List<AuthenticationListener> authenticationListeners,
-			String defaultTargetUrl) {
+			List<MatchedAuthenticationSuccessHandler> successHandlers, String defaultTargetUrl) {
 		this.setAuthenticationListeners(authenticationListeners);
 		this.setDefaultTargetUrl(defaultTargetUrl);
+		this.setSuccessHandlers(successHandlers);
 	}
 
 	@Override
@@ -51,20 +57,58 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 		}
 
 		/*
+		 * if Rest request return json else rediect to specific page
+		 */
+		if (WebUtils.isPostRequest(request)) {
+
+			if (CollectionUtils.isEmpty(successHandlers)) {
+				
+				this.writeJSONString(request, response, authentication);
+				clearAuthenticationAttributes(request);
+				
+			} else {
+
+				boolean isMatched = false;
+				for (MatchedAuthenticationSuccessHandler successHandler : successHandlers) {
+
+					if (successHandler != null && successHandler.supports(authentication)) {
+						successHandler.onAuthenticationSuccess(request, response, authentication);
+						isMatched = true;
+						break;
+					}
+
+				}
+				if (!isMatched) {
+					this.writeJSONString(request, response, authentication);
+				}
+
+				clearAuthenticationAttributes(request);
+
+			}
+
+		} else {
+			super.onAuthenticationSuccess(request, response, authentication);
+		}
+
+		/*
 		 * 判断是否Post请求
 		 */
 		if (WebUtils.isPostRequest(request)) {
 
-			response.setStatus(HttpStatus.OK.value());
-			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_SUCCESS.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey())));
-
-			clearAuthenticationAttributes(request);
 		} else {
-			super.onAuthenticationSuccess(request, response, authentication);
+
 		}
+
+	}
+
+	protected void writeJSONString(HttpServletRequest request, HttpServletResponse response,
+			Authentication authentication) throws IOException, ServletException {
+
+		response.setStatus(HttpStatus.OK.value());
+		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+
+		JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_SUCCESS.getCode(),
+				messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey())));
 
 	}
 
@@ -74,6 +118,22 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 
 	public void setAuthenticationListeners(List<AuthenticationListener> authenticationListeners) {
 		this.authenticationListeners = authenticationListeners;
+	}
+
+	public MessageSourceAccessor getMessages() {
+		return messages;
+	}
+
+	public List<MatchedAuthenticationSuccessHandler> getSuccessHandlers() {
+		return successHandlers;
+	}
+
+	public void setMessages(MessageSourceAccessor messages) {
+		this.messages = messages;
+	}
+
+	public void setSuccessHandlers(List<MatchedAuthenticationSuccessHandler> successHandlers) {
+		this.successHandlers = successHandlers;
 	}
 
 }

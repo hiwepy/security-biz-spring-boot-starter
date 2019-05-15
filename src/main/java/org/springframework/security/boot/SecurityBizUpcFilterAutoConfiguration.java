@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
@@ -91,7 +90,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
 	    private final SessionRegistry sessionRegistry;
 	    
     	private final SecurityBizUpcProperties bizUpcProperties;
-	    private final PostRequestAuthenticationEntryPoint authenticationEntryPoint;
 	    private final PostRequestAuthenticationProvider authenticationProvider;
 	    private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
 	    private final PostRequestAuthenticationFailureHandler authenticationFailureHandler;
@@ -113,10 +111,9 @@ public class SecurityBizUpcFilterAutoConfiguration {
    				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
    				
    				SecurityBizUpcProperties bizUpcProperties,
-   				ObjectProvider<PostRequestAuthenticationEntryPoint> authenticationEntryPointProvider,
    				ObjectProvider<PostRequestAuthenticationProvider> authenticationProvider,
-   				ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
-   				ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
+   				@Qualifier("upcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
+   				@Qualifier("upcAuthenticationFailureHandler") ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
    				
    				@Qualifier("upcAuthenticatingFailureCounter") ObjectProvider<AuthenticatingFailureCounter> authenticatingFailureCounter,
@@ -134,7 +131,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			this.sessionRegistry = sessionRegistryProvider.getIfAvailable();
    			
    			this.bizUpcProperties = bizUpcProperties;
-   			this.authenticationEntryPoint = authenticationEntryPointProvider.getIfAvailable();
    			this.authenticationProvider = authenticationProvider.getIfAvailable();
    			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
    			this.authenticationFailureHandler = authenticationFailureHandler.getIfAvailable();
@@ -167,7 +163,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			// 认证失败计数器
    			authcFilter.setFailureCounter(authenticatingFailureCounter);
 
-   			authcFilter.setAllowSessionCreation(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
+   			authcFilter.setAllowSessionCreation(bizUpcProperties.getAuthc().isAllowSessionCreation());
    			authcFilter.setApplicationEventPublisher(eventPublisher);
    			authcFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
    			authcFilter.setAuthenticationManager(authenticationManager);
@@ -226,9 +222,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
    	        	.requestCache(requestCache)
    	        	.and()
    	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
-   	        
-   	        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-   	 
 
    	       	// CSRF 配置
    	    	SecurityCsrfProperties csrf = bizUpcProperties.getCsrf();

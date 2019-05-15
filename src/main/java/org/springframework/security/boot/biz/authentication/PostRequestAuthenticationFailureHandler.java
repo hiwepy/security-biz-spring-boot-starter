@@ -16,18 +16,14 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
-import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
-import org.springframework.security.boot.biz.exception.AuthenticationMethodNotSupportedException;
-import org.springframework.security.boot.biz.exception.AuthenticationTokenExpiredException;
-import org.springframework.security.boot.biz.exception.AuthenticationTokenIncorrectException;
-import org.springframework.security.boot.biz.exception.AuthenticationTokenNotFoundException;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
+import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -38,15 +34,19 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<AuthenticationListener> authenticationListeners;
-
-	public PostRequestAuthenticationFailureHandler(String defaultFailureUrl) {
+	private List<MatchedAuthenticationFailureHandler> failureHandlers;
+	
+	public PostRequestAuthenticationFailureHandler(String defaultFailureUrl, List<MatchedAuthenticationFailureHandler> failureHandlers) {
 		this.setDefaultFailureUrl(defaultFailureUrl);
+		this.setFailureHandlers(failureHandlers);
 	}
 
 	public PostRequestAuthenticationFailureHandler(List<AuthenticationListener> authenticationListeners,
+			List<MatchedAuthenticationFailureHandler> failureHandlers,
 			String defaultFailureUrl) {
 		this.setAuthenticationListeners(authenticationListeners);
 		this.setDefaultFailureUrl(defaultFailureUrl);
+		this.setFailureHandlers(failureHandlers);
 	}
 
 	@Override
@@ -64,7 +64,26 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 		 * if Rest request return json else rediect to specific page
 		 */
 		if (WebUtils.isPostRequest(request)) {
-			this.writeJSONString(request, response, e);
+			
+			if(CollectionUtils.isEmpty(failureHandlers)) {
+				this.writeJSONString(request, response, e);
+			} else {
+				
+				boolean isMatched = false;
+				for (MatchedAuthenticationFailureHandler failureHandler : failureHandlers) {
+					
+					if(failureHandler != null && failureHandler.supports(e)) {
+						failureHandler.onAuthenticationFailure(request, response, e);
+						isMatched = true;
+						break;
+					}
+					
+				}
+				if(!isMatched) {
+					this.writeJSONString(request, response, e);
+				}
+			}
+			
 		} else {
 			super.onAuthenticationFailure(request, response, e);
 		}
@@ -77,24 +96,12 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		
-		if (e instanceof AuthenticationMethodNotSupportedException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_METHOD_NOT_ALLOWED.getCode(), e.getMessage()));
-		} else if (e instanceof UsernameNotFoundException) {
+		if (e instanceof UsernameNotFoundException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getCode(),
 					messages.getMessage(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getMsgKey(), e.getMessage())));
 		} else if (e instanceof BadCredentialsException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getCode(),
 					messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getMsgKey(), e.getMessage())));
-		} else if (e instanceof AuthenticationCaptchaNotFoundException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_CAPTCHA_REQUIRED.getCode(), e.getMessage()));
-		} else if (e instanceof AuthenticationCaptchaIncorrectException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_CAPTCHA_INCORRECT.getCode(), e.getMessage()));
-		} else if (e instanceof AuthenticationTokenNotFoundException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_TOKEN_REQUIRED.getCode(), e.getMessage()));
-		} else if (e instanceof AuthenticationTokenIncorrectException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_TOKEN_INCORRECT.getCode(), e.getMessage()));
-		} else if (e instanceof AuthenticationTokenExpiredException) {
-			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHZ_TOKEN_EXPIRED.getCode(), e.getMessage()));
 		}  else if (e instanceof DisabledException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_DISABLED.getCode(),
 					messages.getMessage(AuthResponseCode.SC_AUTHC_USER_DISABLED.getMsgKey(), e.getMessage())));
@@ -111,14 +118,32 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(),
 					messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey())));
 		}
+		
+		
 	}
-
+	
 	public List<AuthenticationListener> getAuthenticationListeners() {
 		return authenticationListeners;
 	}
 
 	public void setAuthenticationListeners(List<AuthenticationListener> authenticationListeners) {
 		this.authenticationListeners = authenticationListeners;
+	}
+
+	public List<MatchedAuthenticationFailureHandler> getFailureHandlers() {
+		return failureHandlers;
+	}
+
+	public void setFailureHandlers(List<MatchedAuthenticationFailureHandler> failureHandlers) {
+		this.failureHandlers = failureHandlers;
+	}
+
+	public void setMessages(MessageSourceAccessor messages) {
+		this.messages = messages;
+	}
+	
+	public MessageSourceAccessor getMessages() {
+		return messages;
 	}
 
 }

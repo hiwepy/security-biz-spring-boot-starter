@@ -15,10 +15,13 @@ import org.springframework.security.authentication.DefaultAuthenticationEventPub
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
+import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
@@ -119,48 +122,49 @@ public class SecurityBizUpcAutoConfiguration {
 	
 	@Bean("upcAuthenticatingFailureCounter")
 	public AuthenticatingFailureCounter upcAuthenticatingFailureCounter() {
-		AuthenticatingFailureRequestCounter  failureCounter = new AuthenticatingFailureRequestCounter();
+		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
 		failureCounter.setRetryTimesKeyParameter(bizUpcProperties.getAuthc().getRetryTimesKeyParameter());
 		return failureCounter;
 	}
 	
-	@Bean
-	public PostRequestAuthenticationSuccessHandler postRequestAuthenticationSuccessHandler(
+	@Bean("upcAuthenticationSuccessHandler")
+	public PostRequestAuthenticationSuccessHandler upcAuthenticationSuccessHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
+			@Autowired(required = false) List<MatchedAuthenticationSuccessHandler> successHandlers, 
 			@Qualifier("upcRedirectStrategy") RedirectStrategy redirectStrategy, 
 			@Qualifier("upcRequestCache") RequestCache requestCache) {
 		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
-				authenticationListeners, bizUpcProperties.getAuthc().getSuccessUrl());
+				authenticationListeners, successHandlers, bizUpcProperties.getAuthc().getSuccessUrl());
 		successHandler.setRedirectStrategy(redirectStrategy);
 		successHandler.setRequestCache(requestCache);
 		successHandler.setTargetUrlParameter(bizUpcProperties.getAuthc().getTargetUrlParameter());
 		successHandler.setUseReferer(bizUpcProperties.getAuthc().isUseReferer());
 		return successHandler;
 	}
-
-	@Bean
-	public PostRequestAuthenticationFailureHandler postRequestAuthenticationFailureHandler(
+	
+	@Bean("upcAuthenticationFailureHandler")
+	public PostRequestAuthenticationFailureHandler upcAuthenticationFailureHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
+			@Autowired(required = false) List<MatchedAuthenticationFailureHandler> failureHandlers, 
 			@Qualifier("upcRedirectStrategy") RedirectStrategy redirectStrategy) {
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, bizUpcProperties.getAuthc().getFailureUrl());
-		failureHandler.setAllowSessionCreation(bizUpcProperties.getSessionMgt().isAllowSessionCreation());
+				authenticationListeners, failureHandlers, bizUpcProperties.getAuthc().getFailureUrl());
+		failureHandler.setAllowSessionCreation(bizUpcProperties.getAuthc().isAllowSessionCreation());
 		failureHandler.setRedirectStrategy(redirectStrategy);
 		failureHandler.setUseForward(bizUpcProperties.getAuthc().isUseForward());
 		return failureHandler;
 	}
 	
 	@Bean
-	public PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint() {
-
-		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(
-				bizUpcProperties.getAuthc().getLoginUrl());
-		entryPoint.setForceHttps(bizUpcProperties.getAuthc().isForceHttps());
-		entryPoint.setUseForward(bizUpcProperties.getAuthc().isUseForward());
-
-		return entryPoint;
+	public DefaultMatchedAuthenticationFailureHandler defaultMatchedAuthenticationFailureHandler() {
+		return new DefaultMatchedAuthenticationFailureHandler();
 	}
-
+	
+	@Bean
+	public DefaultMatchedAuthenticationEntryPoint defaultMatchedAuthenticationEntryPoint() {
+		return new DefaultMatchedAuthenticationEntryPoint();
+	}
+	
 	@Bean
 	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {

@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.security.boot.biz.property.SecurityEntryPointProperties;
 
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 public class SecurityBizProperties {
@@ -29,13 +31,23 @@ public class SecurityBizProperties {
 	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
 	 */
 	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-
+	@NestedConfigurationProperty
+	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
+	
 	public Map<String, String> getFilterChainDefinitionMap() {
 		return filterChainDefinitionMap;
 	}
 
 	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
 		this.filterChainDefinitionMap = filterChainDefinitionMap;
+	}
+
+	public SecurityEntryPointProperties getEntryPoint() {
+		return entryPoint;
+	}
+
+	public void setEntryPoint(SecurityEntryPointProperties entryPoint) {
+		this.entryPoint = entryPoint;
 	}
 
 }
