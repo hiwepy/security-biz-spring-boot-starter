@@ -21,6 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 /**
  *
  */
+@SuppressWarnings("serial")
 public class AuthenticationOverRetryRemindException extends AuthenticationException {
 	// ~ Constructors
 	// ===================================================================================================

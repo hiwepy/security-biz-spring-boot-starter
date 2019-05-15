@@ -9,7 +9,7 @@ public class AuthenticationTokenIncorrectException extends AuthenticationExcepti
 	// ===================================================================================================
 
 	/**
-	 * Constructs an <code>AuthTokenIncorrectException</code> with the specified
+	 * Constructs an <code>AuthenticationTokenIncorrectException</code> with the specified
 	 * message.
 	 *
 	 * @param msg the detail message
@@ -19,7 +19,7 @@ public class AuthenticationTokenIncorrectException extends AuthenticationExcepti
 	}
 
 	/**
-	 * Constructs an <code>AuthTokenIncorrectException</code> with the specified
+	 * Constructs an <code>AuthenticationTokenIncorrectException</code> with the specified
 	 * message and root cause.
 	 *
 	 * @param msg the detail message

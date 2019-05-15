@@ -21,6 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 /**
  *
  */
+@SuppressWarnings("serial")
 public class AuthenticationTokenNotFoundException extends AuthenticationException {
 	// ~ Constructors
 	// ===================================================================================================
