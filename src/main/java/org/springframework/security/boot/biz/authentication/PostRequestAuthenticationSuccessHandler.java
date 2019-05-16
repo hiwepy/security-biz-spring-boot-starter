@@ -31,17 +31,15 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<AuthenticationListener> authenticationListeners;
 	private List<MatchedAuthenticationSuccessHandler> successHandlers;
-
-	public PostRequestAuthenticationSuccessHandler(String defaultTargetUrl,
-			List<MatchedAuthenticationSuccessHandler> successHandlers) {
-		this.setDefaultTargetUrl(defaultTargetUrl);
+	private boolean stateless = false;
+	
+	public PostRequestAuthenticationSuccessHandler(List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.setSuccessHandlers(successHandlers);
 	}
 
 	public PostRequestAuthenticationSuccessHandler(List<AuthenticationListener> authenticationListeners,
-			List<MatchedAuthenticationSuccessHandler> successHandlers, String defaultTargetUrl) {
+			List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.setAuthenticationListeners(authenticationListeners);
-		this.setDefaultTargetUrl(defaultTargetUrl);
 		this.setSuccessHandlers(successHandlers);
 	}
 
@@ -59,7 +57,7 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 		/*
 		 * if Rest request return json else rediect to specific page
 		 */
-		if (WebUtils.isPostRequest(request)) {
+		if ( isStateless() || WebUtils.isPostRequest(request)) {
 
 			if (CollectionUtils.isEmpty(successHandlers)) {
 				
@@ -88,15 +86,6 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 
 		} else {
 			super.onAuthenticationSuccess(request, response, authentication);
-		}
-
-		/*
-		 * 判断是否Post请求
-		 */
-		if (WebUtils.isPostRequest(request)) {
-
-		} else {
-
 		}
 
 	}
@@ -134,6 +123,14 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 
 	public void setSuccessHandlers(List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		this.successHandlers = successHandlers;
+	}
+
+	public boolean isStateless() {
+		return stateless;
+	}
+
+	public void setStateless(boolean stateless) {
+		this.stateless = stateless;
 	}
 
 }

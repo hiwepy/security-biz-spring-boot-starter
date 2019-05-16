@@ -51,6 +51,8 @@ import org.springframework.security.web.session.SimpleRedirectSessionInformation
 public class SecurityBizUpcAutoConfiguration {
 	
 	@Autowired
+	private SecurityBizProperties bizProperties;
+	@Autowired
 	private SecurityBizUpcProperties bizUpcProperties;
 
 	@Bean("upcRedirectStrategy")
@@ -134,9 +136,11 @@ public class SecurityBizUpcAutoConfiguration {
 			@Qualifier("upcRedirectStrategy") RedirectStrategy redirectStrategy, 
 			@Qualifier("upcRequestCache") RequestCache requestCache) {
 		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
-				authenticationListeners, successHandlers, bizUpcProperties.getAuthc().getSuccessUrl());
+				authenticationListeners, successHandlers);
+		successHandler.setDefaultTargetUrl(bizUpcProperties.getAuthc().getSuccessUrl());
 		successHandler.setRedirectStrategy(redirectStrategy);
 		successHandler.setRequestCache(requestCache);
+		successHandler.setStateless(bizProperties.isStateless());
 		successHandler.setTargetUrlParameter(bizUpcProperties.getAuthc().getTargetUrlParameter());
 		successHandler.setUseReferer(bizUpcProperties.getAuthc().isUseReferer());
 		return successHandler;
@@ -148,9 +152,11 @@ public class SecurityBizUpcAutoConfiguration {
 			@Autowired(required = false) List<MatchedAuthenticationFailureHandler> failureHandlers, 
 			@Qualifier("upcRedirectStrategy") RedirectStrategy redirectStrategy) {
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, failureHandlers, bizUpcProperties.getAuthc().getFailureUrl());
+				authenticationListeners, failureHandlers);
 		failureHandler.setAllowSessionCreation(bizUpcProperties.getAuthc().isAllowSessionCreation());
+		failureHandler.setDefaultFailureUrl(bizUpcProperties.getAuthc().getFailureUrl());
 		failureHandler.setRedirectStrategy(redirectStrategy);
+		failureHandler.setStateless(bizProperties.isStateless());
 		failureHandler.setUseForward(bizUpcProperties.getAuthc().isUseForward());
 		return failureHandler;
 	}

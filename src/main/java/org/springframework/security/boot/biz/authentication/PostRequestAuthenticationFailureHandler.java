@@ -35,17 +35,15 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<AuthenticationListener> authenticationListeners;
 	private List<MatchedAuthenticationFailureHandler> failureHandlers;
+	private boolean stateless = false;
 	
-	public PostRequestAuthenticationFailureHandler(String defaultFailureUrl, List<MatchedAuthenticationFailureHandler> failureHandlers) {
-		this.setDefaultFailureUrl(defaultFailureUrl);
+	public PostRequestAuthenticationFailureHandler(List<MatchedAuthenticationFailureHandler> failureHandlers) {
 		this.setFailureHandlers(failureHandlers);
 	}
 
 	public PostRequestAuthenticationFailureHandler(List<AuthenticationListener> authenticationListeners,
-			List<MatchedAuthenticationFailureHandler> failureHandlers,
-			String defaultFailureUrl) {
+			List<MatchedAuthenticationFailureHandler> failureHandlers) {
 		this.setAuthenticationListeners(authenticationListeners);
-		this.setDefaultFailureUrl(defaultFailureUrl);
 		this.setFailureHandlers(failureHandlers);
 	}
 
@@ -63,7 +61,7 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 		/*
 		 * if Rest request return json else rediect to specific page
 		 */
-		if (WebUtils.isPostRequest(request)) {
+		if (isStateless() || WebUtils.isPostRequest(request)) {
 			
 			if(CollectionUtils.isEmpty(failureHandlers)) {
 				this.writeJSONString(request, response, e);
@@ -144,6 +142,14 @@ public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAut
 	
 	public MessageSourceAccessor getMessages() {
 		return messages;
+	}
+
+	public boolean isStateless() {
+		return stateless;
+	}
+
+	public void setStateless(boolean stateless) {
+		this.stateless = stateless;
 	}
 
 }

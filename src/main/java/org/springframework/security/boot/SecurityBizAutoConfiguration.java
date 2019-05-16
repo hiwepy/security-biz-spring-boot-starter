@@ -115,10 +115,11 @@ public class SecurityBizAutoConfiguration {
 			SecurityBizProperties bizProperties,
 			@Autowired(required = false) List<MatchedAuthenticationEntryPoint> entryPoints) {
 
-		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(entryPoints);
+		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint("/login", entryPoints);
 		entryPoint.setForceHttps(bizProperties.getEntryPoint().isForceHttps());
+		entryPoint.setStateless(bizProperties.isStateless());
 		entryPoint.setUseForward(bizProperties.getEntryPoint().isUseForward());
-
+		
 		return entryPoint;
 	}
 	

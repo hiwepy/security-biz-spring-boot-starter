@@ -46,9 +46,10 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<MatchedAuthenticationEntryPoint> entryPoints;
+	private boolean stateless = false;
 	
-	public PostRequestAuthenticationEntryPoint(List<MatchedAuthenticationEntryPoint> entryPoints) {
-		super("/");
+	public PostRequestAuthenticationEntryPoint(String loginFormUrl, List<MatchedAuthenticationEntryPoint> entryPoints) {
+		super(loginFormUrl);
 		this.entryPoints = entryPoints;
 	}
 
@@ -57,7 +58,7 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 		/*
 		 * if Rest request return 401 Unauthorized else rediect to specific page
 		 */
-		if (WebUtils.isPostRequest(request)) {
+		if (isStateless() || WebUtils.isPostRequest(request)) {
 			
 			if(CollectionUtils.isEmpty(entryPoints)) {
 				this.writeJSONString(request, response, e);
@@ -112,6 +113,30 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 					messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey())));
 		}
 		
+	}
+
+	public MessageSourceAccessor getMessages() {
+		return messages;
+	}
+
+	public List<MatchedAuthenticationEntryPoint> getEntryPoints() {
+		return entryPoints;
+	}
+
+	public boolean isStateless() {
+		return stateless;
+	}
+
+	public void setMessages(MessageSourceAccessor messages) {
+		this.messages = messages;
+	}
+
+	public void setEntryPoints(List<MatchedAuthenticationEntryPoint> entryPoints) {
+		this.entryPoints = entryPoints;
+	}
+
+	public void setStateless(boolean stateless) {
+		this.stateless = stateless;
 	}
 	
 }

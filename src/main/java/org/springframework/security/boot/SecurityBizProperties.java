@@ -33,6 +33,10 @@ public class SecurityBizProperties {
 	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 	@NestedConfigurationProperty
 	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
+	/** 
+     * Whether stateless session
+     */
+	private boolean stateless = false;
 	
 	public Map<String, String> getFilterChainDefinitionMap() {
 		return filterChainDefinitionMap;
@@ -48,6 +52,14 @@ public class SecurityBizProperties {
 
 	public void setEntryPoint(SecurityEntryPointProperties entryPoint) {
 		this.entryPoint = entryPoint;
+	}
+
+	public boolean isStateless() {
+		return stateless;
+	}
+
+	public void setStateless(boolean stateless) {
+		this.stateless = stateless;
 	}
 
 }
