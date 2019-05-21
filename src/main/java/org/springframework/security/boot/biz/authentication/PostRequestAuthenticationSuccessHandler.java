@@ -1,7 +1,9 @@
 package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,10 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
+import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.util.CollectionUtils;
 
@@ -96,9 +99,22 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 
-		JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_SUCCESS.getCode(),
-				messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey())));
-
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    	
+		Map<String, Object> tokenMap = new HashMap<String, Object>();
+		tokenMap.put("code", AuthResponseCode.SC_AUTHC_SUCCESS.getCode());
+		tokenMap.put("msg", messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey()));
+		// 账号首次登陆标记
+		if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
+			tokenMap.put("initial", ((SecurityPrincipal) userDetails).isInitial());
+		} else {
+			tokenMap.put("initial", false);
+		}
+		tokenMap.put("perms", userDetails.getAuthorities());
+		tokenMap.put("username", userDetails.getUsername());
+		
+		JSONObject.writeJSONString(response.getWriter(), tokenMap);
+		
 	}
 
 	public List<AuthenticationListener> getAuthenticationListeners() {
