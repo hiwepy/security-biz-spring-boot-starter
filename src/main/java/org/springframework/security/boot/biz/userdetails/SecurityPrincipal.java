@@ -18,6 +18,11 @@ import org.springframework.security.core.userdetails.User;
 public class SecurityPrincipal extends User implements Cloneable {
 
 	/**
+	 * 账号首次登陆标记
+	 */
+	protected boolean initial = false;
+	
+	/**
 	 * 用户ID（用户来源表Id）
 	 */
 	protected String userid;
@@ -77,6 +82,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
 	
+	public boolean isInitial() {
+		return initial;
+	}
+
+	public void setInitial(boolean initial) {
+		this.initial = initial;
+	}
+
 	public String getUserid() {
 		return userid;
 	}
