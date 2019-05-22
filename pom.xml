@@ -364,7 +364,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<fastjson.version>1.2.57</fastjson.version>
+		<fastjson.version>1.2.58</fastjson.version>
+		<jwt-issuer.version>1.0.2-SNAPSHOT</jwt-issuer.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
@@ -381,6 +382,11 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>fastjson</artifactId>
 				<version>${fastjson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.vindell</groupId>
+				<artifactId>jwt-issuer-api</artifactId>
+				<version>${jwt-issuer.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -473,6 +479,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.vindell</groupId>
+			<artifactId>jwt-issuer-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		
 	</dependencies>
