@@ -30,7 +30,15 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 	public static boolean isAjaxResponse(HttpServletRequest request) {
 		return isAjaxRequest(request) || isContentTypeJson(request) || isPostRequest(request);
 	}
-	
+
+    public static boolean isObjectRequest(HttpServletRequest request) {
+        return isAjaxRequest(request) && isContentTypeJson(request);
+    }
+
+    public static boolean isObjectRequest(SavedRequest request) {
+        return isAjaxRequest(request) && isContentTypeJson(request);
+    }
+    
     public static boolean isAjaxRequest(HttpServletRequest request) {
         return XML_HTTP_REQUEST.equals(request.getHeader(X_REQUESTED_WITH));
     }

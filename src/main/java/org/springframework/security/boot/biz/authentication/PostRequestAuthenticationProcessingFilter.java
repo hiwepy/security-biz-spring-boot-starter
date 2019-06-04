@@ -94,7 +94,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 
 			AbstractAuthenticationToken authRequest = null;
 			// Post && JSON
-			if(WebUtils.isAjaxResponse(request)) {
+			if(WebUtils.isObjectRequest(request)) {
 				
 				PostLoginRequest loginRequest = objectMapper.readValue(request.getReader(), PostLoginRequest.class);
 				
