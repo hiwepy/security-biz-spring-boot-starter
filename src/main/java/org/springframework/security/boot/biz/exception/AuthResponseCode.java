@@ -6,6 +6,8 @@ package org.springframework.security.boot.biz.exception;
 public enum AuthResponseCode {
 	
 	SC_AUTHC_SUCCESS("0", "spring.security.authc.success"),
+	SC_AUTHC_ERROR("500", "spring.security.authc.error"),
+	SC_AUTHC_LOGOUT("900", "spring.security.authc.logout"),
 	SC_AUTHC_FAIL("10001", "spring.security.authc.fail"),
 	SC_AUTHC_METHOD_NOT_ALLOWED("10002", "spring.security.authc.method-not-supported"),
 	SC_AUTHC_OVER_RETRY_REMIND("10003", "spring.security.authc.over-retry-remind"),
