@@ -17,6 +17,7 @@ package org.springframework.security.boot.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
@@ -24,10 +25,12 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 
 	private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
     private static final String X_REQUESTED_WITH = "X-Requested-With";
-
-    private static final String CONTENT_TYPE = "Content-type";
     private static final String CONTENT_TYPE_JSON = "application/json";
 
+	public static boolean isAjaxResponse(HttpServletRequest request) {
+		return isAjaxRequest(request) || isContentTypeJson(request) || isPostRequest(request);
+	}
+	
     public static boolean isAjaxRequest(HttpServletRequest request) {
         return XML_HTTP_REQUEST.equals(request.getHeader(X_REQUESTED_WITH));
     }
@@ -37,11 +40,11 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
     }
 
     public static boolean isContentTypeJson(HttpServletRequest request) {
-        return request.getHeader(CONTENT_TYPE).contains(CONTENT_TYPE_JSON);
+        return request.getHeader(HttpHeaders.CONTENT_TYPE).contains(CONTENT_TYPE_JSON);
     }
     
     public static boolean isContentTypeJson(SavedRequest request) {
-        return request.getHeaderValues(CONTENT_TYPE).contains(CONTENT_TYPE_JSON);
+        return request.getHeaderValues(HttpHeaders.CONTENT_TYPE).contains(CONTENT_TYPE_JSON);
     }
     
     public static boolean isPostRequest(HttpServletRequest request) {
