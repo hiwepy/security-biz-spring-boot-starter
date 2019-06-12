@@ -27,10 +27,13 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	protected String userid;
 	/**
-	 * 用户Key
+	 * 用户Key：用户业务表中的唯一ID
 	 */
 	protected String userkey;
-	
+	/**
+	 * 用户Code：用户业务表中的唯一编码
+	 */
+	protected String usercode;
 	/**
 	 * 用户密码盐：用于密码加解密
 	 */
@@ -104,6 +107,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setUserkey(String userkey) {
 		this.userkey = userkey;
+	}
+
+	public String getUsercode() {
+		return usercode;
+	}
+
+	public void setUsercode(String usercode) {
+		this.usercode = usercode;
 	}
 
 	public String getSalt() {
