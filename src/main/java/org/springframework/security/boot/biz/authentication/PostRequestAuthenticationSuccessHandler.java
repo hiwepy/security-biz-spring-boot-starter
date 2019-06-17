@@ -106,9 +106,18 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 		tokenMap.put("msg", messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey()));
 		// 账号首次登陆标记
 		if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
-			tokenMap.put("initial", ((SecurityPrincipal) userDetails).isInitial());
+			SecurityPrincipal securityPrincipal = (SecurityPrincipal) userDetails;
+			tokenMap.put("initial", securityPrincipal.isInitial());
+			tokenMap.put("alias", securityPrincipal.getAlias());
+			tokenMap.put("usercode", securityPrincipal.getUsercode());
+			tokenMap.put("userkey", securityPrincipal.getUserkey());
+			tokenMap.put("userid", securityPrincipal.getUserid());
 		} else {
 			tokenMap.put("initial", false);
+			tokenMap.put("alias", "");
+			tokenMap.put("usercode", "");
+			tokenMap.put("userkey", "");
+			tokenMap.put("userid", "");
 		}
 		tokenMap.put("perms", userDetails.getAuthorities());
 		tokenMap.put("username", userDetails.getUsername());
