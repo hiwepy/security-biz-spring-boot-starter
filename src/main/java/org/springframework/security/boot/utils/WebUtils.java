@@ -32,11 +32,11 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
 	}
 
     public static boolean isObjectRequest(HttpServletRequest request) {
-        return isAjaxRequest(request) && isContentTypeJson(request);
+        return isPostRequest(request) && isContentTypeJson(request);
     }
 
     public static boolean isObjectRequest(SavedRequest request) {
-        return isAjaxRequest(request) && isContentTypeJson(request);
+        return isPostRequest(request) && isContentTypeJson(request);
     }
     
     public static boolean isAjaxRequest(HttpServletRequest request) {
@@ -56,6 +56,10 @@ public class WebUtils extends org.springframework.web.util.WebUtils {
     }
     
     public static boolean isPostRequest(HttpServletRequest request) {
+        return HttpMethod.POST.name().equals(request.getMethod());
+    }
+    
+    public static boolean isPostRequest(SavedRequest request) {
         return HttpMethod.POST.name().equals(request.getMethod());
     }
     
