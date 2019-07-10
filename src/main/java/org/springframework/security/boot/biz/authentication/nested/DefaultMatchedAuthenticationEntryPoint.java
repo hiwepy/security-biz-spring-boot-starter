@@ -50,7 +50,7 @@ public class DefaultMatchedAuthenticationEntryPoint implements MatchedAuthentica
 	
 	@Override
 	public boolean supports(AuthenticationException e) {
-		return SubjectUtils.supports(e.getClass(), AuthenticationMethodNotSupportedException.class,
+		return SubjectUtils.isAssignableFrom(e.getClass(), AuthenticationMethodNotSupportedException.class,
 				AuthenticationCaptchaNotFoundException.class, AuthenticationCaptchaIncorrectException.class,
 				AuthenticationTokenNotFoundException.class, AuthenticationTokenIncorrectException.class,
 				AuthenticationTokenExpiredException.class);

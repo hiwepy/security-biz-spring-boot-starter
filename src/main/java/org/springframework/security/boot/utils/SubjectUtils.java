@@ -60,9 +60,21 @@ public class SubjectUtils {
 		return getRequest().getSession(create);
 	}
 	
-	public static boolean supports(Class<?> target, Class<?> ... classes) {
-		if(classes != null) {
+	/**
+	 * 检查target类型对是否是给出对象类型数组中任意一个的类型的子类或者子接口
+	 * @param target
+	 * @param classes
+	 * @return
+	 */
+	public static boolean isAssignableFrom(Class<?> target, Class<?> ... classes) {
+		if(target != null && classes != null) {
 			for (Class<?> clazz : classes) {
+				/*
+				 *	假设有两个类Class1和Class2。Class1.isAssignableFrom(Class2)表示:
+    			 *	1、类Class1和Class2是否相同。
+    			 *	2、Class1是否是Class2的父类或接口 
+				 */
+				// clazz是否和target类型相同或者，clazz是否是target的父类或接口 
 				if(clazz != null && clazz.isAssignableFrom(target)) {
 					return true;
 				};
