@@ -2,7 +2,9 @@ package org.springframework.security.boot.biz.userdetails;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,28 +18,23 @@ import org.springframework.security.core.userdetails.User;
  */
 @SuppressWarnings("serial")
 public class SecurityPrincipal extends User implements Cloneable {
-
-	/**
-	 * 账号首次登陆标记
-	 */
-	protected boolean initial = false;
 	
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
-	protected String userid;
+	private String userid;
 	/**
 	 * 用户Key：用户业务表中的唯一ID
 	 */
-	protected String userkey;
+	private String userkey;
 	/**
 	 * 用户Code：用户业务表中的唯一编码
 	 */
-	protected String usercode;
+	private String usercode;
 	/**
 	 * 用户密码盐：用于密码加解密
 	 */
-	protected String salt;
+	private String salt;
 	/**
 	 * 用户秘钥：用于用户JWT加解密
 	 */
@@ -49,7 +46,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户角色（ID或唯一Key）
 	 */
-	protected String role;
+	private String role;
+	/**
+	 * 账号首次登陆标记
+	 */
+	private boolean initial = false;
 	/**
 	 * 用户拥有角色列表
 	 */
@@ -58,6 +59,10 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 * 用户权限标记列表
 	 */
 	private Set<String> perms;
+	/**
+	 * 用户数据
+	 */
+	private Map<String, Object> profile = new HashMap<String, Object>();
 	
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
@@ -167,6 +172,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	public Map<String, Object> getProfile() {
+		return profile;
+	}
+
+	public void setProfile(Map<String, Object> profile) {
+		this.profile = profile;
 	}
 
 	@Override
