@@ -44,7 +44,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private String alias;
 	/**
-	 * 用户角色（ID或唯一Key）
+	 * 用户角色ID
+	 */
+	private String roleid;
+	/**
+	 * 用户角色Key
 	 */
 	private String role;
 	/**
@@ -140,6 +144,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setSecret(String secret) {
 		this.secret = secret;
+	}
+	
+	public String getRoleid() {
+		return roleid;
+	}
+
+	public void setRoleid(String roleid) {
+		this.roleid = roleid;
 	}
 
 	public String getRole() {
