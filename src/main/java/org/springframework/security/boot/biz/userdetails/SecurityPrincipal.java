@@ -67,6 +67,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 * 用户数据
 	 */
 	private Map<String, Object> profile = new HashMap<String, Object>();
+	/**
+	 * 用户是否功能受限（false:无限制|true:有限制）
+	 */
+	private boolean restricted = false;
+	
 	
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
@@ -192,6 +197,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setProfile(Map<String, Object> profile) {
 		this.profile = profile;
+	}
+	
+	public boolean isRestricted() {
+		return restricted;
+	}
+
+	public void setRestricted(boolean restricted) {
+		this.restricted = restricted;
 	}
 
 	@Override

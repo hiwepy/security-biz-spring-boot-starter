@@ -31,5 +31,5 @@ public abstract class JwtPayloadRepository {
 	public abstract boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException;
 
 	public abstract JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry);
-
+	
 }
