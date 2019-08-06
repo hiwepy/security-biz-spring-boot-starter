@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.User;
  */
 @SuppressWarnings("serial")
 public class SecurityPrincipal extends User implements Cloneable {
-	
+
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
@@ -52,9 +52,9 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private String role;
 	/**
-	 * 账号首次登陆标记
+	 * 用户人脸识别ID
 	 */
-	private boolean initial = false;
+	private String faceId;
 	/**
 	 * 用户拥有角色列表
 	 */
@@ -68,27 +68,33 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private Map<String, Object> profile = new HashMap<String, Object>();
 	/**
+	 * 用户是否首次登陆
+	 */
+	private boolean initial = false;
+	/**
 	 * 用户是否功能受限（false:无限制|true:有限制）
 	 */
 	private boolean restricted = false;
-	
-	
+	/**
+	 * 用户是否扫脸登录
+	 */
+	private boolean face = false;
+
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
 	}
-	
-	public static Collection<? extends GrantedAuthority> roleAuthorities(List<String> roles){
-		
-		if (roles == null) { 
+
+	public static Collection<? extends GrantedAuthority> roleAuthorities(List<String> roles) {
+
+		if (roles == null) {
 			throw new InsufficientAuthenticationException("User has no roles assigned");
 		}
-        List<GrantedAuthority> authorities = roles.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority))
-                .collect(Collectors.toList());
-        
+		List<GrantedAuthority> authorities = roles.stream().map(authority -> new SimpleGrantedAuthority(authority))
+				.collect(Collectors.toList());
+
 		return authorities;
 	}
-	
+
 	public SecurityPrincipal(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 	}
@@ -98,7 +104,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
-	
+
 	public boolean isInitial() {
 		return initial;
 	}
@@ -150,7 +156,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	public void setSecret(String secret) {
 		this.secret = secret;
 	}
-	
+
 	public String getRoleid() {
 		return roleid;
 	}
@@ -165,6 +171,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public String getFaceId() {
+		return faceId;
+	}
+
+	public void setFaceId(String faceId) {
+		this.faceId = faceId;
 	}
 
 	public Set<String> getRoles() {
@@ -198,13 +212,21 @@ public class SecurityPrincipal extends User implements Cloneable {
 	public void setProfile(Map<String, Object> profile) {
 		this.profile = profile;
 	}
-	
+
 	public boolean isRestricted() {
 		return restricted;
 	}
 
 	public void setRestricted(boolean restricted) {
 		this.restricted = restricted;
+	}
+
+	public boolean isFace() {
+		return face;
+	}
+
+	public void setFace(boolean face) {
+		this.face = face;
 	}
 
 	@Override
@@ -229,9 +251,10 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	@Override
 	public String toString() {
-		return " User {" + "userid=" + userid + ", username='" + getUsername() + '\'' + ", password='" + getPassword() + '\''
-				+ ", salt='" + salt + '\'' + ", enabled='" + isEnabled() + '\'' + ", accountNonExpired=" + isAccountNonExpired()
-				+ ", credentialsNonExpired=" + isCredentialsNonExpired() + ", accountNonLocked=" + isAccountNonLocked() + '}';
+		return " User {" + "userid=" + userid + ", username='" + getUsername() + '\'' + ", password='" + getPassword()
+				+ '\'' + ", salt='" + salt + '\'' + ", enabled='" + isEnabled() + '\'' + ", accountNonExpired="
+				+ isAccountNonExpired() + ", credentialsNonExpired=" + isCredentialsNonExpired() + ", accountNonLocked="
+				+ isAccountNonLocked() + '}';
 	}
 
 }
