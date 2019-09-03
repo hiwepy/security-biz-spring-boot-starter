@@ -22,7 +22,7 @@ spring:
        '[/monitoring2]' : roles[1,admin]
        '[/monitoring3]' : perms[1,admin]
        '[/monitoring4]' : perms[1]
-    upc:      authc:        always-use-default-target-url: false
+    def:      authc:        always-use-default-target-url: false
         login-url: /authz/login
         success-url: /index
         failure-url: /error

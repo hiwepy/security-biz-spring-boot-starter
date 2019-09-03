@@ -89,6 +89,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
 	    private final RememberMeServices rememberMeServices;
 	    private final SessionRegistry sessionRegistry;
 	    
+	    private final SecurityBizProperties bizProperties;
     	private final SecurityBizUpcProperties bizUpcProperties;
 	    private final PostRequestAuthenticationProvider authenticationProvider;
 	    private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
@@ -104,13 +105,15 @@ public class SecurityBizUpcFilterAutoConfiguration {
 		private final SessionInformationExpiredStrategy expiredSessionStrategy;
    		
    		public UpcWebSecurityConfigurerAdapter(
-   			
+   				
+   				SecurityBizProperties bizProperties,
+   				SecurityBizUpcProperties bizUpcProperties,
+   				
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider,
    				ObjectProvider<SessionRegistry> sessionRegistryProvider,
    				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
    				
-   				SecurityBizUpcProperties bizUpcProperties,
    				ObjectProvider<PostRequestAuthenticationProvider> authenticationProvider,
    				@Qualifier("upcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
    				@Qualifier("upcAuthenticationFailureHandler") ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
@@ -125,12 +128,14 @@ public class SecurityBizUpcFilterAutoConfiguration {
 				@Qualifier("upcExpiredSessionStrategy") ObjectProvider<SessionInformationExpiredStrategy> expiredSessionStrategyProvider
 			) {
    			
+   			this.bizProperties = bizProperties;
+   			this.bizUpcProperties = bizUpcProperties;
+   			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
    			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
    			this.sessionRegistry = sessionRegistryProvider.getIfAvailable();
    			
-   			this.bizUpcProperties = bizUpcProperties;
    			this.authenticationProvider = authenticationProvider.getIfAvailable();
    			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
    			this.authenticationFailureHandler = authenticationFailureHandler.getIfAvailable();
@@ -192,7 +197,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
    	    protected void configure(HttpSecurity http) throws Exception {
    			
    			// Session 管理器配置参数
-   	    	SecuritySessionMgtProperties sessionMgt = bizUpcProperties.getSessionMgt();
+   	    	SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
    	    	// Session 注销配置参数
    	    	SecurityLogoutProperties logout = bizUpcProperties.getLogout();
    	    	

@@ -21,6 +21,8 @@ import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityEntryPointProperties;
+import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
+import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 public class SecurityBizProperties {
@@ -31,12 +33,16 @@ public class SecurityBizProperties {
 	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
 	 */
 	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
-	@NestedConfigurationProperty
-	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
 	/** 
      * Whether stateless session
      */
 	private boolean stateless = false;
+	@NestedConfigurationProperty
+	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
+	@NestedConfigurationProperty
+	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
 	
 	public Map<String, String> getFilterChainDefinitionMap() {
 		return filterChainDefinitionMap;
@@ -54,6 +60,22 @@ public class SecurityBizProperties {
 		this.entryPoint = entryPoint;
 	}
 
+	public SecuritySessionMgtProperties getSessionMgt() {
+		return sessionMgt;
+	}
+
+	public void setSessionMgt(SecuritySessionMgtProperties sessionMgt) {
+		this.sessionMgt = sessionMgt;
+	}
+	
+	public SecurityRedirectProperties getRedirect() {
+		return redirect;
+	}
+
+	public void setRedirect(SecurityRedirectProperties redirect) {
+		this.redirect = redirect;
+	}
+	
 	public boolean isStateless() {
 		return stateless;
 	}

@@ -21,8 +21,6 @@ import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
-import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
 /**
  *   默认的权限配置
@@ -42,10 +40,6 @@ public class SecurityBizUpcProperties {
 	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
 	@NestedConfigurationProperty
 	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
-	@NestedConfigurationProperty
-	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
-	@NestedConfigurationProperty
-	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 
 	public boolean isEnabled() {
 		return enabled;
@@ -77,22 +71,6 @@ public class SecurityBizUpcProperties {
 
 	public void setLogout(SecurityLogoutProperties logout) {
 		this.logout = logout;
-	}
-
-	public SecurityRedirectProperties getRedirect() {
-		return redirect;
-	}
-
-	public void setRedirect(SecurityRedirectProperties redirect) {
-		this.redirect = redirect;
-	}
-
-	public SecuritySessionMgtProperties getSessionMgt() {
-		return sessionMgt;
-	}
-
-	public void setSessionMgt(SecuritySessionMgtProperties sessionMgt) {
-		this.sessionMgt = sessionMgt;
 	}
 
 	public SecurityCaptchaProperties getCaptcha() {

@@ -32,6 +32,8 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
+import org.springframework.security.boot.biz.property.SessionFixationPolicy;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -44,12 +46,20 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -108,6 +118,43 @@ public class SecurityBizAutoConfiguration {
    	public PermissionEvaluator permissionEvaluator() {
    		return new AuthorizationPermissionEvaluator();
    	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public RequestCache requestCache(SecurityBizProperties bizProperties) {
+		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+		requestCache.setCreateSessionAllowed(bizProperties.getSessionMgt().isAllowSessionCreation());
+		requestCache.setSessionAttrName(bizProperties.getSessionMgt().getSessionAttrName());
+		// requestCache.setRequestMatcher(requestMatcher);
+		// requestCache.setSessionAttrName(sessionAttrName);
+		return requestCache;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public RedirectStrategy redirectStrategy(SecurityBizProperties bizProperties) {
+		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+		redirectStrategy.setContextRelative(bizProperties.getRedirect().isContextRelative());
+		return redirectStrategy;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public SessionAuthenticationStrategy sessionAuthenticationStrategy(SecurityBizProperties bizProperties) {
+		// Session 管理器配置参数
+		SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
+		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgt.getFixationPolicy())) {
+			return new ChangeSessionIdAuthenticationStrategy();
+		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgt.getFixationPolicy())) {
+			return new SessionFixationProtectionStrategy();
+		} else if (SessionFixationPolicy.NEW_SESSION.equals(sessionMgt.getFixationPolicy())) {
+			SessionFixationProtectionStrategy sessionFixationProtectionStrategy = new SessionFixationProtectionStrategy();
+			sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
+			return sessionFixationProtectionStrategy;
+		} else {
+			return new NullAuthenticatedSessionStrategy();
+		}
+	}
 	
 	@Bean
 	@ConditionalOnMissingBean
