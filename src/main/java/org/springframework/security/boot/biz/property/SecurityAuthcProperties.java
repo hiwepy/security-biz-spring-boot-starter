@@ -39,7 +39,6 @@ public class SecurityAuthcProperties {
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl = "/error";
 
-	private boolean allowSessionCreation = false;
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
 	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
@@ -109,14 +108,6 @@ public class SecurityAuthcProperties {
 
 	public void setFailureUrl(String failureUrl) {
 		this.failureUrl = failureUrl;
-	}
-
-	public boolean isAllowSessionCreation() {
-		return allowSessionCreation;
-	}
-
-	public void setAllowSessionCreation(boolean allowSessionCreation) {
-		this.allowSessionCreation = allowSessionCreation;
 	}
 
 	public boolean isContinueChainBeforeSuccessfulAuthentication() {

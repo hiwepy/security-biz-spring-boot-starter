@@ -113,7 +113,7 @@ public class SecurityBizUpcAutoConfiguration {
 			RedirectStrategy redirectStrategy) {
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
 				authenticationListeners, failureHandlers);
-		failureHandler.setAllowSessionCreation(bizUpcProperties.getAuthc().isAllowSessionCreation());
+		failureHandler.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		failureHandler.setDefaultFailureUrl(bizUpcProperties.getAuthc().getFailureUrl());
 		failureHandler.setRedirectStrategy(redirectStrategy);
 		failureHandler.setStateless(bizProperties.isStateless());

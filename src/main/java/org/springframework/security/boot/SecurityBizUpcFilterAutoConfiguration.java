@@ -168,7 +168,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			// 认证失败计数器
    			authcFilter.setFailureCounter(authenticatingFailureCounter);
 
-   			authcFilter.setAllowSessionCreation(bizUpcProperties.getAuthc().isAllowSessionCreation());
+   			authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
    			authcFilter.setApplicationEventPublisher(eventPublisher);
    			authcFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
    			authcFilter.setAuthenticationManager(authenticationManager);
