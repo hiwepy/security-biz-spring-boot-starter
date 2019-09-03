@@ -122,9 +122,9 @@ public class SecurityBizUpcFilterAutoConfiguration {
    				@Qualifier("upcAuthenticatingFailureCounter") ObjectProvider<AuthenticatingFailureCounter> authenticatingFailureCounter,
    				@Qualifier("upcCsrfTokenRepository") ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
    				@Qualifier("upcInvalidSessionStrategy") ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider,
-				@Qualifier("upcRequestCache") ObjectProvider<RequestCache> requestCacheProvider,
+				ObjectProvider<RequestCache> requestCacheProvider,
 				@Qualifier("upcSecurityContextLogoutHandler")  ObjectProvider<SecurityContextLogoutHandler> securityContextLogoutHandlerProvider,
-				@Qualifier("upcSessionAuthenticationStrategy") ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider,
+				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider,
 				@Qualifier("upcExpiredSessionStrategy") ObjectProvider<SessionInformationExpiredStrategy> expiredSessionStrategyProvider
 			) {
    			
