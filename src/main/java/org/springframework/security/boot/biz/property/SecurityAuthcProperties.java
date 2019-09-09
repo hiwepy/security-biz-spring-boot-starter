@@ -29,7 +29,6 @@ public class SecurityAuthcProperties {
 
 	/** 登录地址：会话不存在时访问的地址 */
 	private String loginUrl = "/login";
-	private String loginUrlPatterns = "/login";
 	/** 重定向地址：会话注销后的重定向地址 */
 	private String redirectUrl = "/";
 	/** 系统主页：登录成功后跳转路径 */
@@ -68,14 +67,6 @@ public class SecurityAuthcProperties {
 
 	public void setLoginUrl(String loginUrl) {
 		this.loginUrl = loginUrl;
-	}
-
-	public String getLoginUrlPatterns() {
-		return loginUrlPatterns;
-	}
-
-	public void setLoginUrlPatterns(String loginUrlPatterns) {
-		this.loginUrlPatterns = loginUrlPatterns;
 	}
 
 	public String getRedirectUrl() {

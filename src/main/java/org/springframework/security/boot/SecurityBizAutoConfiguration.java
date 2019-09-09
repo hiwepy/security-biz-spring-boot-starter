@@ -232,7 +232,7 @@ public class SecurityBizAutoConfiguration {
    				}).collect(Collectors.toList());
    			}
    			// 登录地址不拦截 
-   			permitMatchers.add(bizUpcProperties.getAuthc().getLoginUrlPatterns());
+   			permitMatchers.add(bizUpcProperties.getAuthc().getLoginUrl());
    			
    			//添加不需要认证的路径 
    			registry.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).permitAll();
@@ -325,7 +325,7 @@ public class SecurityBizAutoConfiguration {
    				}).collect(Collectors.toList());
    			}
    			// 登录地址不拦截 
-   			permitMatchers.add(bizUpcProperties.getAuthc().getLoginUrlPatterns());
+   			permitMatchers.add(bizUpcProperties.getAuthc().getLoginUrl());
    			
    	    	web.ignoring().antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]));
    	    	

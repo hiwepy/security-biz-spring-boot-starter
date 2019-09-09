@@ -174,8 +174,8 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			authcFilter.setAuthenticationManager(authenticationManager);
    			authcFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
    			authcFilter.setContinueChainBeforeSuccessfulAuthentication(bizUpcProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
-   			if (StringUtils.hasText(bizUpcProperties.getAuthc().getLoginUrlPatterns())) {
-   				authcFilter.setFilterProcessesUrl(bizUpcProperties.getAuthc().getLoginUrlPatterns());
+   			if (StringUtils.hasText(bizUpcProperties.getAuthc().getLoginUrl())) {
+   				authcFilter.setFilterProcessesUrl(bizUpcProperties.getAuthc().getLoginUrl());
    			}
    			//authcFilter.setMessageSource(messageSource);
    			authcFilter.setUsernameParameter(bizUpcProperties.getAuthc().getUsernameParameter());
