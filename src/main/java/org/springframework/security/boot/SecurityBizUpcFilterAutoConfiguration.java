@@ -102,7 +102,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
     	private final RequestCache requestCache;
 		private final SecurityContextLogoutHandler securityContextLogoutHandler;
 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
-		private final SessionInformationExpiredStrategy expiredSessionStrategy;
+		private final SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
    		
    		public UpcWebSecurityConfigurerAdapter(
    				
@@ -110,22 +110,22 @@ public class SecurityBizUpcFilterAutoConfiguration {
    				SecurityBizUpcProperties bizUpcProperties,
    				
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
-   				ObjectProvider<ObjectMapper> objectMapperProvider,
-   				ObjectProvider<SessionRegistry> sessionRegistryProvider,
-   				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
-   				
-   				ObjectProvider<PostRequestAuthenticationProvider> authenticationProvider,
-   				@Qualifier("upcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
-   				@Qualifier("upcAuthenticationFailureHandler") ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
+   				ObjectProvider<AuthenticatingFailureCounter> authenticatingFailureCounter,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
-   				
-   				@Qualifier("upcAuthenticatingFailureCounter") ObjectProvider<AuthenticatingFailureCounter> authenticatingFailureCounter,
-   				@Qualifier("upcCsrfTokenRepository") ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
-   				@Qualifier("upcInvalidSessionStrategy") ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider,
+   				ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
+   				ObjectProvider<ObjectMapper> objectMapperProvider,
+   				ObjectProvider<PostRequestAuthenticationProvider> authenticationProvider,
+   				ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
+   				ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider,
 				ObjectProvider<RequestCache> requestCacheProvider,
-				@Qualifier("upcSecurityContextLogoutHandler")  ObjectProvider<SecurityContextLogoutHandler> securityContextLogoutHandlerProvider,
+				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
+				ObjectProvider<SessionRegistry> sessionRegistryProvider,
 				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider,
-				@Qualifier("upcExpiredSessionStrategy") ObjectProvider<SessionInformationExpiredStrategy> expiredSessionStrategyProvider
+				ObjectProvider<SessionInformationExpiredStrategy> sessionInformationExpiredStrategyProvider,
+				
+				@Qualifier("upcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
+				@Qualifier("upcSecurityContextLogoutHandler")  ObjectProvider<SecurityContextLogoutHandler> securityContextLogoutHandlerProvider
+				
 			) {
    			
    			this.bizProperties = bizProperties;
@@ -147,7 +147,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			this.requestCache = requestCacheProvider.getIfAvailable();
    			this.securityContextLogoutHandler = securityContextLogoutHandlerProvider.getIfAvailable();
    			this.sessionAuthenticationStrategy = sessionAuthenticationStrategyProvider.getIfAvailable();
-   			this.expiredSessionStrategy = expiredSessionStrategyProvider.getIfAvailable();
+   			this.sessionInformationExpiredStrategy = sessionInformationExpiredStrategyProvider.getIfAvailable();
    			
    		}
 
@@ -182,8 +182,8 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			authcFilter.setPasswordParameter(bizUpcProperties.getAuthc().getPasswordParameter());
    			authcFilter.setPostOnly(bizUpcProperties.getAuthc().isPostOnly());
    			authcFilter.setRememberMeServices(rememberMeServices);
-   			authcFilter.setRetryTimesKeyAttribute(bizUpcProperties.getAuthc().getRetryTimesKeyAttribute());
-   			authcFilter.setRetryTimesWhenAccessDenied(bizUpcProperties.getAuthc().getRetryTimesWhenAccessDenied());
+   			authcFilter.setRetryTimesKeyAttribute(bizProperties.getRetry().getRetryTimesKeyAttribute());
+   			authcFilter.setRetryTimesWhenAccessDenied(bizProperties.getRetry().getRetryTimesWhenAccessDenied());
    			authcFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
    			return authcFilter;
    		}
@@ -208,7 +208,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
    	    		.invalidSessionUrl(bizUpcProperties.getLogout().getLogoutUrl())
    	    		.maximumSessions(sessionMgt.getMaximumSessions())
    	    		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
-   	    		.expiredSessionStrategy(expiredSessionStrategy)
+   	    		.expiredSessionStrategy(sessionInformationExpiredStrategy)
    				.expiredUrl(bizUpcProperties.getLogout().getLogoutUrl())
    				.sessionRegistry(sessionRegistry)
    				.and()

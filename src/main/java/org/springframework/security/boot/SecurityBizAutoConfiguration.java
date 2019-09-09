@@ -29,6 +29,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
@@ -59,6 +61,9 @@ import org.springframework.security.web.authentication.session.NullAuthenticated
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -178,7 +183,18 @@ public class SecurityBizAutoConfiguration {
 			return new NullAuthenticatedSessionStrategy();
 		}
 	}
-
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public CsrfTokenRepository csrfTokenRepository(SecurityBizProperties bizProperties) {
+		// Session 管理器配置参数
+		SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
+		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgt.getFixationPolicy())) {
+			return new CookieCsrfTokenRepository();
+		}
+		return new HttpSessionCsrfTokenRepository();
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	public PostRequestAuthenticationEntryPoint postRequestAuthenticationEntryPoint(SecurityBizProperties bizProperties,
@@ -210,6 +226,14 @@ public class SecurityBizAutoConfiguration {
 		
 		return failureHandler;
 		
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public AuthenticatingFailureCounter authenticatingFailureCounter(SecurityBizProperties bizProperties) {
+		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
+		failureCounter.setRetryTimesKeyParameter(bizProperties.getRetry().getRetryTimesKeyParameter());
+		return failureCounter;
 	}
 	
 	@Configuration

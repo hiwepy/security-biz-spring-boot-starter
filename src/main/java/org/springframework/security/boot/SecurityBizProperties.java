@@ -21,6 +21,7 @@ import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityEntryPointProperties;
+import org.springframework.security.boot.biz.property.SecurityFailureRetryProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
@@ -43,6 +44,8 @@ public class SecurityBizProperties {
 	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+	@NestedConfigurationProperty
+	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
 	
 	public Map<String, String> getFilterChainDefinitionMap() {
 		return filterChainDefinitionMap;
@@ -76,6 +79,14 @@ public class SecurityBizProperties {
 		this.redirect = redirect;
 	}
 	
+	public SecurityFailureRetryProperties getRetry() {
+		return retry;
+	}
+
+	public void setRetry(SecurityFailureRetryProperties retry) {
+		this.retry = retry;
+	}
+
 	public boolean isStateless() {
 		return stateless;
 	}
