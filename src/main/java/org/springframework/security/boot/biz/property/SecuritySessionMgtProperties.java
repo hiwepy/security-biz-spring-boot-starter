@@ -37,6 +37,8 @@ public class SecuritySessionMgtProperties {
 	
 	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
 	
+	private boolean useForward = false;
+	
 	public boolean isAllowSessionCreation() {
 		return allowSessionCreation;
 	}
@@ -137,6 +139,14 @@ public class SecuritySessionMgtProperties {
 
 	public String getSessionAttrName() {
 		return sessionAttrName;
+	}
+
+	public boolean isUseForward() {
+		return useForward;
+	}
+
+	public void setUseForward(boolean useForward) {
+		this.useForward = useForward;
 	}
 	
 }
