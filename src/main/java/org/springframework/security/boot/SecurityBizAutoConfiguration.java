@@ -23,6 +23,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -296,7 +297,7 @@ public class SecurityBizAutoConfiguration {
 				}).collect(Collectors.toList());
 			}
 			// 登录地址不拦截
-			permitMatchers.add(bizUpcProperties.getAuthc().getLoginUrl());
+			permitMatchers.add(bizUpcProperties.getAuthc().getPathPattern());
 
 			// 添加不需要认证的路径
 			registry.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).permitAll();
@@ -390,9 +391,11 @@ public class SecurityBizAutoConfiguration {
 				}).collect(Collectors.toList());
 			}
 			// 登录地址不拦截
-			permitMatchers.add(bizUpcProperties.getAuthc().getLoginUrl());
+			permitMatchers.add(bizUpcProperties.getAuthc().getPathPattern());
 
-			web.ignoring().antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]));
+			web.ignoring()
+				.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
+				.antMatchers(HttpMethod.OPTIONS, "/**");
 
 			// web.httpFirewall(httpFirewall)
 
