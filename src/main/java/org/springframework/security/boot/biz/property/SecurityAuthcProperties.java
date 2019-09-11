@@ -25,8 +25,8 @@ import org.springframework.util.Assert;
 
 public class SecurityAuthcProperties {
 
-	/** 登录地址：会话不存在时访问的地址 */
-	private String loginUrl = "/login";
+	/** Authorization Path Pattern */
+	private String pathPattern = "/login";
 	/** 重定向地址：会话注销后的重定向地址 */
 	private String redirectUrl = "/";
 	/** 系统主页：登录成功后跳转路径 */
@@ -54,12 +54,12 @@ public class SecurityAuthcProperties {
 	private boolean forceHttps = false;
 	private boolean useForward = false;
 	
-	public String getLoginUrl() {
-		return loginUrl;
+	public String getPathPattern() {
+		return pathPattern;
 	}
 
-	public void setLoginUrl(String loginUrl) {
-		this.loginUrl = loginUrl;
+	public void setPathPattern(String pathPattern) {
+		this.pathPattern = pathPattern;
 	}
 
 	public String getRedirectUrl() {
