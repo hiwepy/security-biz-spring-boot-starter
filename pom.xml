@@ -364,7 +364,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<fastjson.version>1.2.58</fastjson.version>
+		<fastjson.version>1.2.61</fastjson.version>
 		<jwt-issuer.version>1.0.2-SNAPSHOT</jwt-issuer.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
