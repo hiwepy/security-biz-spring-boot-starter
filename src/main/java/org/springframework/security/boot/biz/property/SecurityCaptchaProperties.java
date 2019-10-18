@@ -25,10 +25,6 @@ public class SecurityCaptchaProperties {
 	 * The request parameter name of the captcha
 	 */
 	private String paramName = PostRequestAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CAPTCHA_KEY;
-	/** 
-	 * Maximum number of retry to login . 
-	 */
-	private int retryTimesWhenAccessDenied = 3;
 	/**
 	 * Whether to captcha required
 	 */
@@ -41,15 +37,7 @@ public class SecurityCaptchaProperties {
 	public void setParamName(String paramName) {
 		this.paramName = paramName;
 	}
-
-	public int getRetryTimesWhenAccessDenied() {
-		return retryTimesWhenAccessDenied;
-	}
-
-	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
-		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
-	}
-
+ 
 	public boolean isRequired() {
 		return required;
 	}

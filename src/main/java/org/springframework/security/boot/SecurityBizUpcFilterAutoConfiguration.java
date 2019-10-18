@@ -11,8 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -80,9 +79,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
     @ConditionalOnProperty(prefix = SecurityBizUpcProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityBizUpcProperties.class, SecurityBizProperties.class })
 	@Order(104)
-   	static class UpcWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
-    	
-    	private ApplicationEventPublisher eventPublisher;
+   	static class UpcWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
         private final AuthenticationManager authenticationManager;
 	    private final ObjectMapper objectMapper;
@@ -155,37 +152,38 @@ public class SecurityBizUpcFilterAutoConfiguration {
    		public PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() {
    			
    			// Form Login With Captcha
-   			PostRequestAuthenticationProcessingFilter authcFilter = new PostRequestAuthenticationProcessingFilter(
+   			PostRequestAuthenticationProcessingFilter authenticationFilter = new PostRequestAuthenticationProcessingFilter(
    					objectMapper);
+   			
+   			/**
+			 * 批量设置参数
+			 */
+			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+			
+			map.from(bizProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
+			
+			map.from(authenticationManager).to(authenticationFilter::setAuthenticationManager);
+			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
+			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
+			
+			map.from(bizUpcProperties.getCaptcha().getParamName()).to(authenticationFilter::setCaptchaParameter);
+			map.from(bizUpcProperties.getCaptcha().isRequired()).to(authenticationFilter::setCaptchaRequired);
+			map.from(captchaResolver).to(authenticationFilter::setCaptchaResolver);
+			map.from(authenticatingFailureCounter).to(authenticationFilter::setFailureCounter);
+			
+			map.from(bizUpcProperties.getAuthc().getUsernameParameter()).to(authenticationFilter::setUsernameParameter);
+			map.from(bizUpcProperties.getAuthc().getPasswordParameter()).to(authenticationFilter::setPasswordParameter);
+			map.from(bizUpcProperties.getAuthc().isPostOnly()).to(authenticationFilter::setPostOnly);
+			map.from(bizUpcProperties.getAuthc().getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
 
-   			authcFilter.setCaptchaParameter(bizUpcProperties.getCaptcha().getParamName());
-   			// 是否验证码必填
-   			authcFilter.setCaptchaRequired(bizUpcProperties.getCaptcha().isRequired());
-   			// 登陆失败重试次数，超出限制需要输入验证码
-   			authcFilter.setRetryTimesWhenAccessDenied(bizUpcProperties.getCaptcha().getRetryTimesWhenAccessDenied());
-   			// 验证码解析器
-   			authcFilter.setCaptchaResolver(captchaResolver);
-   			// 认证失败计数器
-   			authcFilter.setFailureCounter(authenticatingFailureCounter);
-
-   			authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
-   			authcFilter.setApplicationEventPublisher(eventPublisher);
-   			authcFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-   			authcFilter.setAuthenticationManager(authenticationManager);
-   			authcFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-   			authcFilter.setContinueChainBeforeSuccessfulAuthentication(bizUpcProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
-   			if (StringUtils.hasText(bizUpcProperties.getAuthc().getPathPattern())) {
-   				authcFilter.setFilterProcessesUrl(bizUpcProperties.getAuthc().getPathPattern());
-   			}
-   			//authcFilter.setMessageSource(messageSource);
-   			authcFilter.setUsernameParameter(bizUpcProperties.getAuthc().getUsernameParameter());
-   			authcFilter.setPasswordParameter(bizUpcProperties.getAuthc().getPasswordParameter());
-   			authcFilter.setPostOnly(bizUpcProperties.getAuthc().isPostOnly());
-   			authcFilter.setRememberMeServices(rememberMeServices);
-   			authcFilter.setRetryTimesKeyAttribute(bizProperties.getRetry().getRetryTimesKeyAttribute());
-   			authcFilter.setRetryTimesWhenAccessDenied(bizProperties.getRetry().getRetryTimesWhenAccessDenied());
-   			authcFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
-   			return authcFilter;
+			map.from(bizProperties.getRetry().getRetryTimesKeyAttribute()).to(authenticationFilter::setRetryTimesKeyAttribute);
+			map.from(bizProperties.getRetry().getRetryTimesWhenAccessDenied()).to(authenticationFilter::setRetryTimesWhenAccessDenied);
+			
+			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
+			map.from(bizUpcProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
+			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);
+			
+   			return authenticationFilter;
    		}
    		
    		@Override
@@ -240,11 +238,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
    	        }
    	        
    	    }
-   	    
-   		@Override
-   		public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-   			this.eventPublisher = applicationEventPublisher;
-   		}
 
    	}
 
