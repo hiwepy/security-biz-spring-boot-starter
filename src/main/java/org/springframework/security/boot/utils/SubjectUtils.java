@@ -37,11 +37,13 @@ public class SubjectUtils {
 	}
 	
 	public static Object getPrincipal(){
-		return getAuthentication().getPrincipal();
+		Authentication authentication = getAuthentication();
+		return authentication == null ? null : authentication.getPrincipal();
 	}
 	
 	public static boolean isAuthenticated(){
-		return getAuthentication().isAuthenticated();
+		Authentication authentication = getAuthentication();
+		return authentication == null ? false : authentication.isAuthenticated();
 	}
 	
 	public static ServletRequestAttributes getRequestAttributes() {
