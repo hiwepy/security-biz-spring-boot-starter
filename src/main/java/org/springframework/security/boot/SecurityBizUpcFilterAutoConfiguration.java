@@ -148,7 +148,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			
    		}
 
-   		@Bean
    		public PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() {
    			
    			// Form Login With Captcha
