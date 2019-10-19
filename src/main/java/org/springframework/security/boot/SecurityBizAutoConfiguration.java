@@ -302,18 +302,22 @@ public class SecurityBizAutoConfiguration {
 					System.out.println("Found value: " + rolesMatcher.group(0));
 					System.out.println("Found value: " + rolesMatcher.group(1));
 
-					List<String> matchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+					List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
 						return mapper.getKey();
 					}).collect(Collectors.toList());
 					// 角色
 					String[] roles = StringUtils.split(rolesMatcher.group(1), ",");
 					if (ArrayUtils.isNotEmpty(roles)) {
 						if (roles.length > 1) {
-							// 如果用户具备给定角色中的某一个的话，就允许访问
-							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyRole(roles);
+							for (String antPattern : antPatterns) {
+								// 如果用户具备给定角色中的某一个的话，就允许访问
+								http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyRole(roles);
+							}
 						} else {
-							// 如果用户具备给定角色的话，就允许访问
-							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasRole(roles[0]);
+							for (String antPattern : antPatterns) {
+								// 如果用户具备给定角色的话，就允许访问
+								http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasRole(roles[0]);
+							}
 						}
 					}
 				}
@@ -324,18 +328,22 @@ public class SecurityBizAutoConfiguration {
 					System.out.println("Found value: " + permsMatcher.group(0));
 					System.out.println("Found value: " + permsMatcher.group(1));
 
-					List<String> matchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+					List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
 						return mapper.getKey();
 					}).collect(Collectors.toList());
 					// 权限标记
 					String[] perms = StringUtils.split(permsMatcher.group(1), ",");
 					if (ArrayUtils.isNotEmpty(perms)) {
 						if (perms.length > 1) {
-							// 如果用户具备给定全权限的某一个的话，就允许访问
-							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyAuthority(perms);
+							for (String antPattern : antPatterns) {
+								// 如果用户具备给定全权限的某一个的话，就允许访问
+								http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyAuthority(perms);
+							}
 						} else {
-							// 如果用户具备给定权限的话，就允许访问
-							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasAuthority(perms[0]);
+							for (String antPattern : antPatterns) {
+								// 如果用户具备给定权限的话，就允许访问
+								http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAuthority(perms[0]);
+							}
 						}
 					}
 				}
@@ -346,14 +354,16 @@ public class SecurityBizAutoConfiguration {
 					System.out.println("Found value: " + ipMatcher.group(0));
 					System.out.println("Found value: " + ipMatcher.group(1));
 
-					List<String> matchers = groupingMap.get(key.toString()).stream().map(mapper -> {
+					List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
 						return mapper.getKey();
 					}).collect(Collectors.toList());
 					// ipaddress
 					String ipaddr = rolesMatcher.group(1);
 					if (StringUtils.hasText(ipaddr)) {
-						// 如果请求来自给定IP地址的话，就允许访问
-						http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasIpAddress(ipaddr);
+						for (String antPattern : antPatterns) {
+							// 如果请求来自给定IP地址的话，就允许访问
+							http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasIpAddress(ipaddr);
+						}
 					}
 				}
 			}
