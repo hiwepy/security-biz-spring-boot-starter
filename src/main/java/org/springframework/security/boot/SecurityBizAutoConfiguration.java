@@ -250,18 +250,15 @@ public class SecurityBizAutoConfiguration {
 		private final SecurityBizProperties bizProperties;
 		private final SecurityBizUpcProperties bizUpcProperties;
 		private final PostRequestAuthenticationEntryPoint authenticationEntryPoint;
-		private final List<SecurityBizConfigurerAdapter> securityBizConfigurerAdapters;
 		
 		public BizWebSecurityConfigurerAdapter(
 				ObjectProvider<PostRequestAuthenticationEntryPoint> authenticationEntryPointProvider,
-				ObjectProvider<SecurityBizConfigurerAdapter> securityBizConfigurerAdapterProvider,
 				SecurityBizProperties bizProperties, SecurityBizUpcProperties bizUpcProperties) {
 
 			this.authenticationEntryPoint = authenticationEntryPointProvider.getIfAvailable();
 
 			this.bizProperties = bizProperties;
 			this.bizUpcProperties = bizUpcProperties;
-			this.securityBizConfigurerAdapters = securityBizConfigurerAdapterProvider.orderedStream().collect(Collectors.toList());
 			
 		}
 
@@ -285,10 +282,6 @@ public class SecurityBizAutoConfiguration {
 		@Override
 		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 			super.configure(auth);
-			// 批量处理其他逻辑
-			for (SecurityBizConfigurerAdapter configurerAdapter : securityBizConfigurerAdapters) {
-				configurerAdapter.configure(auth);
-			}
 		}
 		
 		@Override
@@ -367,11 +360,6 @@ public class SecurityBizAutoConfiguration {
 			
 			http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
-			// 批量处理其他逻辑
-			for (SecurityBizConfigurerAdapter configurerAdapter : securityBizConfigurerAdapters) {
-				configurerAdapter.configure(http);
-			}
-			
 		}
 
 		@Override
@@ -395,10 +383,6 @@ public class SecurityBizAutoConfiguration {
 				.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
 				.antMatchers(HttpMethod.OPTIONS, "/**");
 			
-			// 批量处理其他逻辑
-			for (SecurityBizConfigurerAdapter configurerAdapter : securityBizConfigurerAdapters) {
-				configurerAdapter.configure(web);
-			}
 		}
 
 	}
