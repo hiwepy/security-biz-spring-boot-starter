@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,10 +42,10 @@ import org.springframework.security.boot.biz.authentication.nested.MatchedAuthen
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
 import org.springframework.security.boot.utils.StringUtils;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
@@ -240,25 +241,28 @@ public class SecurityBizAutoConfiguration {
 	@Configuration
 	@ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
 	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizUpcProperties.class })
-	@Order(103)
+	@Order(SecurityProperties.DEFAULT_FILTER_ORDER)
 	static class BizWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-		private Pattern rolesPattern = Pattern.compile("roles\\[(\\S)\\]");
-		private Pattern permsPattern = Pattern.compile("perms\\[(\\S)\\]");
-		private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S)\\]");
+		private Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
+		private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
+		private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
 		private final SecurityBizProperties bizProperties;
 		private final SecurityBizUpcProperties bizUpcProperties;
 		private final PostRequestAuthenticationEntryPoint authenticationEntryPoint;
-
+		private final List<SecurityBizConfigurerAdapter> securityBizConfigurerAdapters;
+		
 		public BizWebSecurityConfigurerAdapter(
 				ObjectProvider<PostRequestAuthenticationEntryPoint> authenticationEntryPointProvider,
+				ObjectProvider<SecurityBizConfigurerAdapter> securityBizConfigurerAdapterProvider,
 				SecurityBizProperties bizProperties, SecurityBizUpcProperties bizUpcProperties) {
 
 			this.authenticationEntryPoint = authenticationEntryPointProvider.getIfAvailable();
 
 			this.bizProperties = bizProperties;
 			this.bizUpcProperties = bizUpcProperties;
-
+			this.securityBizConfigurerAdapters = securityBizConfigurerAdapterProvider.orderedStream().collect(Collectors.toList());
+			
 		}
 
 		@Override
@@ -279,28 +283,21 @@ public class SecurityBizAutoConfiguration {
 		}
 
 		@Override
+		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+			super.configure(auth);
+			// 批量处理其他逻辑
+			for (SecurityBizConfigurerAdapter configurerAdapter : securityBizConfigurerAdapters) {
+				configurerAdapter.configure(auth);
+			}
+		}
+		
+		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
 			// 对过滤链按过滤器名称进行分组
 			Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap()
 					.entrySet().stream()
 					.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
-
-			ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http
-					.authorizeRequests();
-
-			List<Entry<String, String>> noneEntries = groupingMap.get("anon");
-			List<String> permitMatchers = new ArrayList<String>();
-			if (!CollectionUtils.isEmpty(noneEntries)) {
-				permitMatchers = noneEntries.stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
-			}
-			// 登录地址不拦截
-			permitMatchers.add(bizUpcProperties.getAuthc().getPathPattern());
-
-			// 添加不需要认证的路径
-			registry.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).permitAll();
 
 			// https://www.jianshu.com/p/01498e0e0c83
 			Set<Object> keySet = groupingMap.keySet();
@@ -320,10 +317,10 @@ public class SecurityBizAutoConfiguration {
 					if (ArrayUtils.isNotEmpty(roles)) {
 						if (roles.length > 1) {
 							// 如果用户具备给定角色中的某一个的话，就允许访问
-							registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyRole(roles);
+							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyRole(roles);
 						} else {
 							// 如果用户具备给定角色的话，就允许访问
-							registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasRole(roles[0]);
+							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasRole(roles[0]);
 						}
 					}
 				}
@@ -342,10 +339,10 @@ public class SecurityBizAutoConfiguration {
 					if (ArrayUtils.isNotEmpty(perms)) {
 						if (perms.length > 1) {
 							// 如果用户具备给定全权限的某一个的话，就允许访问
-							registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyAuthority(perms);
+							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasAnyAuthority(perms);
 						} else {
 							// 如果用户具备给定权限的话，就允许访问
-							registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasAuthority(perms[0]);
+							http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasAuthority(perms[0]);
 						}
 					}
 				}
@@ -363,21 +360,22 @@ public class SecurityBizAutoConfiguration {
 					String ipaddr = rolesMatcher.group(1);
 					if (StringUtils.hasText(ipaddr)) {
 						// 如果请求来自给定IP地址的话，就允许访问
-						registry.antMatchers(matchers.toArray(new String[matchers.size()])).hasIpAddress(ipaddr);
+						http.authorizeRequests().antMatchers(matchers.toArray(new String[matchers.size()])).hasIpAddress(ipaddr);
 					}
 				}
 			}
-
+			
 			http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
-			// 允许认证过的用户访问
-			// registry.anyRequest().authenticated();
-
+			// 批量处理其他逻辑
+			for (SecurityBizConfigurerAdapter configurerAdapter : securityBizConfigurerAdapters) {
+				configurerAdapter.configure(http);
+			}
+			
 		}
 
 		@Override
 		public void configure(WebSecurity web) throws Exception {
-
 			// 对过滤链按过滤器名称进行分组
 			Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap()
 					.entrySet().stream()
@@ -396,9 +394,11 @@ public class SecurityBizAutoConfiguration {
 			web.ignoring()
 				.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
 				.antMatchers(HttpMethod.OPTIONS, "/**");
-
-			// web.httpFirewall(httpFirewall)
-
+			
+			// 批量处理其他逻辑
+			for (SecurityBizConfigurerAdapter configurerAdapter : securityBizConfigurerAdapters) {
+				configurerAdapter.configure(web);
+			}
 		}
 
 	}

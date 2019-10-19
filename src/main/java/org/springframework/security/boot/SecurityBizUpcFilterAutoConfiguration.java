@@ -186,12 +186,12 @@ public class SecurityBizUpcFilterAutoConfiguration {
    		}
    		
    		@Override
-   	    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+   		public void configure(AuthenticationManagerBuilder auth) throws Exception {
    	        auth.authenticationProvider(authenticationProvider);
    	    }
    	    
    	    @Override
-   	    protected void configure(HttpSecurity http) throws Exception {
+   	    public void configure(HttpSecurity http) throws Exception {
    			
    			// Session 管理器配置参数
    	    	SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
@@ -223,6 +223,7 @@ public class SecurityBizUpcFilterAutoConfiguration {
    	    		.requestCache()
    	        	.requestCache(requestCache)
    	        	.and()
+   	        	.antMatcher(bizUpcProperties.getAuthc().getPathPattern())
    	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
    	       	// CSRF 配置
