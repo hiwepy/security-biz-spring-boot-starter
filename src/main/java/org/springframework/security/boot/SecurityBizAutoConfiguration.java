@@ -21,16 +21,12 @@ import org.springframework.security.boot.biz.authentication.AuthenticationListen
 import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
-import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
-import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.session.SessionRegistry;
@@ -238,25 +234,5 @@ public class SecurityBizAutoConfiguration {
 	public CaptchaResolver captchaResolver() {
 		return new NullCaptchaResolver();
 	}
-
-	@Bean
-	@ConditionalOnMissingBean
-	public DefaultMatchedAuthenticationFailureHandler defaultMatchedAuthenticationFailureHandler() {
-		return new DefaultMatchedAuthenticationFailureHandler();
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public DefaultMatchedAuthenticationEntryPoint defaultMatchedAuthenticationEntryPoint() {
-		return new DefaultMatchedAuthenticationEntryPoint();
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean
-	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
-			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
-		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
-	}
-	     
 
 }

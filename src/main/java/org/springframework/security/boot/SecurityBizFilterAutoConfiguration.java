@@ -23,15 +23,19 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
+import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
+import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -55,9 +59,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizProperties.class })
 public class SecurityBizFilterAutoConfiguration {
 
-
 	@Autowired
 	private SecurityBizProperties bizProperties;
+	
+
+	@Bean
+	@ConditionalOnMissingBean
+	public DefaultMatchedAuthenticationFailureHandler defaultMatchedAuthenticationFailureHandler() {
+		return new DefaultMatchedAuthenticationFailureHandler();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public DefaultMatchedAuthenticationEntryPoint defaultMatchedAuthenticationEntryPoint() {
+		return new DefaultMatchedAuthenticationEntryPoint();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public PostRequestAuthenticationProvider postRequestAuthenticationProvider(
+			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
+		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
+	}
 	
 	@Bean("upcAuthenticationSuccessHandler")
 	public PostRequestAuthenticationSuccessHandler upcAuthenticationSuccessHandler(
