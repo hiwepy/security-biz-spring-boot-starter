@@ -60,7 +60,7 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap()
 				.entrySet().stream()
 				.collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
-
+		
 		// https://www.jianshu.com/p/01498e0e0c83
 		Set<Object> keySet = groupingMap.keySet();
 		for (Object key : keySet) {
@@ -75,15 +75,11 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 				String[] roles = StringUtils.split(rolesMatcher.group(1), ",");
 				if (ArrayUtils.isNotEmpty(roles)) {
 					if (roles.length > 1) {
-						for (String antPattern : antPatterns) {
-							// 如果用户具备给定角色中的某一个的话，就允许访问
-							http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyRole(roles);
-						}
+						// 如果用户具备给定角色中的某一个的话，就允许访问
+						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyRole(roles);
 					} else {
-						for (String antPattern : antPatterns) {
-							// 如果用户具备给定角色的话，就允许访问
-							http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasRole(roles[0]);
-						}
+						// 如果用户具备给定角色的话，就允许访问
+						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasRole(roles[0]);
 					}
 				}
 			}
@@ -98,15 +94,11 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 				String[] perms = StringUtils.split(permsMatcher.group(1), ",");
 				if (ArrayUtils.isNotEmpty(perms)) {
 					if (perms.length > 1) {
-						for (String antPattern : antPatterns) {
-							// 如果用户具备给定全权限的某一个的话，就允许访问
-							http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyAuthority(perms);
-						}
+						// 如果用户具备给定全权限的某一个的话，就允许访问
+						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyAuthority(perms);
 					} else {
-						for (String antPattern : antPatterns) {
-							// 如果用户具备给定权限的话，就允许访问
-							http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAuthority(perms[0]);
-						}
+						// 如果用户具备给定权限的话，就允许访问
+						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAuthority(perms[0]);
 					}
 				}
 			}
@@ -120,10 +112,8 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 				// ipaddress
 				String ipaddr = ipMatcher.group(1);
 				if (StringUtils.hasText(ipaddr)) {
-					for (String antPattern : antPatterns) {
-						// 如果请求来自给定IP地址的话，就允许访问
-						http.antMatcher(antPattern).authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasIpAddress(ipaddr);
-					}
+					// 如果请求来自给定IP地址的话，就允许访问
+					http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasIpAddress(ipaddr);
 				}
 			}
 		}
@@ -131,6 +121,7 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
+		
 		// 对过滤链按过滤器名称进行分组
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap()
 				.entrySet().stream()
@@ -146,6 +137,8 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 		web.ignoring()
 			.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
 			.antMatchers(HttpMethod.OPTIONS, "/**");
+		
+		super.configure(web);
 	}
 	
 }
