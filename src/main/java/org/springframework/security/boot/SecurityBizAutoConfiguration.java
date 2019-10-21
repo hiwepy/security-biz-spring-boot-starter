@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.boot.biz.IgnoreLogoutHandler;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
@@ -40,6 +41,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -93,7 +95,7 @@ public class SecurityBizAutoConfiguration {
 	public RememberMeServices rememberMeServices() {
 		return new NullRememberMeServices();
 	}
-
+	
 	@Bean
 	@ConditionalOnMissingBean
 	public SessionRegistry sessionRegistry() {
@@ -223,6 +225,12 @@ public class SecurityBizAutoConfiguration {
 	public CaptchaResolver captchaResolver() {
 		return new NullCaptchaResolver();
 	}
+    
+    @Bean
+   	@ConditionalOnMissingBean 
+   	public LogoutHandler ignoreLogoutHandler() {
+   		return new IgnoreLogoutHandler();
+   	}
 
 	@Bean
 	@ConditionalOnMissingBean
