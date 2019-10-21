@@ -23,6 +23,8 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
+import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
+import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
@@ -38,7 +40,6 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -166,18 +167,6 @@ public class SecurityBizAutoConfiguration {
 	}
 	
 	@Bean
-	public SecurityContextLogoutHandler defaultLogoutHandler(SecurityBizProperties bizProperties) {
-		
-		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		
-		logoutHandler.setClearAuthentication(bizProperties.getLogout().isClearAuthentication());
-		logoutHandler.setInvalidateHttpSession(bizProperties.getLogout().isInvalidateHttpSession());
-		
-		return logoutHandler;
-	}
-	
-	
-	@Bean
 	@ConditionalOnMissingBean
 	public CsrfTokenRepository csrfTokenRepository(SecurityBizProperties bizProperties) {
 		// Session 管理器配置参数
@@ -233,6 +222,18 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean 
 	public CaptchaResolver captchaResolver() {
 		return new NullCaptchaResolver();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public DefaultMatchedAuthenticationFailureHandler defaultMatchedAuthenticationFailureHandler() {
+		return new DefaultMatchedAuthenticationFailureHandler();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public DefaultMatchedAuthenticationEntryPoint defaultMatchedAuthenticationEntryPoint() {
+		return new DefaultMatchedAuthenticationEntryPoint();
 	}
 
 }

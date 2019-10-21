@@ -26,7 +26,7 @@ public class SecurityLogoutProperties {
 
 	/** 注销地址：会话注销后的重定向地址 */
 	private String logoutUrl;
-	private String logoutUrlPatterns = "/logout";
+	private String pathPatterns = "/logout";
 	/** 注销地址：会话注销后的重定向地址 */
 	private String logoutSuccessUrl;
 

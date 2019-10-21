@@ -19,6 +19,8 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
@@ -42,7 +44,11 @@ public class SecurityAuthcProperties {
 	private String unauthorizedUrl = "/error";
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl = "/error";
-
+	
+	/** the username parameter name. Defaults to "username". */
+	private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
+	/** the password parameter name. Defaults to "password". */
+	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
 	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
@@ -50,15 +56,16 @@ public class SecurityAuthcProperties {
 	 * Defaults to <code>false</code>.
 	 */
 	private boolean continueChainBeforeSuccessfulAuthentication = false;
-	/** the username parameter name. Defaults to "username". */
-	private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
-	/** the password parameter name. Defaults to "password". */
-	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
+	private boolean forceHttps = false;
+	private boolean postOnly = true;
+	private String retryTimesKeyParameter = AuthenticatingFailureCounter.DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
+	private String retryTimesKeyAttribute = PostRequestAuthenticationProcessingFilter.DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
 	private String targetUrlParameter = "target";
 	private boolean alwaysUseDefaultTargetUrl = false;
+	
+	/** Maximum number of retry to login . */
+	private int retryTimesWhenAccessDenied = 3;
 	private boolean useReferer = false;
-	private boolean postOnly = true;
-	private boolean forceHttps = false;
 	private boolean useForward = false;
 	
 	/**

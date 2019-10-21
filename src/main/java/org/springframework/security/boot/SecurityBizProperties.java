@@ -20,12 +20,8 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
-import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
-import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityEntryPointProperties;
 import org.springframework.security.boot.biz.property.SecurityFailureRetryProperties;
-import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
@@ -49,6 +45,7 @@ public class SecurityBizProperties {
      * Whether stateless session
      */
 	private boolean stateless = false;
+	
 	@NestedConfigurationProperty
 	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
 	@NestedConfigurationProperty
@@ -57,14 +54,5 @@ public class SecurityBizProperties {
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
 	@NestedConfigurationProperty
 	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
-
-	@NestedConfigurationProperty
-	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
-	@NestedConfigurationProperty
-	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
-	@NestedConfigurationProperty
-	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
-	@NestedConfigurationProperty
-	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
 	
 }

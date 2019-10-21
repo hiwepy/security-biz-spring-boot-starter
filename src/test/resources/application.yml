@@ -1,7 +1,7 @@
 spring:
   # Spring Security 配置
   security:
-             # 默认路径拦截规则定义
+    # 默认路径拦截规则定义
     filter-chain-definition-map:
        '[/]' : anon
        '[/**/favicon.ico]' : anon
@@ -22,8 +22,8 @@ spring:
        '[/monitoring2]' : roles[1,admin]
        '[/monitoring3]' : perms[1,admin]
        '[/monitoring4]' : perms[1]
-    def:      authc:        always-use-default-target-url: false
-        login-url: /authz/login
+    form:      authc:        path-pattern: /authz/login
+        always-use-default-target-url: false
         success-url: /index
         failure-url: /error
         unauthorized-url: /error
