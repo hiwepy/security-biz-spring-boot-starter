@@ -15,24 +15,19 @@
  */
 package org.springframework.security.boot.biz.property;
 
-public class SecurityRedirectProperties {
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-	private boolean contextRelative;
+@Getter
+@Setter
+@ToString
+public class SecurityRedirectProperties {
 
 	/**
 	 * If <tt>true</tt>, causes any redirection URLs to be calculated minus the protocol
 	 * and context path (defaults to <tt>false</tt>).
 	 */
-	public void setContextRelative(boolean useRelativeContext) {
-		this.contextRelative = useRelativeContext;
-	}
-
-	/**
-	 * Returns <tt>true</tt>, if the redirection URL should be calculated
-	 * minus the protocol and context path (defaults to <tt>false</tt>).
-	 */
-	public boolean isContextRelative() {
-		return contextRelative;
-	}
+	private boolean contextRelative;
 	
 }

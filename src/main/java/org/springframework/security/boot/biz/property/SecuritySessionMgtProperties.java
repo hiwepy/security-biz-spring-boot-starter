@@ -18,61 +18,40 @@ package org.springframework.security.boot.biz.property;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class SecuritySessionMgtProperties {
-	
 	
 	private boolean allowSessionCreation = false;
 	/** if should allow the JSESSIONID to be rewritten into the URLs*/
+	
+	/**
+	 * If set to true, allows HTTP sessions to be rewritten in the URLs when using
+	 * {@link HttpServletResponse#encodeRedirectURL(String)} or
+	 * {@link HttpServletResponse#encodeURL(String)}, otherwise disallows HTTP
+	 * sessions to be included in the URL. This prevents leaking information to
+	 * external domains.
+	 *
+	 * enableSessionUrlRewriting true if should allow the JSESSIONID to be
+	 *                                  rewritten into the URLs, else false
+	 *                                  (default)
+	 */
 	private boolean enableSessionUrlRewriting;
 	/**  */
 	private String failureUrl = "/error";
-	/** the maximum number of sessions for a user */
-	private Integer maximumSessions = Integer.MAX_VALUE;
-	private boolean maxSessionsPreventsLogin = false;
-	
-	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.STATELESS;
-	private SessionFixationPolicy fixationPolicy = SessionFixationPolicy.NONE;
-	
-	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
-	
-	private boolean useForward = false;
-	
-	public boolean isAllowSessionCreation() {
-		return allowSessionCreation;
-	}
-
-	public void setAllowSessionCreation(boolean allowSessionCreation) {
-		this.allowSessionCreation = allowSessionCreation;
-	}
-	
-	public String getFailureUrl() {
-		return failureUrl;
-	}
-
-	public void setFailureUrl(String failureUrl) {
-		this.failureUrl = failureUrl;
-	}
-
-	public Integer getMaximumSessions() {
-		return maximumSessions;
-	}
-
 	/**
 	 * Controls the maximum number of sessions for a user. The default is to allow
 	 * any number of users.
 	 * 
-	 * @param maximumSessions the maximum number of sessions for a user
+	 * maximumSessions the maximum number of sessions for a user
 	 */
-	public void setMaximumSessions(Integer maximumSessions) {
-		this.maximumSessions = maximumSessions;
-	}
-
-	public boolean isMaxSessionsPreventsLogin() {
-		return maxSessionsPreventsLogin;
-	}
-
+	private Integer maximumSessions = Integer.MAX_VALUE;
 	/**
 	 * If true, prevents a user from authenticating when the
 	 * {@link #maximumSessions(int)} has been reached. Otherwise (default), the user
@@ -81,72 +60,18 @@ public class SecuritySessionMgtProperties {
 	 * {@link #expiredUrl(String)}. The advantage of this approach is if a user
 	 * accidentally does not log out, there is no need for an administrator to
 	 * intervene or wait till their session expires.
-	 *
-	 * @param maxSessionsPreventsLogin true to have an error at time of
-	 *                                 authentication, else false (default)
 	 */
-	public void setMaxSessionsPreventsLogin(boolean maxSessionsPreventsLogin) {
-		this.maxSessionsPreventsLogin = maxSessionsPreventsLogin;
-	}
-
-	public boolean isEnableSessionUrlRewriting() {
-		return enableSessionUrlRewriting;
-	}
-
-	/**
-	 * If set to true, allows HTTP sessions to be rewritten in the URLs when using
-	 * {@link HttpServletResponse#encodeRedirectURL(String)} or
-	 * {@link HttpServletResponse#encodeURL(String)}, otherwise disallows HTTP
-	 * sessions to be included in the URL. This prevents leaking information to
-	 * external domains.
-	 *
-	 * @param enableSessionUrlRewriting true if should allow the JSESSIONID to be
-	 *                                  rewritten into the URLs, else false
-	 *                                  (default)
-	 * @see HttpSessionSecurityContextRepository#setDisableUrlRewriting(boolean)
-	 */
-	public void setEnableSessionUrlRewriting(boolean enableSessionUrlRewriting) {
-		this.enableSessionUrlRewriting = enableSessionUrlRewriting;
-	}
-
-	public SessionCreationPolicy getCreationPolicy() {
-		return creationPolicy;
-	}
-
-	public void setCreationPolicy(SessionCreationPolicy creationPolicy) {
-		this.creationPolicy = creationPolicy;
-	}
-
-	public SessionFixationPolicy getFixationPolicy() {
-		return fixationPolicy;
-	}
-
-	public void setFixationPolicy(SessionFixationPolicy fixationPolicy) {
-		this.fixationPolicy = fixationPolicy;
-	}
+	private boolean maxSessionsPreventsLogin = false;
 	
-
+	private SessionCreationPolicy creationPolicy = SessionCreationPolicy.STATELESS;
+	private SessionFixationPolicy fixationPolicy = SessionFixationPolicy.NONE;
 	/**
 	 * If the {@code sessionAttrName} property is set, the request is stored in
 	 * the session using this attribute name. Default is
 	 * "SPRING_SECURITY_SAVED_REQUEST".
-	 *
-	 * @param sessionAttrName a new session attribute name.
 	 */
-	public void setSessionAttrName(String sessionAttrName) {
-		this.sessionAttrName = sessionAttrName;
-	}
-
-	public String getSessionAttrName() {
-		return sessionAttrName;
-	}
-
-	public boolean isUseForward() {
-		return useForward;
-	}
-
-	public void setUseForward(boolean useForward) {
-		this.useForward = useForward;
-	}
+	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
+	
+	private boolean useForward = false;
 	
 }

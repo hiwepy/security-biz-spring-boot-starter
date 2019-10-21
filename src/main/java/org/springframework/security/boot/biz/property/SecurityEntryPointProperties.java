@@ -15,28 +15,20 @@
  */
 package org.springframework.security.boot.biz.property;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * TODO
  * @author 		： <a href="https://github.com/vindell">wandl</a>
  */
+@Getter
+@Setter
+@ToString
 public class SecurityEntryPointProperties {
 
 	private boolean forceHttps = false;
 	private boolean useForward = false;
 
-	public boolean isForceHttps() {
-		return forceHttps;
-	}
-
-	public void setForceHttps(boolean forceHttps) {
-		this.forceHttps = forceHttps;
-	}
-
-	public boolean isUseForward() {
-		return useForward;
-	}
-
-	public void setUseForward(boolean useForward) {
-		this.useForward = useForward;
-	}
 }

@@ -9,29 +9,30 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
+import org.springframework.security.boot.biz.authentication.AuthenticationListener;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
-import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
+import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -48,21 +49,35 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
+@AutoConfigureBefore({ SecurityAutoConfiguration.class, SecurityFilterAutoConfiguration.class })
 @ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
-@ConditionalOnProperty(prefix = SecurityBizUpcProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizUpcProperties.class })
-public class SecurityBizUpcFilterAutoConfiguration {
+@ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizProperties.class })
+public class SecurityBizFilterAutoConfiguration {
+
 
 	@Autowired
-	private SecurityBizUpcProperties bizUpcProperties;
-	 
-    @Bean
-	@ConditionalOnMissingBean 
-	public CaptchaResolver captchaResolver() {
-		return new NullCaptchaResolver();
+	private SecurityBizProperties bizProperties;
+	
+	@Bean("upcAuthenticationSuccessHandler")
+	public PostRequestAuthenticationSuccessHandler upcAuthenticationSuccessHandler(
+			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
+			@Autowired(required = false) List<MatchedAuthenticationSuccessHandler> successHandlers, 
+			RedirectStrategy redirectStrategy, 
+			RequestCache requestCache) {
+		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
+				authenticationListeners, successHandlers);
+		successHandler.setDefaultTargetUrl(bizProperties.getAuthc().getSuccessUrl());
+		successHandler.setRedirectStrategy(redirectStrategy);
+		successHandler.setRequestCache(requestCache);
+		successHandler.setStateless(bizProperties.isStateless());
+		successHandler.setTargetUrlParameter(bizProperties.getAuthc().getTargetUrlParameter());
+		successHandler.setUseReferer(bizProperties.getAuthc().isUseReferer());
+		return successHandler;
 	}
-    
+	
+	
+	
 	/*
 	 * 系统登录注销过滤器；默认：org.springframework.security.web.authentication.logout.LogoutFilter
 	 */
@@ -70,16 +85,15 @@ public class SecurityBizUpcFilterAutoConfiguration {
 	@ConditionalOnMissingBean 
 	public LogoutFilter logoutFilter(List<LogoutHandler> logoutHandlers) {
 		// 登录注销后的重定向地址：直接进入登录页面
-		LogoutFilter logoutFilter = new LogoutFilter(bizUpcProperties.getLogout().getLogoutUrl(), logoutHandlers.toArray(new LogoutHandler[logoutHandlers.size()]));
-		logoutFilter.setFilterProcessesUrl(bizUpcProperties.getLogout().getLogoutUrlPatterns());
+		LogoutFilter logoutFilter = new LogoutFilter(bizProperties.getLogout().getLogoutUrl(), logoutHandlers.toArray(new LogoutHandler[logoutHandlers.size()]));
+		logoutFilter.setFilterProcessesUrl(bizProperties.getLogout().getLogoutUrlPatterns());
 		return logoutFilter;
 	}
 	
 	@Configuration
-    @ConditionalOnProperty(prefix = SecurityBizUpcProperties.PREFIX, value = "enabled", havingValue = "true")
-   	@EnableConfigurationProperties({ SecurityBizUpcProperties.class, SecurityBizProperties.class })
-	@Order(104)
-   	static class UpcWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+	@ConditionalOnProperty(prefix = SecurityBizProperties.PREFIX, value = "enabled", havingValue = "true")
+	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizProperties.class })
+   	static class UpcWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
         private final AuthenticationManager authenticationManager;
 	    private final ObjectMapper objectMapper;
@@ -87,7 +101,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
 	    private final SessionRegistry sessionRegistry;
 	    
 	    private final SecurityBizProperties bizProperties;
-    	private final SecurityBizUpcProperties bizUpcProperties;
 	    private final PostRequestAuthenticationProvider authenticationProvider;
 	    private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
 	    private final PostRequestAuthenticationFailureHandler authenticationFailureHandler;
@@ -104,7 +117,6 @@ public class SecurityBizUpcFilterAutoConfiguration {
    		public UpcWebSecurityConfigurerAdapter(
    				
    				SecurityBizProperties bizProperties,
-   				SecurityBizUpcProperties bizUpcProperties,
    				
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticatingFailureCounter> authenticatingFailureCounter,
@@ -125,8 +137,9 @@ public class SecurityBizUpcFilterAutoConfiguration {
 				
 			) {
    			
+   			super(bizProperties);
+   			
    			this.bizProperties = bizProperties;
-   			this.bizUpcProperties = bizUpcProperties;
    			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
@@ -165,21 +178,21 @@ public class SecurityBizUpcFilterAutoConfiguration {
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
 			
-			map.from(bizUpcProperties.getCaptcha().getParamName()).to(authenticationFilter::setCaptchaParameter);
-			map.from(bizUpcProperties.getCaptcha().isRequired()).to(authenticationFilter::setCaptchaRequired);
+			map.from(bizProperties.getCaptcha().getParamName()).to(authenticationFilter::setCaptchaParameter);
+			map.from(bizProperties.getCaptcha().isRequired()).to(authenticationFilter::setCaptchaRequired);
 			map.from(captchaResolver).to(authenticationFilter::setCaptchaResolver);
 			map.from(authenticatingFailureCounter).to(authenticationFilter::setFailureCounter);
 			
-			map.from(bizUpcProperties.getAuthc().getUsernameParameter()).to(authenticationFilter::setUsernameParameter);
-			map.from(bizUpcProperties.getAuthc().getPasswordParameter()).to(authenticationFilter::setPasswordParameter);
-			map.from(bizUpcProperties.getAuthc().isPostOnly()).to(authenticationFilter::setPostOnly);
-			map.from(bizUpcProperties.getAuthc().getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
+			map.from(bizProperties.getAuthc().getUsernameParameter()).to(authenticationFilter::setUsernameParameter);
+			map.from(bizProperties.getAuthc().getPasswordParameter()).to(authenticationFilter::setPasswordParameter);
+			map.from(bizProperties.getAuthc().isPostOnly()).to(authenticationFilter::setPostOnly);
+			map.from(bizProperties.getAuthc().getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
 
 			map.from(bizProperties.getRetry().getRetryTimesKeyAttribute()).to(authenticationFilter::setRetryTimesKeyAttribute);
 			map.from(bizProperties.getRetry().getRetryTimesWhenAccessDenied()).to(authenticationFilter::setRetryTimesWhenAccessDenied);
 			
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
-			map.from(bizUpcProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
+			map.from(bizProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);
 			
    			return authenticationFilter;
@@ -196,17 +209,17 @@ public class SecurityBizUpcFilterAutoConfiguration {
    			// Session 管理器配置参数
    	    	SecuritySessionMgtProperties sessionMgt = bizProperties.getSessionMgt();
    	    	// Session 注销配置参数
-   	    	SecurityLogoutProperties logout = bizUpcProperties.getLogout();
+   	    	SecurityLogoutProperties logout = bizProperties.getLogout();
    	    	
    		    // Session 管理器配置
    	    	http.sessionManagement()
    	    		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
    	    		.invalidSessionStrategy(invalidSessionStrategy)
-   	    		.invalidSessionUrl(bizUpcProperties.getLogout().getLogoutUrl())
+   	    		.invalidSessionUrl(bizProperties.getLogout().getLogoutUrl())
    	    		.maximumSessions(sessionMgt.getMaximumSessions())
    	    		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
    	    		.expiredSessionStrategy(sessionInformationExpiredStrategy)
-   				.expiredUrl(bizUpcProperties.getLogout().getLogoutUrl())
+   				.expiredUrl(bizProperties.getLogout().getLogoutUrl())
    				.sessionRegistry(sessionRegistry)
    				.and()
    	    		.sessionAuthenticationErrorUrl(sessionMgt.getFailureUrl())
@@ -223,11 +236,11 @@ public class SecurityBizUpcFilterAutoConfiguration {
    	    		.requestCache()
    	        	.requestCache(requestCache)
    	        	.and()
-   	        	.antMatcher(bizUpcProperties.getAuthc().getPathPattern())
+   	        	.antMatcher(bizProperties.getAuthc().getPathPattern())
    	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
    	       	// CSRF 配置
-   	    	SecurityCsrfProperties csrf = bizUpcProperties.getCsrf();
+   	    	SecurityCsrfProperties csrf = bizProperties.getCsrf();
    	    	if(csrf.isEnabled()) {
    	       		http.csrf()
    				   	.csrfTokenRepository(csrfTokenRepository)

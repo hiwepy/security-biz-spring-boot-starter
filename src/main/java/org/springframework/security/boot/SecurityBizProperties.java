@@ -20,12 +20,23 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
+import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
+import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityEntryPointProperties;
 import org.springframework.security.boot.biz.property.SecurityFailureRetryProperties;
+import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
+@Getter
+@Setter
+@ToString
 public class SecurityBizProperties {
 
 	public static final String PREFIX = "spring.security";
@@ -46,53 +57,14 @@ public class SecurityBizProperties {
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
 	@NestedConfigurationProperty
 	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
+
+	@NestedConfigurationProperty
+	private SecurityAuthcProperties authc = new SecurityAuthcProperties();
+	@NestedConfigurationProperty
+	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
+	@NestedConfigurationProperty
+	private SecurityCsrfProperties csrf = new SecurityCsrfProperties();
+	@NestedConfigurationProperty
+	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
 	
-	public Map<String, String> getFilterChainDefinitionMap() {
-		return filterChainDefinitionMap;
-	}
-
-	public void setFilterChainDefinitionMap(Map<String, String> filterChainDefinitionMap) {
-		this.filterChainDefinitionMap = filterChainDefinitionMap;
-	}
-
-	public SecurityEntryPointProperties getEntryPoint() {
-		return entryPoint;
-	}
-
-	public void setEntryPoint(SecurityEntryPointProperties entryPoint) {
-		this.entryPoint = entryPoint;
-	}
-
-	public SecuritySessionMgtProperties getSessionMgt() {
-		return sessionMgt;
-	}
-
-	public void setSessionMgt(SecuritySessionMgtProperties sessionMgt) {
-		this.sessionMgt = sessionMgt;
-	}
-	
-	public SecurityRedirectProperties getRedirect() {
-		return redirect;
-	}
-
-	public void setRedirect(SecurityRedirectProperties redirect) {
-		this.redirect = redirect;
-	}
-	
-	public SecurityFailureRetryProperties getRetry() {
-		return retry;
-	}
-
-	public void setRetry(SecurityFailureRetryProperties retry) {
-		this.retry = retry;
-	}
-
-	public boolean isStateless() {
-		return stateless;
-	}
-
-	public void setStateless(boolean stateless) {
-		this.stateless = stateless;
-	}
-
 }

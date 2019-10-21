@@ -23,6 +23,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class SecurityAuthcProperties {
 
 	/** Authorization Path Pattern */
@@ -54,77 +61,6 @@ public class SecurityAuthcProperties {
 	private boolean forceHttps = false;
 	private boolean useForward = false;
 	
-	public String getPathPattern() {
-		return pathPattern;
-	}
-
-	public void setPathPattern(String pathPattern) {
-		this.pathPattern = pathPattern;
-	}
-
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-
-	public void setRedirectUrl(String redirectUrl) {
-		this.redirectUrl = redirectUrl;
-	}
-
-	public String getSuccessUrl() {
-		return successUrl;
-	}
-
-	public void setSuccessUrl(String successUrl) {
-		this.successUrl = successUrl;
-	}
-
-	public String getUnauthorizedUrl() {
-		return unauthorizedUrl;
-	}
-
-	public void setUnauthorizedUrl(String unauthorizedUrl) {
-		this.unauthorizedUrl = unauthorizedUrl;
-	}
-
-	public String getFailureUrl() {
-		return failureUrl;
-	}
-
-	public void setFailureUrl(String failureUrl) {
-		this.failureUrl = failureUrl;
-	}
-
-	public boolean isContinueChainBeforeSuccessfulAuthentication() {
-		return continueChainBeforeSuccessfulAuthentication;
-	}
-
-	/**
-	 * Indicates if the filter chain should be continued prior to delegation to
-	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
-	 * , which may be useful in certain environment (such as Tapestry applications).
-	 * Defaults to <code>false</code>.
-	 */
-	public void setContinueChainBeforeSuccessfulAuthentication(
-			boolean continueChainBeforeSuccessfulAuthentication) {
-		this.continueChainBeforeSuccessfulAuthentication = continueChainBeforeSuccessfulAuthentication;
-	}
-
-	public String getUsernameParameter() {
-		return usernameParameter;
-	}
-
-	public void setUsernameParameter(String usernameParameter) {
-		this.usernameParameter = usernameParameter;
-	}
-
-	public String getPasswordParameter() {
-		return passwordParameter;
-	}
-
-	public void setPasswordParameter(String passwordParameter) {
-		this.passwordParameter = passwordParameter;
-	}
-	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter
 	 * with this name and the value used as the target URL if present.
@@ -137,50 +73,6 @@ public class SecurityAuthcProperties {
 			Assert.hasText(targetUrlParameter, "targetUrlParameter cannot be empty");
 		}
 		this.targetUrlParameter = targetUrlParameter;
-	}
-
-	public String getTargetUrlParameter() {
-		return targetUrlParameter;
-	}
-	
-	public boolean isAlwaysUseDefaultTargetUrl() {
-		return alwaysUseDefaultTargetUrl;
-	}
-
-	public void setAlwaysUseDefaultTargetUrl(boolean alwaysUseDefaultTargetUrl) {
-		this.alwaysUseDefaultTargetUrl = alwaysUseDefaultTargetUrl;
-	}
-
-	public boolean isUseReferer() {
-		return useReferer;
-	}
-
-	public void setUseReferer(boolean useReferer) {
-		this.useReferer = useReferer;
-	}
-
-	public boolean isPostOnly() {
-		return postOnly;
-	}
-
-	public void setPostOnly(boolean postOnly) {
-		this.postOnly = postOnly;
-	}
-
-	public boolean isForceHttps() {
-		return forceHttps;
-	}
-
-	public void setForceHttps(boolean forceHttps) {
-		this.forceHttps = forceHttps;
-	}
-
-	public boolean isUseForward() {
-		return useForward;
-	}
-
-	public void setUseForward(boolean useForward) {
-		this.useForward = useForward;
 	}
 
 }

@@ -18,35 +18,18 @@ package org.springframework.security.boot.biz.property;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class SecurityFailureRetryProperties {
 
 	private String retryTimesKeyParameter = AuthenticatingFailureCounter.DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
 	private String retryTimesKeyAttribute = PostRequestAuthenticationProcessingFilter.DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
 	/** Maximum number of retry to login . */
 	private int retryTimesWhenAccessDenied = 3;
-
-	public String getRetryTimesKeyParameter() {
-		return retryTimesKeyParameter;
-	}
-
-	public void setRetryTimesKeyParameter(String retryTimesKeyParameter) {
-		this.retryTimesKeyParameter = retryTimesKeyParameter;
-	}
-
-	public String getRetryTimesKeyAttribute() {
-		return retryTimesKeyAttribute;
-	}
-
-	public void setRetryTimesKeyAttribute(String retryTimesKeyAttribute) {
-		this.retryTimesKeyAttribute = retryTimesKeyAttribute;
-	}
-
-	public int getRetryTimesWhenAccessDenied() {
-		return retryTimesWhenAccessDenied;
-	}
-
-	public void setRetryTimesWhenAccessDenied(int retryTimesWhenAccessDenied) {
-		this.retryTimesWhenAccessDenied = retryTimesWhenAccessDenied;
-	}
 	
 }

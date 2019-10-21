@@ -17,6 +17,13 @@ package org.springframework.security.boot.biz.property;
 
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class SecurityCaptchaProperties {
 
 	public static final String DEFAULT_SESSION_CAPTCHA_KEY = "KAPTCHA_SESSION_KEY";
@@ -29,21 +36,5 @@ public class SecurityCaptchaProperties {
 	 * Whether to captcha required
 	 */
 	private boolean required = false;
-	
-	public String getParamName() {
-		return paramName;
-	}
-
-	public void setParamName(String paramName) {
-		this.paramName = paramName;
-	}
- 
-	public boolean isRequired() {
-		return required;
-	}
-
-	public void setRequired(boolean required) {
-		this.required = required;
-	}
 
 }

@@ -15,6 +15,13 @@
  */
 package org.springframework.security.boot.biz.property;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class SecurityLogoutProperties {
 
 	/** 注销地址：会话注销后的重定向地址 */
@@ -25,45 +32,5 @@ public class SecurityLogoutProperties {
 
 	private boolean invalidateHttpSession = true;
 	private boolean clearAuthentication = true;
-
-	public String getLogoutUrl() {
-		return logoutUrl;
-	}
-
-	public void setLogoutUrl(String logoutUrl) {
-		this.logoutUrl = logoutUrl;
-	}
-
-	public String getLogoutUrlPatterns() {
-		return logoutUrlPatterns;
-	}
-
-	public void setLogoutUrlPatterns(String logoutUrlPatterns) {
-		this.logoutUrlPatterns = logoutUrlPatterns;
-	}
-
-	public String getLogoutSuccessUrl() {
-		return logoutSuccessUrl;
-	}
-
-	public void setLogoutSuccessUrl(String logoutSuccessUrl) {
-		this.logoutSuccessUrl = logoutSuccessUrl;
-	}
-
-	public boolean isInvalidateHttpSession() {
-		return invalidateHttpSession;
-	}
-
-	public void setInvalidateHttpSession(boolean invalidateHttpSession) {
-		this.invalidateHttpSession = invalidateHttpSession;
-	}
-
-	public boolean isClearAuthentication() {
-		return clearAuthentication;
-	}
-
-	public void setClearAuthentication(boolean clearAuthentication) {
-		this.clearAuthentication = clearAuthentication;
-	}
 
 }
