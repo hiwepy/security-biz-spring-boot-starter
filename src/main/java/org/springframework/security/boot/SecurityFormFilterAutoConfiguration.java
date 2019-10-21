@@ -162,7 +162,12 @@ public class SecurityFormFilterAutoConfiguration {
    			
    		}
 
-   		public PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() {
+   		@Override
+		protected AuthenticationManager authenticationManager() throws Exception {
+			return authenticationManager == null ? super.authenticationManager() : authenticationManager;
+		}
+   		
+   		public PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    			
    			// Form Login With Captcha
    			PostRequestAuthenticationProcessingFilter authenticationFilter = new PostRequestAuthenticationProcessingFilter(
@@ -175,7 +180,7 @@ public class SecurityFormFilterAutoConfiguration {
 			
 			map.from(bizProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
 			
-			map.from(authenticationManager).to(authenticationFilter::setAuthenticationManager);
+			map.from(authenticationManager()).to(authenticationFilter::setAuthenticationManager);
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
 			
