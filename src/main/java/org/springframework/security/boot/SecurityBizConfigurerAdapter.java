@@ -27,12 +27,30 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.boot.biz.property.SecurityHeaderCrosProperties;
+import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
+import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
+import org.springframework.security.boot.biz.property.header.HeaderCacheControlProperties;
+import org.springframework.security.boot.biz.property.header.HeaderContentSecurityPolicyProperties;
+import org.springframework.security.boot.biz.property.header.HeaderContentTypeOptionsProperties;
+import org.springframework.security.boot.biz.property.header.HeaderFeaturePolicyProperties;
+import org.springframework.security.boot.biz.property.header.HeaderFrameOptionsProperties;
+import org.springframework.security.boot.biz.property.header.HeaderHpkpProperties;
+import org.springframework.security.boot.biz.property.header.HeaderHstsProperties;
+import org.springframework.security.boot.biz.property.header.HeaderReferrerPolicyProperties;
+import org.springframework.security.boot.biz.property.header.HeaderXssProtectionProperties;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * @author 		： <a href="https://github.com/vindell">wandl</a>
@@ -43,9 +61,15 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
 	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
 	private final SecurityBizProperties bizProperties;
-	
-	public SecurityBizConfigurerAdapter(SecurityBizProperties bizProperties) {
+	private CsrfTokenRepository csrfTokenRepository;
+	private CorsConfigurationSource configurationSource;
+	 
+	public SecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
+			CsrfTokenRepository csrfTokenRepository,
+			CorsConfigurationSource configurationSource) {
 		this.bizProperties = bizProperties;
+		this.csrfTokenRepository = csrfTokenRepository;
+		this.configurationSource = configurationSource;
 	}
  
 	@Override
@@ -53,9 +77,154 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 		super.configure(auth);
 	}
 	
+	/**
+	 * CSRF 配置
+	 * @author 		： <a href="https://github.com/vindell">wandl</a>
+	 * @param http
+	 * @param csrf
+	 * @throws Exception
+	 */
+	protected void configure(HttpSecurity http, SecurityHeaderCsrfProperties csrf) throws Exception {
+		// CSRF 配置
+    	if(csrf.isEnabled()) {
+       		http.csrf()
+			   	.csrfTokenRepository(csrfTokenRepository)
+			   	.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        } else {
+        	http.csrf().disable();
+        }
+	    	
+    	if(csrf.isEnabled()) {
+       		http.csrf()
+			   	.csrfTokenRepository(csrfTokenRepository)
+			   	.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.and()
+				.headers()
+				.frameOptions().sameOrigin()
+				.xssProtection()
+				.block(true);
+        } else {
+        	http.csrf().disable();
+        }
+	}
+	
+	/**
+	 * Headers 配置
+	 * @author 		： <a href="https://github.com/vindell">wandl</a>
+	 * @param http
+	 * @param headers
+	 * @throws Exception
+	 */
+	@SuppressWarnings("rawtypes")
+	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception{
+    	if(properties.isEnabled()) {
+
+    		HeadersConfigurer<HttpSecurity> headers = http.headers();
+    		
+    		HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
+    		if(contentTypeOptions.isEnabled()) {
+    			headers.contentTypeOptions();
+    		} else {
+    			headers.contentTypeOptions().disable();
+			}
+    		
+    		HeaderXssProtectionProperties xssProtection = properties.getXssProtection();
+    		if(xssProtection.isEnabled()) {
+    			headers.xssProtection()
+		            .xssProtectionEnabled(xssProtection.isEnabled())
+		            .block(xssProtection.isBlock());
+    		} else {
+    			headers.xssProtection().disable();
+			}
+    		
+    		HeaderCacheControlProperties cacheControl = properties.getCacheControl();
+    		if(cacheControl.isEnabled()) {
+    			headers.cacheControl();
+    		} else {
+    			headers.cacheControl().disable();
+			}
+
+    		HeaderHstsProperties hsts = properties.getHsts();
+    		if(hsts.isEnabled()) {
+    			headers.httpStrictTransportSecurity()
+			            .includeSubDomains(hsts.isIncludeSubDomains())
+			            .maxAgeInSeconds(hsts.getMaxAgeInSeconds());
+    		} else {
+    			headers.httpStrictTransportSecurity().disable();
+			}
+    		
+    		HeaderFrameOptionsProperties frameOptions = properties.getFrameOptions();
+    		if(frameOptions.isEnabled()) {
+    			FrameOptionsConfig config = headers.frameOptions();
+    			if(frameOptions.isDeny()) {
+    				config.deny();
+    			} else if (frameOptions.isSameOrigin()) {
+    				config.sameOrigin();
+				}
+    		} else {
+    			headers.frameOptions().disable();
+			}
+    		
+    		HeaderHpkpProperties hpkp = properties.getHpkp();
+    		if(hpkp.isEnabled()) {
+    			headers.httpPublicKeyPinning()
+    				   .includeSubDomains(hpkp.isIncludeSubDomains())
+    				   .maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
+    				   .reportOnly(hpkp.isReportOnly())
+    				   .reportUri(hpkp.getReportUri())
+    				   .withPins(hpkp.getPins())
+    				   .addSha256Pins(hpkp.getSha256Pins());
+    		} else {
+    			headers.httpPublicKeyPinning().disable();
+			}
+    		
+    		HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
+    		if(contentSecurityPolicy.isEnabled()) {
+    			ContentSecurityPolicyConfig config = headers.contentSecurityPolicy(contentSecurityPolicy.getPolicyDirectives());
+    			if(contentSecurityPolicy.isReportOnly()) {
+    				config.reportOnly();
+    			}
+			}
+    		
+    		HeaderReferrerPolicyProperties referrerPolicy = properties.getReferrerPolicy();
+    		if(referrerPolicy.isEnabled()) {
+    			headers.referrerPolicy();
+			}
+    		
+    		HeaderFeaturePolicyProperties featurePolicy = properties.getFeaturePolicy();
+    		if(featurePolicy.isEnabled()) {
+    			headers.featurePolicy(featurePolicy.getPolicyDirectives());
+			}
+	           
+    	} else {
+    		http.headers()
+    			.cacheControl().disable()// 禁用缓存
+    			.and()
+    			.cors(); 
+    	}
+	}
+	
+	/**
+	 * Cros 配置
+	 * @author 		： <a href="https://github.com/vindell">wandl</a>
+	 * @param http
+	 * @param cros
+	 * @throws Exception
+	 */
+	protected void configure(HttpSecurity http, SecurityHeaderCrosProperties cros) throws Exception {
+    	if(cros.isEnabled()) {
+    		http.cors().configurationSource(configurationSource);
+    	} else {
+    		http.cors().disable(); 
+    	}
+	}
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
+		
+		
 		// 对过滤链按过滤器名称进行分组
 		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap()
 				.entrySet().stream()

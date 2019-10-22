@@ -19,6 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
@@ -67,6 +68,15 @@ public class SecurityAuthcProperties {
 	private int retryTimesWhenAccessDenied = 3;
 	private boolean useReferer = false;
 	private boolean useForward = false;
+	
+	@NestedConfigurationProperty
+	private SecurityHeadersProperties headers = new SecurityHeadersProperties();
+
+	@NestedConfigurationProperty
+	private SecurityHeaderCrosProperties cros = new SecurityHeaderCrosProperties();
+	
+	@NestedConfigurationProperty
+	private SecurityHeaderCsrfProperties csrf = new SecurityHeaderCsrfProperties();
 	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter

@@ -13,10 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.security.boot.biz.property;
+package org.springframework.security.boot.biz.property.header;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.security.web.header.writers.FeaturePolicyHeaderWriter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,32 +24,22 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class SecurityCsrfProperties {
+public class HeaderFeaturePolicyProperties {
 
 	/**
-	 * Enable Security Csrf.
+	 * Enable Security Headers.
 	 */
 	private boolean enabled = false;
-
-	private String name;
-	private String desc;
-	private String logoUrl;
-
-	private String key;
-
-	private String secret;
-
-	private boolean tokenAsHeader;
-
-	private String scope;
-
-	private boolean hasGrantType;
 	
-	private String ignoringAntMatchers;
-	
-
-	/* Map containing user defined parameters */
-	private Map<String, String> customParams = new HashMap<String, String>();
-	private Map<String, String> profileAttrs = new HashMap<String, String>();
+	/**
+	 * Allows configuration for <a href="https://wicg.github.io/feature-policy/">Feature
+	 * Policy</a>.
+	 * <p>
+	 * Calling this method automatically enables (includes) the {@code Feature-Policy}
+	 * header in the response using the supplied policy directive(s).
+	 * <p>
+	 * Configuration is provided to the {@link FeaturePolicyHeaderWriter} which is responsible for writing the header.
+	 */
+	private String policyDirectives;
 
 }

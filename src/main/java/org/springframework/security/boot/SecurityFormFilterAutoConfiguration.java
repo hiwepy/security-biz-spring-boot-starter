@@ -27,11 +27,9 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.property.SecurityCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
-import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -45,11 +43,11 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -111,7 +109,6 @@ public class SecurityFormFilterAutoConfiguration {
 	    private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
 	    private final PostRequestAuthenticationFailureHandler authenticationFailureHandler;
 	    private final CaptchaResolver captchaResolver;
-	    private final CsrfTokenRepository csrfTokenRepository;
 	    private final InvalidSessionStrategy invalidSessionStrategy;
 	    private final List<LogoutHandler> logoutHandlers;
 	    private final ObjectMapper objectMapper;
@@ -133,6 +130,7 @@ public class SecurityFormFilterAutoConfiguration {
    				@Qualifier("formAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
    				ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
+   				ObjectProvider<CorsConfigurationSource> configurationSourceProvider,
    				ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider,
@@ -144,7 +142,7 @@ public class SecurityFormFilterAutoConfiguration {
 				
 			) {
    			
-   			super(bizProperties);
+   			super(bizProperties, csrfTokenRepositoryProvider.getIfAvailable(), configurationSourceProvider.getIfAvailable());
    			
    			this.bizProperties = bizProperties;
    			this.bizFormProperties = bizFormProperties;
@@ -155,7 +153,6 @@ public class SecurityFormFilterAutoConfiguration {
    			this.authenticationFailureHandler = authenticationFailureHandler.getIfAvailable();
    			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
    			this.captchaResolver = captchaResolverProvider.getIfAvailable();
-   			this.csrfTokenRepository = csrfTokenRepositoryProvider.getIfAvailable();
    			this.invalidSessionStrategy = invalidSessionStrategyProvider.getIfAvailable();
    			this.logoutHandlers = logoutHandlerProvider.stream().collect(Collectors.toList());
    			this.objectMapper = objectMapperProvider.getIfAvailable();
@@ -257,18 +254,10 @@ public class SecurityFormFilterAutoConfiguration {
    	        	.antMatcher(bizFormProperties.getPathPattern())
    	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
-   	       	// CSRF 配置
-   	    	SecurityCsrfProperties csrf = bizFormProperties.getCsrf();
-   	    	if(csrf.isEnabled()) {
-   	       		http.csrf()
-   				   	.csrfTokenRepository(csrfTokenRepository)
-   				   	.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
-   					.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-   	        } else {
-   	        	http.csrf().disable();
-   	        }
-   	        
-   	    	super.configure(http);
+   	    	super.configure(http, bizFormProperties.getCros());
+   	    	super.configure(http, bizFormProperties.getCsrf());
+   	    	super.configure(http, bizFormProperties.getHeaders());
+	    	super.configure(http);
    	    	
    	    }
 
