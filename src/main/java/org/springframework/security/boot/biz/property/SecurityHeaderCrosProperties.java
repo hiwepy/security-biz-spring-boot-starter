@@ -15,9 +15,6 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -31,26 +28,5 @@ public class SecurityHeaderCrosProperties {
 	 * Enable Security Cros.
 	 */
 	private boolean enabled = false;
-
-	private String name;
-	private String desc;
-	private String logoUrl;
-
-	private String key;
-
-	private String secret;
-
-	private boolean tokenAsHeader;
-
-	private String scope;
-
-	private boolean hasGrantType;
-	
-	private String ignoringAntMatchers;
-	
-
-	/* Map containing user defined parameters */
-	private Map<String, String> customParams = new HashMap<String, String>();
-	private Map<String, String> profileAttrs = new HashMap<String, String>();
 
 }

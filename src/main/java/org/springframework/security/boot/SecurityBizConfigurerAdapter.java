@@ -100,6 +100,7 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 			   	.csrfTokenRepository(csrfTokenRepository)
 			   	.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				//.requireCsrfProtectionMatcher(requireCsrfProtectionMatcher)
 				.and()
 				.headers()
 				.frameOptions().sameOrigin()

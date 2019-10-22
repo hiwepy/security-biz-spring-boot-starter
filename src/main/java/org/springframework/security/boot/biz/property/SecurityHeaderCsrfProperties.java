@@ -15,8 +15,9 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,26 +32,38 @@ public class SecurityHeaderCsrfProperties {
 	 * Enable Security Csrf.
 	 */
 	private boolean enabled = false;
-
-	private String name;
-	private String desc;
-	private String logoUrl;
-
-	private String key;
-
-	private String secret;
-
-	private boolean tokenAsHeader;
-
-	private String scope;
-
-	private boolean hasGrantType;
-	
+	/**
+	 * <p>
+	 * Allows specifying {@link HttpServletRequest} that should not use CSRF Protection
+	 * even if they match the {@link #requireCsrfProtectionMatcher(RequestMatcher)}.
+	 * </p>
+	 *
+	 * <p>
+	 * For example, the following configuration will ensure CSRF protection ignores:
+	 * </p>
+	 * <ul>
+	 * <li>Any GET, HEAD, TRACE, OPTIONS (this is the default)</li>
+	 * <li>We also explicitly state to ignore any request that starts with "/sockjs/"</li>
+	 * </ul>
+	 *
+	 * <pre>
+	 * http
+	 *     .csrf()
+	 *         .ignoringAntMatchers("/sockjs/**")
+	 *         .and()
+	 *     ...
+	 * </pre>
+	 *
+	 */
 	private String ignoringAntMatchers;
 	
-
-	/* Map containing user defined parameters */
-	private Map<String, String> customParams = new HashMap<String, String>();
-	private Map<String, String> profileAttrs = new HashMap<String, String>();
-
+	/**
+	 * Specify the {@link RequestMatcher} to use for determining when CSRF should be
+	 * applied. The default is to ignore GET, HEAD, TRACE, OPTIONS and process all other
+	 * requests.
+	 *
+	 */
+	private String requireCsrfAntMatchers;
+	
+	
 }
