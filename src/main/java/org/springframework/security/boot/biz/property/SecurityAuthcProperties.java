@@ -20,10 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
 
 import lombok.Getter;
@@ -42,15 +39,9 @@ public class SecurityAuthcProperties {
 	private String redirectUrl = "/";
 	/** 系统主页：登录成功后跳转路径 */
 	private String successUrl = "/index";;
-	/** 未授权页面：无权限时的跳转路径 */
-	private String unauthorizedUrl = "/error";
 	/** 异常页面：认证失败时的跳转路径 */
 	private String failureUrl = "/error";
 	
-	/** the username parameter name. Defaults to "username". */
-	private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
-	/** the password parameter name. Defaults to "password". */
-	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
 	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
@@ -58,17 +49,38 @@ public class SecurityAuthcProperties {
 	 * Defaults to <code>false</code>.
 	 */
 	private boolean continueChainBeforeSuccessfulAuthentication = false;
-	private boolean forceHttps = false;
-	private boolean postOnly = true;
-	private String retryTimesKeyParameter = AuthenticatingFailureCounter.DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;
-	private String retryTimesKeyAttribute = PostRequestAuthenticationProcessingFilter.DEFAULT_RETRY_TIMES_KEY_ATTRIBUTE_NAME;
+	
+	/**
+	 * If this property is set, the current request will be checked for this a parameter
+	 * with this name and the value used as the target URL if present.
+	 *
+	 * @param targetUrlParameter the name of the parameter containing the encoded target
+	 * URL. Defaults to null.
+	 */
 	private String targetUrlParameter = "target";
+	
+	/**
+	 * If <code>true</code>, will always redirect to the value of {@code defaultTargetUrl}
+	 * (defaults to <code>false</code>).
+	 */
 	private boolean alwaysUseDefaultTargetUrl = false;
 	
-	/** Maximum number of retry to login . */
-	private int retryTimesWhenAccessDenied = 3;
+	/**
+	 * Defines whether only HTTP POST requests will be allowed by this filter. If set to
+	 * true, and an authentication request is received which is not a POST request, an
+	 * exception will be raised immediately and authentication will not be attempted. The
+	 * <tt>unsuccessfulAuthentication()</tt> method will be called as if handling a failed
+	 * authentication.
+	 * <p>
+	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
+	 */
+	private boolean postOnly = true;
+	
+	/**
+	 * If set to {@code true} the {@code Referer} header will be used (if available).
+	 * Defaults to {@code false}.
+	 */
 	private boolean useReferer = false;
-	private boolean useForward = false;
 
 	@NestedConfigurationProperty
 	private SecurityHeadersProperties headers = new SecurityHeadersProperties();

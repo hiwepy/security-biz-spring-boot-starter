@@ -20,6 +20,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,15 @@ public class SecurityFormProperties extends SecurityAuthcProperties {
 	
 	/** Whether Enable Form Authorization. */
 	private boolean enabled = false;
+
+	/** 
+	 * the username parameter name. Defaults to "username". 
+	 */
+	private String usernameParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY;
+	/** 
+	 * the password parameter name. Defaults to "password". 
+	 */
+	private String passwordParameter = UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY;
 	
 	@NestedConfigurationProperty
 	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
