@@ -19,11 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.security.boot.biz.property.SecurityEntryPointProperties;
-import org.springframework.security.boot.biz.property.SecurityFailureRetryProperties;
-import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,14 +40,5 @@ public class SecurityBizProperties {
      * Whether stateless session
      */
 	private boolean stateless = false;
-	
-	@NestedConfigurationProperty
-	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
-	@NestedConfigurationProperty
-	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
-	@NestedConfigurationProperty
-	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
-	@NestedConfigurationProperty
-	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
 	
 }

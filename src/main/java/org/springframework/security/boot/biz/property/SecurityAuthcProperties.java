@@ -37,6 +37,7 @@ public class SecurityAuthcProperties {
 
 	/** Authorization Path Pattern */
 	private String pathPattern = "/login";
+	
 	/** 重定向地址：会话注销后的重定向地址 */
 	private String redirectUrl = "/";
 	/** 系统主页：登录成功后跳转路径 */
@@ -68,7 +69,7 @@ public class SecurityAuthcProperties {
 	private int retryTimesWhenAccessDenied = 3;
 	private boolean useReferer = false;
 	private boolean useForward = false;
-	
+
 	@NestedConfigurationProperty
 	private SecurityHeadersProperties headers = new SecurityHeadersProperties();
 
@@ -77,6 +78,18 @@ public class SecurityAuthcProperties {
 	
 	@NestedConfigurationProperty
 	private SecurityHeaderCsrfProperties csrf = new SecurityHeaderCsrfProperties();
+
+	@NestedConfigurationProperty
+	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
+
+	@NestedConfigurationProperty
+	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
+	
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
+	
+	@NestedConfigurationProperty
+	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
 	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter
