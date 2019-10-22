@@ -43,6 +43,7 @@ public class SecuritySessionMgtProperties {
 	 *                                  (default)
 	 */
 	private boolean enableSessionUrlRewriting;
+	
 	/**  */
 	private String failureUrl = "/error";
 	/**
@@ -71,7 +72,10 @@ public class SecuritySessionMgtProperties {
 	 * "SPRING_SECURITY_SAVED_REQUEST".
 	 */
 	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
-	
+	/**
+	 * If set to <tt>true</tt>, performs a forward to the failure destination URL instead
+	 * of a redirect. Defaults to <tt>false</tt>.
+	 */
 	private boolean useForward = false;
 	
 }

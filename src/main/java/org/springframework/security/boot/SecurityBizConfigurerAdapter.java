@@ -73,8 +73,10 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
 import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
@@ -139,7 +141,7 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 		entryPoint.setUseForward(authcProperties.getEntryPoint().isUseForward());
 		return entryPoint;
 	}
-
+	
 	protected PostRequestAuthenticationFailureHandler authenticationFailureHandler(
 			List<AuthenticationListener> authenticationListeners,
 			List<MatchedAuthenticationFailureHandler> failureHandlers) {
@@ -155,6 +157,22 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 
 		return failureHandler;
 
+	}
+	
+	protected ForwardAuthenticationFailureHandler authenticationFailureForwardHandler(String forwardUrl) {
+		return new ForwardAuthenticationFailureHandler(forwardUrl);
+	}
+	
+	protected SimpleUrlAuthenticationFailureHandler authenticationFailureSimpleUrlHandler() {
+
+		SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+
+		failureHandler.setAllowSessionCreation(authcProperties.getSessionMgt().isAllowSessionCreation());
+		failureHandler.setDefaultFailureUrl(authcProperties.getSessionMgt().getFailureUrl());
+		failureHandler.setRedirectStrategy(redirectStrategy());
+		failureHandler.setUseForward(authcProperties.getSessionMgt().isUseForward());
+
+		return failureHandler;
 	}
 	
 	@Override
@@ -457,11 +475,11 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 		return new HttpStatusReturningLogoutSuccessHandler();
 	}
 
-	protected LogoutSuccessHandler forwardLogoutSuccessHandler(String targetUrl) {
+	protected LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
 		return new ForwardLogoutSuccessHandler(targetUrl);
 	}
 	
-	protected LogoutSuccessHandler simpleUrlLogoutSuccessHandler() {
+	protected LogoutSuccessHandler lLogoutSuccessSimpleUrlHandler() {
 		return new SimpleUrlLogoutSuccessHandler();
 	}
 	
