@@ -26,8 +26,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.boot.biz.property.SecurityHeaderCrosProperties;
+import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
 import org.springframework.security.boot.biz.property.header.HeaderCacheControlProperties;
@@ -51,6 +52,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * @author 		： <a href="https://github.com/vindell">wandl</a>
@@ -62,14 +64,11 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
 	private final SecurityBizProperties bizProperties;
 	private CsrfTokenRepository csrfTokenRepository;
-	private CorsConfigurationSource configurationSource;
 	 
 	public SecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
-			CsrfTokenRepository csrfTokenRepository,
-			CorsConfigurationSource configurationSource) {
+			CsrfTokenRepository csrfTokenRepository) {
 		this.bizProperties = bizProperties;
 		this.csrfTokenRepository = csrfTokenRepository;
-		this.configurationSource = configurationSource;
 	}
  
 	@Override
@@ -207,16 +206,33 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
     	}
 	}
 	
+	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
+		
+		UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
+		
+		/**
+		 * 批量设置参数
+		 */
+		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+		
+		map.from(cors.isAlwaysUseFullPath()).to(configurationSource::setAlwaysUseFullPath);
+		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
+		map.from(cors.isRemoveSemicolonContent()).to(configurationSource::setRemoveSemicolonContent);
+		map.from(cors.isUrlDecode()).to(configurationSource::setUrlDecode);
+		
+		return configurationSource;
+	}
+	
 	/**
 	 * Cros 配置
 	 * @author 		： <a href="https://github.com/vindell">wandl</a>
 	 * @param http
-	 * @param cros
+	 * @param cors
 	 * @throws Exception
 	 */
-	protected void configure(HttpSecurity http, SecurityHeaderCrosProperties cros) throws Exception {
-    	if(cros.isEnabled()) {
-    		http.cors().configurationSource(configurationSource);
+	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties cors) throws Exception {
+    	if(cors.isEnabled()) {
+    		http.cors().configurationSource(this.configurationSource(cors));
     	} else {
     		http.cors().disable(); 
     	}

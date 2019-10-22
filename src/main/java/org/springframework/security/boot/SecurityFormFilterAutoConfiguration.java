@@ -47,7 +47,6 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -57,6 +56,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnProperty(prefix = SecurityFormProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class, SecurityFormProperties.class })
 public class SecurityFormFilterAutoConfiguration {
+
 
 	@Bean("formLogoutHandler")
 	public SecurityContextLogoutHandler formLogoutHandler(SecurityFormProperties bizFormProperties) {
@@ -130,7 +130,6 @@ public class SecurityFormFilterAutoConfiguration {
    				@Qualifier("formAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
    				ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
-   				ObjectProvider<CorsConfigurationSource> configurationSourceProvider,
    				ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider,
@@ -142,7 +141,7 @@ public class SecurityFormFilterAutoConfiguration {
 				
 			) {
    			
-   			super(bizProperties, csrfTokenRepositoryProvider.getIfAvailable(), configurationSourceProvider.getIfAvailable());
+   			super(bizProperties, csrfTokenRepositoryProvider.getIfAvailable());
    			
    			this.bizProperties = bizProperties;
    			this.bizFormProperties = bizFormProperties;
@@ -254,7 +253,7 @@ public class SecurityFormFilterAutoConfiguration {
    	        	.antMatcher(bizFormProperties.getPathPattern())
    	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
-   	    	super.configure(http, bizFormProperties.getCros());
+   	    	super.configure(http, bizFormProperties.getCors());
    	    	super.configure(http, bizFormProperties.getCsrf());
    	    	super.configure(http, bizFormProperties.getHeaders());
 	    	super.configure(http);

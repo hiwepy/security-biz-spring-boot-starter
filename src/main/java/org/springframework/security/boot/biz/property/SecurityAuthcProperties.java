@@ -73,7 +73,7 @@ public class SecurityAuthcProperties {
 	private SecurityHeadersProperties headers = new SecurityHeadersProperties();
 
 	@NestedConfigurationProperty
-	private SecurityHeaderCrosProperties cros = new SecurityHeaderCrosProperties();
+	private SecurityHeaderCorsProperties cors = new SecurityHeaderCorsProperties();
 	
 	@NestedConfigurationProperty
 	private SecurityHeaderCsrfProperties csrf = new SecurityHeaderCsrfProperties();
