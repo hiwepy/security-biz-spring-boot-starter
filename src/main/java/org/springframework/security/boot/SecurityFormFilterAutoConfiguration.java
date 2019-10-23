@@ -73,7 +73,7 @@ public class SecurityFormFilterAutoConfiguration {
 	}
 	
 	@Configuration
-	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityBizProperties.class })
+	@EnableConfigurationProperties({ SecurityBizProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
    	static class FormWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	

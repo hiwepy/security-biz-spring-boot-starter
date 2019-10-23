@@ -15,7 +15,6 @@
  */
 package org.springframework.security.boot;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -61,7 +59,6 @@ import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapt
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
@@ -96,7 +93,6 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
@@ -332,26 +328,6 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 		} else {
 			http.csrf().disable();
 		}
-	}
-
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-
-		// 对过滤链按过滤器名称进行分组
-		Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
-				.stream().collect(Collectors.groupingBy(Entry::getValue, TreeMap::new, Collectors.toList()));
-
-		List<Entry<String, String>> noneEntries = groupingMap.get("anon");
-		List<String> permitMatchers = new ArrayList<String>();
-		if (!CollectionUtils.isEmpty(noneEntries)) {
-			permitMatchers = noneEntries.stream().map(mapper -> {
-				return mapper.getKey();
-			}).collect(Collectors.toList());
-		}
-		web.ignoring().antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
-				.antMatchers(HttpMethod.OPTIONS, "/**");
-
-		super.configure(web);
 	}
 
 	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
