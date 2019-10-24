@@ -51,6 +51,14 @@ public class SecurityAuthcProperties {
 	private boolean continueChainBeforeSuccessfulAuthentication = false;
 	
 	/**
+	 * If <code>true</code>, will always redirect to the value of {@code defaultTargetUrl}
+	 * (defaults to <code>false</code>).
+	 */
+	private boolean alwaysUseDefaultTargetUrl = false;
+	
+	private String defaultTargetUrl = "/";
+	
+	/**
 	 * If this property is set, the current request will be checked for this a parameter
 	 * with this name and the value used as the target URL if present.
 	 *
@@ -58,12 +66,6 @@ public class SecurityAuthcProperties {
 	 * URL. Defaults to null.
 	 */
 	private String targetUrlParameter = "target";
-	
-	/**
-	 * If <code>true</code>, will always redirect to the value of {@code defaultTargetUrl}
-	 * (defaults to <code>false</code>).
-	 */
-	private boolean alwaysUseDefaultTargetUrl = false;
 	
 	/**
 	 * Defines whether only HTTP POST requests will be allowed by this filter. If set to
