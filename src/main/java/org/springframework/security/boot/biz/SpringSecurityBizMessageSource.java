@@ -28,7 +28,7 @@ public class SpringSecurityBizMessageSource extends ResourceBundleMessageSource 
 	// ===================================================================================================
 
 	public SpringSecurityBizMessageSource() {
-		setBasename("org.springframework.security.boot.messages");
+		setBasename("org.springframework.security.boot.biz.messages");
 	}
 
 	// ~ Methods
