@@ -250,6 +250,16 @@ public class SecurityPrincipal extends User implements Cloneable {
 		}
 		return CollectionUtils.contains(getRoles().iterator(), role);
 	}
+	
+	public boolean hasAnyRole(String... roles) {
+		if(!StringUtils.isNoneBlank(roles)) {
+			return false;
+		}
+		if(CollectionUtils.isEmpty(getRoles())) {
+			return false;
+		}
+		return CollectionUtils.containsAny(getRoles(), Arrays.asList(roles));
+	}
 
 	@Override
 	public boolean equals(Object o) {
