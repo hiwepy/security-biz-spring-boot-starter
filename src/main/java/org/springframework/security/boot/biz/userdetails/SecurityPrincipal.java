@@ -232,7 +232,13 @@ public class SecurityPrincipal extends User implements Cloneable {
 	}
 	
 	public boolean isAdmin() {
-		return StringUtils.equalsIgnoreCase("admin", this.getRole()) || StringUtils.equalsIgnoreCase("admin", this.getRoleid());
+		if(!StringUtils.isNoneBlank(role)) {
+			return false;
+		}
+		if(CollectionUtils.isEmpty(roles)) {
+			return false;
+		}
+		return CollectionUtils.contains(getRoles().iterator(), "admin") || StringUtils.equalsIgnoreCase("admin", this.getRole()) || StringUtils.equalsIgnoreCase("admin", this.getRoleid());
 	}
 	
 	public boolean hasRole(String role) {
