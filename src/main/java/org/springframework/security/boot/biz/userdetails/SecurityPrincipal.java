@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="https://github.com/vindell">vindell</a>
@@ -231,8 +231,12 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.face = face;
 	}
 	
+	public boolean isAdmin(String role) {
+		return StringUtils.equalsIgnoreCase(role, this.getRole()) || StringUtils.equalsIgnoreCase(role, this.getRoleid());
+	}
+	
 	public boolean hasRole(String role) {
-		if(!StringUtils.hasText(role)) {
+		if(!StringUtils.isNoneBlank(role)) {
 			return false;
 		}
 		if(CollectionUtils.isEmpty(roles)) {
