@@ -12,6 +12,8 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author <a href="https://github.com/vindell">vindell</a>
@@ -227,6 +229,16 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setFace(boolean face) {
 		this.face = face;
+	}
+	
+	public boolean hasRole(String role) {
+		if(!StringUtils.hasText(role)) {
+			return false;
+		}
+		if(CollectionUtils.isEmpty(roles)) {
+			return false;
+		}
+		return CollectionUtils.contains(getRoles().iterator(), role);
 	}
 
 	@Override
