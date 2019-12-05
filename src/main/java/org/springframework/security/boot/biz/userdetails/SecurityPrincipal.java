@@ -60,7 +60,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户拥有角色列表
 	 */
-	private Set<String> roles;
+	private Set<Map<String, String>> roles;
 	/**
 	 * 用户权限标记列表
 	 */
@@ -87,7 +87,6 @@ public class SecurityPrincipal extends User implements Cloneable {
 	}
 
 	public static Collection<? extends GrantedAuthority> roleAuthorities(List<String> roles) {
-
 		if (roles == null) {
 			throw new InsufficientAuthenticationException("User has no roles assigned");
 		}
@@ -183,11 +182,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.faceId = faceId;
 	}
 
-	public Set<String> getRoles() {
+	public Set<Map<String, String>> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<String> roles) {
+	public void setRoles(Set<Map<String, String>> roles) {
 		this.roles = roles;
 	}
 
@@ -248,7 +247,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		if(CollectionUtils.isEmpty(roles)) {
 			return false;
 		}
-		return CollectionUtils.contains(getRoles().iterator(), role);
+		return roles.stream().anyMatch(entry -> StringUtils.equalsIgnoreCase(entry.get("key"), role));
 	}
 	
 	public boolean hasAnyRole(String... roles) {
