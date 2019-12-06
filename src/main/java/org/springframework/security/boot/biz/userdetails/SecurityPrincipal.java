@@ -15,6 +15,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.CollectionUtils;
 
+import com.github.vindell.jwt.JwtPayload.RolePair;
+
 /**
  * @author <a href="https://github.com/vindell">vindell</a>
  */
@@ -60,7 +62,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户拥有角色列表
 	 */
-	private Set<Map<String, String>> roles;
+	private List<RolePair> roles;
 	/**
 	 * 用户权限标记列表
 	 */
@@ -182,11 +184,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.faceId = faceId;
 	}
 
-	public Set<Map<String, String>> getRoles() {
+	public List<RolePair> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Map<String, String>> roles) {
+	public void setRoles(List<RolePair> roles) {
 		this.roles = roles;
 	}
 
@@ -247,7 +249,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		if(CollectionUtils.isEmpty(roles)) {
 			return false;
 		}
-		return roles.stream().anyMatch(entry -> StringUtils.equalsIgnoreCase(entry.get("key"), role));
+		return roles.stream().anyMatch(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), role));
 	}
 	
 	public boolean hasAnyRole(String... roles) {
