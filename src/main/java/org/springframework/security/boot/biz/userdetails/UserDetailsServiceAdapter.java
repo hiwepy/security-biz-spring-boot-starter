@@ -36,10 +36,13 @@ public abstract class UserDetailsServiceAdapter implements UserDetailsService, U
 		return null;
 	}
 	
-	public UserDetails loadUserDetailsWithoutPwd(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserDetails(String userId, String roleId) throws UsernameNotFoundException {
 		return null;
 	}
 	
+	public UserDetails loadUserDetailsWithoutPwd(String username) throws UsernameNotFoundException {
+		return this.loadUserByUsername(username);
+	}
 	
 	@Override
 	public UserDetails updatePassword(UserDetails user, String newPassword) {
