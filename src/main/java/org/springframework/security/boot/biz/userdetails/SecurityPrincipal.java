@@ -15,10 +15,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.CollectionUtils;
 
-import com.github.vindell.jwt.JwtPayload.RolePair;
+import com.github.hiwepy.jwt.JwtPayload.RolePair;
 
 /**
- * @author <a href="https://github.com/vindell">vindell</a>
+ * @author <a href="https://github.com/hiwepy">hiwepy</a>
  */
 @SuppressWarnings("serial")
 public class SecurityPrincipal extends User implements Cloneable {

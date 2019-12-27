@@ -10,12 +10,12 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	
-	<groupId>com.github.vindell</groupId>
+	<groupId>com.github.hiwepy</groupId>
 	<artifactId>spring-boot-starter-security-biz</artifactId>
 	<description>Spring Boot Starter For Spring Security Biz</description>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
-	<url>https://github.com/vindell/${project.artifactId}</url>
+	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -26,15 +26,15 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https:github.com/vindell/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:https:github.com/vindell/${project.artifactId}.git</developerConnection>
-		<url>https:github.com/vindell/${project.artifactId}</url>
+		<connection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</developerConnection>
+		<url>https:github.com/hiwepy/${project.artifactId}</url>
 		<tag>${project.artifactId}</tag>
 	</scm>
 
 	<developers>
 		<developer>
-			<name>vindell</name>
+			<name>wandl</name>
 			<email>hnxyhcwdl1003@163.com</email>
 			<roles>
 				<role>developer</role>
@@ -384,7 +384,7 @@
 				<version>${fastjson.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.vindell</groupId>
+				<groupId>com.github.hiwepy</groupId>
 				<artifactId>jwt-issuer-api</artifactId>
 				<version>${jwt-issuer.version}</version>
 			</dependency>
@@ -488,7 +488,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.vindell</groupId>
+			<groupId>com.github.hiwepy</groupId>
 			<artifactId>jwt-issuer-api</artifactId>
 			<scope>provided</scope>
 		</dependency>

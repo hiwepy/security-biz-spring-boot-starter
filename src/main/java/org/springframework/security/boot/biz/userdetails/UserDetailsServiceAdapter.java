@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, vindell (https://github.com/vindell).
+ * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -41,7 +41,7 @@ public abstract class UserDetailsServiceAdapter implements UserDetailsService, U
 	}
 	
 	public UserDetails loadUserDetailsWithoutPwd(String username) throws UsernameNotFoundException {
-		return this.loadUserByUsername(username);
+		return null;
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public abstract class UserDetailsServiceAdapter implements UserDetailsService, U
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return null;
+		return this.loadUserDetailsWithoutPwd(username);
 	}
 
 }

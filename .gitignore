@@ -21,7 +21,6 @@
 .sts4-cache
 /build
 /code
-
 MANIFEST.MF
 _site/
 activemq-data
