@@ -72,17 +72,17 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private Map<String, Object> profile = new HashMap<String, Object>();
 	/**
-	 * 用户是否首次登陆
-	 */
-	private boolean initial = false;
+   	 * 用户是否首次登录
+   	 */
+    private boolean initial = Boolean.FALSE;
 	/**
 	 * 用户是否功能受限（false:无限制|true:有限制）
 	 */
-	private boolean restricted = false;
-	/**
+	private boolean restricted = Boolean.FALSE;
+    /**
 	 * 用户是否扫脸登录
 	 */
-	private boolean face = false;
+	private boolean face = Boolean.FALSE;
 
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
