@@ -31,6 +31,10 @@ public abstract class UserDetailsServiceAdapter implements UserDetailsService, U
 		}
 		return null;
 	}
+
+	public UserDetails loadUserDetailsWithSave(Authentication token) throws UsernameNotFoundException {
+		return null;
+	}
 	
 	public UserDetails loadUserDetails(String userid) throws UsernameNotFoundException {
 		return null;
@@ -43,6 +47,7 @@ public abstract class UserDetailsServiceAdapter implements UserDetailsService, U
 	public UserDetails loadUserDetailsWithoutPwd(String username) throws UsernameNotFoundException {
 		return null;
 	}
+	
 	
 	@Override
 	public UserDetails updatePassword(UserDetails user, String newPassword) {
