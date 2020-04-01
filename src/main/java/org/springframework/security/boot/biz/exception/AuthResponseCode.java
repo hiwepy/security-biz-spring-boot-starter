@@ -25,6 +25,8 @@ public enum AuthResponseCode {
 	SC_AUTHC_USER_EXPIRED("10015", "spring.security.authc.principal.expired"),
 	SC_AUTHC_USER_LOCKED("10016", "spring.security.authc.principal.locked"),
 	SC_AUTHC_USER_NO_ROLE("10017", "spring.security.authc.principal.no-role"),
+	SC_AUTHC_BOUND_NOT_FOUND("10018", "spring.security.authc.bound.not-found"),
+	SC_AUTHC_BOUND_INCORRECT("10019", "spring.security.authc.bound.incorrect"),
 	
 	SC_AUTHZ_SUCCESS("0", "spring.security.authz.success"),
 	SC_AUTHZ_FAIL("10021", "spring.security.authz.fail"),

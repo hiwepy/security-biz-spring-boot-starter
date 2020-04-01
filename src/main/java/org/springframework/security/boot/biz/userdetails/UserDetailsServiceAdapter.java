@@ -16,46 +16,41 @@
 package org.springframework.security.boot.biz.userdetails;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public abstract class UserDetailsServiceAdapter implements UserDetailsService, UserDetailsPasswordService, AuthenticationUserDetailsService<Authentication> {
 
 	@Override
-	public UserDetails loadUserDetails(Authentication token) throws UsernameNotFoundException {
+	public UserDetails loadUserDetails(Authentication token) throws AuthenticationException {
 		if(token.getPrincipal() instanceof String) {
 			return this.loadUserByUsername(String.valueOf(token.getPrincipal()));
 		}
 		return null;
 	}
-
-	public UserDetails loadUserDetailsWithSave(Authentication token) throws UsernameNotFoundException {
+	
+	public UserDetails loadUserDetails(String userid) throws AuthenticationException {
 		return null;
 	}
 	
-	public UserDetails loadUserDetails(String userid) throws UsernameNotFoundException {
+	public UserDetails loadUserDetails(String userId, String roleId) throws AuthenticationException {
 		return null;
 	}
 	
-	public UserDetails loadUserDetails(String userId, String roleId) throws UsernameNotFoundException {
+	public UserDetails loadUserDetailsWithoutPwd(String username) throws AuthenticationException {
 		return null;
 	}
-	
-	public UserDetails loadUserDetailsWithoutPwd(String username) throws UsernameNotFoundException {
-		return null;
-	}
-	
 	
 	@Override
-	public UserDetails updatePassword(UserDetails user, String newPassword) {
+	public UserDetails updatePassword(UserDetails user, String newPassword) throws AuthenticationException {
 		return null;
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws AuthenticationException {
 		return this.loadUserDetailsWithoutPwd(username);
 	}
 
