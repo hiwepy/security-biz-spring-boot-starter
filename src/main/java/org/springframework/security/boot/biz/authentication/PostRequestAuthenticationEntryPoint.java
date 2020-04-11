@@ -16,6 +16,7 @@
 package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -94,7 +95,8 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
 		
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		
 		if (e instanceof UsernameNotFoundException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getCode(),

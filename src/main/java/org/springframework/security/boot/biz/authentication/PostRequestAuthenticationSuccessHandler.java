@@ -1,6 +1,7 @@
 package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,8 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 			Authentication authentication) throws IOException, ServletException {
 
 		response.setStatus(HttpStatus.OK.value());
-		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
     	

@@ -1,6 +1,7 @@
 package org.springframework.security.boot.biz.authentication.nested;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,8 @@ public class DefaultMatchedAuthenticationFailureHandler  implements MatchedAuthe
 			AuthenticationException e) throws IOException, ServletException {
  
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		
 		if (e instanceof AuthenticationMethodNotSupportedException) {
 			JSONObject.writeJSONString(response.getWriter(), AuthResponse.of(AuthResponseCode.SC_AUTHC_METHOD_NOT_ALLOWED.getCode(),
