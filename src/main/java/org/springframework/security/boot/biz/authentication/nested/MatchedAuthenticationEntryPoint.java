@@ -29,6 +29,12 @@ import org.springframework.security.core.AuthenticationException;
  */
 public interface MatchedAuthenticationEntryPoint {
 	
+	/**
+	 * Whether it is supported
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param e  the authentication exception
+	 * @return true or false
+	 */
 	public boolean supports(AuthenticationException e) ;
 
 	/**
@@ -45,7 +51,8 @@ public interface MatchedAuthenticationEntryPoint {
 	 * @param request that resulted in an <code>AuthenticationException</code>
 	 * @param response so that the user agent can begin authentication
 	 * @param authException that caused the invocation
-	 *
+	 * @throws IOException IOException
+	 * @throws ServletException ServletException
 	 */
 	void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException;

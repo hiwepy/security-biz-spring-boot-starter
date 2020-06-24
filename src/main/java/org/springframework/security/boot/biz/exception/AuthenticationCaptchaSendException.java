@@ -19,7 +19,8 @@ package org.springframework.security.boot.biz.exception;
 import org.springframework.security.core.AuthenticationException;
 
 /**
- *
+ * Authentication Captcha Send Exception
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
 public class AuthenticationCaptchaSendException extends AuthenticationException {

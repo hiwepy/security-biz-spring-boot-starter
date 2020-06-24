@@ -23,6 +23,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Security Header Csrf Properties
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 @Getter
 @Setter
 @ToString

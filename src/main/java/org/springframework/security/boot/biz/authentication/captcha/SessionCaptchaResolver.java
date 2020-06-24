@@ -23,6 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.WebUtils;
 
+/**
+ * Captcha Resolver From Session 
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class SessionCaptchaResolver implements CaptchaResolver {
 
 	/**

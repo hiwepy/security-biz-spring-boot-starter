@@ -32,7 +32,8 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * Post认证请求失败后的处理实现
+ * Post Request Authentication Failure Handler
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public class PostRequestAuthenticationFailureHandler extends ExceptionMappingAuthenticationFailureHandler {
 

@@ -15,6 +15,10 @@
  */
 package org.springframework.security.boot.biz.property;
 
+/**
+ * Security Request Properties
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class SecurityRequestProperties {
 
  

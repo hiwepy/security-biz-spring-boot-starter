@@ -29,6 +29,12 @@ import org.springframework.security.core.Authentication;
  */
 public interface MatchedAuthenticationSuccessHandler {
 
+	/**
+	 * Whether it is supported
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param authentication  the authentication
+	 * @return true or false
+	 */
 	public boolean supports(Authentication authentication) ;
 	
 	/**
@@ -38,6 +44,8 @@ public interface MatchedAuthenticationSuccessHandler {
 	 * @param response the response
 	 * @param authentication the <tt>Authentication</tt> object which was created during
 	 * the authentication process.
+	 * @throws IOException IOException
+	 * @throws ServletException ServletException
 	 */
 	void onAuthenticationSuccess(HttpServletRequest request,
 			HttpServletResponse response, Authentication authentication)

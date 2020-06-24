@@ -12,7 +12,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 /**
- *  认证请求失败后的处理实现
+ * 认证请求失败后的处理实现
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public class ListenedAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	

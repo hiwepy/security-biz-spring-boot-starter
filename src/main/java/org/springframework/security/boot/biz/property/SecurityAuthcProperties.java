@@ -27,6 +27,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Security Authc Properties
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 @Getter
 @Setter
 @ToString

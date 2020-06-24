@@ -22,6 +22,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+/**
+ * UserDetailsService Adapter
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public abstract class UserDetailsServiceAdapter implements UserDetailsService, UserDetailsPasswordService, AuthenticationUserDetailsService<Authentication> {
 
 	@Override

@@ -21,6 +21,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
+/**
+ * Spring WebUtils 扩展
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class WebUtils extends org.springframework.web.util.WebUtils {
 
 	private static final String XML_HTTP_REQUEST = "XMLHttpRequest";

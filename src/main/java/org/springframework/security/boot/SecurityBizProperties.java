@@ -24,6 +24,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * 
+ * Security 业务参数配置
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 @ConfigurationProperties(SecurityBizProperties.PREFIX)
 @Getter
 @Setter
@@ -33,9 +38,9 @@ public class SecurityBizProperties {
 	public static final String PREFIX = "spring.security";
 	
 	/**
-	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则
+	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则 Map<pattern, Chain name>
 	 */
-	private Map<String /* pattern */, String /* Chain name */> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+	private Map<String, String > filterChainDefinitionMap = new LinkedHashMap<>(16);
 	/** 
      * Whether stateless session
      */

@@ -21,6 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.util.WebUtils;
 
+/**
+ * Authenticating Failure Counter On Session 
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class AuthenticatingFailureSessionCounter implements AuthenticatingFailureCounter {
 
 	@Override

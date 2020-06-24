@@ -18,6 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+/**
+ * Post Request Authentication Provider
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class PostRequestAuthenticationProvider implements AuthenticationProvider {
 	
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();

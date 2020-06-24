@@ -23,6 +23,7 @@ import org.springframework.security.core.AuthenticationException;
 
 /**
  * An {@code AuthenticationListener} listens for notifications while authenticate with the system.
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public interface AuthenticationListener {
 

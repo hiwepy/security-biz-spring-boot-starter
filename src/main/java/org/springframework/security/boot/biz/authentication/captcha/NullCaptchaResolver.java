@@ -20,6 +20,10 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Null Captcha Resolver
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class NullCaptchaResolver implements CaptchaResolver {
 
 	@Override

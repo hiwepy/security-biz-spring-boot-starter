@@ -29,6 +29,12 @@ import org.springframework.security.core.AuthenticationException;
  */
 public interface MatchedAuthenticationFailureHandler {
 
+	/**
+	 * Whether it is supported
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param e  the authentication exception
+	 * @return true or false
+	 */
 	public boolean supports(AuthenticationException e) ;
 	
 	/**
@@ -37,6 +43,8 @@ public interface MatchedAuthenticationFailureHandler {
 	 * @param response the response.
 	 * @param exception the exception which was thrown to reject the authentication
 	 * request.
+	 * @throws IOException IOException
+	 * @throws ServletException ServletException 
 	 */
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception)

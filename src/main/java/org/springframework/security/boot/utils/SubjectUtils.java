@@ -25,10 +25,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
 
+/**
+ * Subject Utils
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class SubjectUtils {
 	
 	private static MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-	private static final String EMPTY = "null";
+	private static final String EMPTY = "";
 	
 	public static SecurityContext getSecurityContext(){
 		return SecurityContextHolder.getContext();
@@ -128,7 +132,7 @@ public class SubjectUtils {
 		
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		
-		Map<String, Object> tokenMap = new HashMap<String, Object>();
+		Map<String, Object> tokenMap = new HashMap<String, Object>(16);
 		
 		tokenMap.put("code", AuthResponseCode.SC_AUTHC_SUCCESS.getCode());
 		tokenMap.put("msg", messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey()));
@@ -148,7 +152,7 @@ public class SubjectUtils {
 			tokenMap.put("role", StringUtils.defaultString(securityPrincipal.getRole(), EMPTY));
 			tokenMap.put("roles", CollectionUtils.isEmpty(securityPrincipal.getRoles()) ? new ArrayList<>() : securityPrincipal.getRoles() );
 			tokenMap.put("restricted", securityPrincipal.isRestricted());
-			tokenMap.put("profile", CollectionUtils.isEmpty(securityPrincipal.getProfile()) ? new HashMap<>() : securityPrincipal.getProfile() );
+			tokenMap.put("profile", CollectionUtils.isEmpty(securityPrincipal.getProfile()) ? new HashMap<>(0) : securityPrincipal.getProfile() );
 			tokenMap.put("faced", securityPrincipal.isFace());
 			tokenMap.put("faceId", StringUtils.defaultString(securityPrincipal.getFaceId(), EMPTY ));
 			// JSON Web Token (JWT)
@@ -160,12 +164,12 @@ public class SubjectUtils {
 			tokenMap.put("userkey", EMPTY);
 			tokenMap.put("usercode", EMPTY);
 			tokenMap.put("username", EMPTY);
-			tokenMap.put("perms", new ArrayList<>());
+			tokenMap.put("perms", new ArrayList<>(0));
 			tokenMap.put("roleid", EMPTY);
 			tokenMap.put("role", EMPTY);
-			tokenMap.put("roles", new ArrayList<>());
+			tokenMap.put("roles", new ArrayList<>(0));
 			tokenMap.put("restricted", false);
-			tokenMap.put("profile", new HashMap<>());
+			tokenMap.put("profile", new HashMap<>(0));
 			tokenMap.put("faced", false);
 			tokenMap.put("faceId", EMPTY);
 			tokenMap.put("token", EMPTY);

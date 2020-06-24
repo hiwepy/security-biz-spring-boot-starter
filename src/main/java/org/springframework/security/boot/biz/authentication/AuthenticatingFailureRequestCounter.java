@@ -22,7 +22,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.util.WebUtils;
 
-
+/**
+ * Authenticating Failure Counter On Request
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class AuthenticatingFailureRequestCounter implements AuthenticatingFailureCounter {
 
     private String retryTimesKeyParameter = DEFAULT_RETRY_TIMES_KEY_PARAM_NAME;

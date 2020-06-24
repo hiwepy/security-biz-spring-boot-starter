@@ -45,6 +45,10 @@ import org.springframework.security.core.AuthenticationException;
 
 import com.alibaba.fastjson.JSONObject;
 
+/**
+ * Default Matched Authentication Entry Point
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class DefaultMatchedAuthenticationEntryPoint implements MatchedAuthenticationEntryPoint {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
@@ -57,6 +61,7 @@ public class DefaultMatchedAuthenticationEntryPoint implements MatchedAuthentica
 				AuthenticationTokenExpiredException.class);
 	}
 	
+	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
 			throws IOException, ServletException {
 		

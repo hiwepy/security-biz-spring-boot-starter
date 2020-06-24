@@ -23,6 +23,10 @@ import org.springframework.security.boot.biz.filter.HttpParamsFilter;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+/**
+ * Netease Url Authentication Success Handler
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class NeteaseUrlAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     public NeteaseUrlAuthenticationSuccessHandler() {

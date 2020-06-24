@@ -46,6 +46,10 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
+/**
+ * Post Request Authentication Entry Point
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -58,6 +62,7 @@ public class PostRequestAuthenticationEntryPoint extends LoginUrlAuthenticationE
 		this.entryPoints = entryPoints;
 	}
 
+	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
 			throws IOException, ServletException {
 		/*

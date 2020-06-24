@@ -103,7 +103,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 /**
  * @author ： <a href="https://github.com/hiwepy">wandl</a>
  */
-public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurerAdapter {
+public abstract class AbstractSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
 	private Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
 	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
@@ -113,7 +113,7 @@ public abstract class SecurityBizConfigurerAdapter extends WebSecurityConfigurer
 	private final AuthenticationManager authenticationManager;
 	private final List<AuthenticationProvider> authenticationProviders;
 
-	public SecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, SecurityAuthcProperties authcProperties,
+	public AbstractSecurityConfigurerAdapter(SecurityBizProperties bizProperties, SecurityAuthcProperties authcProperties,
 			List<AuthenticationProvider> authenticationProviders, AuthenticationManager authenticationManager) {
 		this.bizProperties = bizProperties;
 		this.authcProperties = authcProperties;

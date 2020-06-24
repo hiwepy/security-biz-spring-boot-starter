@@ -31,6 +31,7 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * Post认证请求失败后的处理实现
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public class DefaultMatchedAuthenticationFailureHandler  implements MatchedAuthenticationFailureHandler {
 

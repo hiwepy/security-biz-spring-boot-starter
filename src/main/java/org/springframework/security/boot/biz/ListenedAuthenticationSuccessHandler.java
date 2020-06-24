@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 
 /**
  * 认证请求成功后的处理实现
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public class ListenedAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	

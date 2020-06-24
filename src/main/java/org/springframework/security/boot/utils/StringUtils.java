@@ -15,6 +15,10 @@
  */
 package org.springframework.security.boot.utils;
 
+/**
+ * Spring StringUtils 扩展
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class StringUtils extends org.springframework.util.StringUtils {
 
 	/**

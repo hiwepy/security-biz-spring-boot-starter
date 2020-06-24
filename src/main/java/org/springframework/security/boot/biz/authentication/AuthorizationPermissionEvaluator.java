@@ -29,12 +29,13 @@ import org.springframework.security.core.GrantedAuthority;
  * 
  * @author ： <a href="https://github.com/hiwepy">wandl</a>
  */
-
 public class AuthorizationPermissionEvaluator implements PermissionEvaluator {
-
+	
+	private static final String ALL = "*";
+	
 	@Override
 	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-		if (StringUtils.equalsIgnoreCase("*", permission.toString())) {
+		if (StringUtils.equalsIgnoreCase(ALL, permission.toString())) {
 			return true;
 		}
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -52,7 +53,7 @@ public class AuthorizationPermissionEvaluator implements PermissionEvaluator {
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType,
 			Object permission) {
-		if (StringUtils.equalsIgnoreCase("*", permission.toString())) {
+		if (StringUtils.equalsIgnoreCase(ALL, permission.toString())) {
 			return true;
 		}
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -65,7 +66,7 @@ public class AuthorizationPermissionEvaluator implements PermissionEvaluator {
 	}
 	
 	public boolean hasPermission(Object permission) {
-		if (StringUtils.equalsIgnoreCase("*", permission.toString())) {
+		if (StringUtils.equalsIgnoreCase(ALL, permission.toString())) {
 			return true;
 		}
 		Collection<? extends GrantedAuthority> authorities = SubjectUtils.getAuthentication().getAuthorities();

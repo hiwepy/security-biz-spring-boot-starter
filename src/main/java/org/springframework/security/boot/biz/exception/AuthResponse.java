@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Auth response for interacting with client.
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public class AuthResponse {
 	

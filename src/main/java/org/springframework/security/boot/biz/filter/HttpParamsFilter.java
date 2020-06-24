@@ -27,10 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.web.util.WebUtils;
-
-// http://blog.csdn.net/jaune161/article/details/78060780
-
+/**
+ * Http Params Filter
+ * http://blog.csdn.net/jaune161/article/details/78060780
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public class HttpParamsFilter implements Filter {
     public static String REQUESTED_URL = "CasRequestedUrl";
 

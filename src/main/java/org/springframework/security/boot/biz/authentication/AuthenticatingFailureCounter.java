@@ -18,12 +18,33 @@ package org.springframework.security.boot.biz.authentication;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+/**
+ * Authenticating Failure Counter
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 public interface AuthenticatingFailureCounter {
 
 	public static final String DEFAULT_RETRY_TIMES_KEY_PARAM_NAME = "failureRetries";
 
+	/**
+	 * 
+	 * Get The Failure Counter
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param request ServletRequest
+	 * @param response ServletResponse
+	 * @param retryTimesKeyAttribute The retryTimes Key Attribute
+	 * @return
+	 */
 	int get(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute);
 	
+	/**
+	 * 
+	 * Failure Counter increment
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param request ServletRequest
+	 * @param response ServletResponse
+	 * @param retryTimesKeyAttribute The retryTimes Key Attribute
+	 */
 	void increment(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute);
 	
 }

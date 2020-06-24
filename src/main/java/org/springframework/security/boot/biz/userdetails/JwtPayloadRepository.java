@@ -24,12 +24,33 @@ import com.github.hiwepy.jwt.JwtPayload;
  * Abstract JSON Web Token (JWT) Payload Repository
  * @author ： <a href="https://github.com/hiwepy">hiwepy</a>
  */
-public abstract class JwtPayloadRepository {
+public interface JwtPayloadRepository {
 
-	public abstract String issueJwt(AbstractAuthenticationToken token);
+	/**
+	 * Issue Jwt
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param token Authentication Token
+	 * @return Jwt String
+	 */
+	String issueJwt(AbstractAuthenticationToken token);
 
-	public abstract boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException;
+	/**
+	 * Check JWT 
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param token Authentication Token
+	 * @param checkExpiry Whether Check JWT expiration time
+	 * @return Effective or not
+	 * @throws AuthenticationException
+	 */
+	boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException;
 
-	public abstract JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry);
+	/**
+	 * Parser JWT 
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param token Authentication Token
+	 * @param checkExpiry Whether Check JWT expiration time
+	 * @return Jwt Payload
+	 */
+	JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry);
 	
 }

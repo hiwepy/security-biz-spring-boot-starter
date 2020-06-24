@@ -26,6 +26,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Security Form Properties
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 @ConfigurationProperties(SecurityFormProperties.PREFIX)
 @Getter
 @Setter

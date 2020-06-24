@@ -41,6 +41,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 
 	// ~ Static fields/initializers
 	// =====================================================================================
+	
 	private static Logger logger = LoggerFactory.getLogger(PostRequestAuthenticationProcessingFilter.class);
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	

@@ -3,6 +3,8 @@ package org.springframework.security.boot.biz.exception;
 import org.springframework.security.core.AuthenticationException;
 
 /**
+ * Authentication Method Not Supported Exception
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
 public class AuthenticationMethodNotSupportedException extends AuthenticationException {

@@ -47,6 +47,10 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Security Form Filter Auto Configuration
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 @Configuration
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
@@ -75,7 +79,7 @@ public class SecurityFormFilterAutoConfiguration {
 	@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
-   	static class FormWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
+   	static class FormWebSecurityConfigurerAdapter extends AbstractSecurityConfigurerAdapter {
     	
 	    private final SecurityFormProperties authcProperties;
 		

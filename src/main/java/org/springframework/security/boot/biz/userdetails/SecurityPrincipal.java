@@ -290,4 +290,30 @@ public class SecurityPrincipal extends User implements Cloneable {
 				+ isAccountNonLocked() + '}';
 	}
 
+	
+	public Map<String, Object> toClaims(){
+		
+		Map<String, Object> claims = new HashMap<>(13);
+		
+		claims.put("role", this.getRole());
+		claims.put("roleid", this.getRoleid());
+		claims.put("roles", this.getRoles());
+		claims.put("perms", this.getPerms());
+		claims.put("alias", this.getAlias());
+		claims.put("userid", this.getUserid());
+		claims.put("username", this.getUsername());
+		claims.put("userkey", this.getUserkey());
+		claims.put("usercode", this.getUsercode());
+		claims.put("initial", this.isInitial());
+		claims.put("faced", this.isFace());
+		claims.put("faceid", this.getFaceId());
+		if (CollectionUtils.isEmpty(this.getProfile())) {
+			claims.put("profile", new HashMap<>(0));
+		} else {
+			claims.put("profile", this.getProfile());
+		}
+		return claims;
+		
+	}
+	
 }

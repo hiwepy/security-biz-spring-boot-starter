@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Rest 模式登录认证绑定的参数对象Model
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public class PostLoginRequest {
 	

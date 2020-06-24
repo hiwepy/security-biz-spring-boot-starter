@@ -29,6 +29,10 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ *  基础对象初始化
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+ */
 @Configuration
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)

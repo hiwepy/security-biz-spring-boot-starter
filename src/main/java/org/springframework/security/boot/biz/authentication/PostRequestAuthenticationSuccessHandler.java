@@ -103,17 +103,13 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
     	
-		Map<String, Object> tokenMap = new HashMap<String, Object>();
+		Map<String, Object> tokenMap = new HashMap<String, Object>(16);
 		tokenMap.put("code", AuthResponseCode.SC_AUTHC_SUCCESS.getCode());
 		tokenMap.put("msg", messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey()));
 		// 账号首次登陆标记
 		if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
 			SecurityPrincipal securityPrincipal = (SecurityPrincipal) userDetails;
-			tokenMap.put("initial", securityPrincipal.isInitial());
-			tokenMap.put("alias", securityPrincipal.getAlias());
-			tokenMap.put("usercode", securityPrincipal.getUsercode());
-			tokenMap.put("userkey", securityPrincipal.getUserkey());
-			tokenMap.put("userid", securityPrincipal.getUserid());
+			tokenMap.putAll(securityPrincipal.toClaims());
 		} else {
 			tokenMap.put("initial", false);
 			tokenMap.put("alias", "");

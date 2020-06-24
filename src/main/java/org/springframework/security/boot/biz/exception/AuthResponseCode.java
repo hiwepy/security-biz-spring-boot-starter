@@ -2,21 +2,61 @@ package org.springframework.security.boot.biz.exception;
 
 /**
  * Enumeration of response code.
+ * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 public enum AuthResponseCode {
 	
+	/**
+	 * Authentication success
+	 */
 	SC_AUTHC_SUCCESS("0", "spring.security.authc.success"),
+	/**
+	 * Authentication Error
+	 */
 	SC_AUTHC_ERROR("500", "spring.security.authc.error"),
+	/**
+	 * Logout success
+	 */
 	SC_AUTHC_LOGOUT("900", "spring.security.authc.logout"),
+	/**
+	 * Authentication failed
+	 */
 	SC_AUTHC_FAIL("10001", "spring.security.authc.fail"),
+	/**
+	 * Authentication method not supported. 
+	 */
 	SC_AUTHC_METHOD_NOT_ALLOWED("10002", "spring.security.authc.method-not-supported"),
+	/**
+	 * The number of login errors exceeds the maximum retry limit and a verification code is required
+	 */
 	SC_AUTHC_OVER_RETRY_REMIND("10003", "spring.security.authc.over-retry-remind"),
-	SC_AUTHC_CAPTCHA_SEND_FAIL("10004", "spring.security.authc.captcha.send-fail"),     
+	/**
+	 * Captcha failed to send
+	 */
+	SC_AUTHC_CAPTCHA_SEND_FAIL("10004", "spring.security.authc.captcha.send-fail"),    
+	/**
+	 * Captcha not provided
+	 */
 	SC_AUTHC_CAPTCHA_REQUIRED("10005", "spring.security.authc.captcha.required"),
+	/**
+	 * Captcha was expired
+	 */
 	SC_AUTHC_CAPTCHA_EXPIRED("10006", "spring.security.authc.captcha.expired"),
+	/**
+	 * Captcha was invalid
+	 */
 	SC_AUTHC_CAPTCHA_INVALID("10007", "spring.security.authc.captcha.invalid"),
+	/**
+	 * Captcha was incorrect
+	 */
 	SC_AUTHC_CAPTCHA_INCORRECT("10008", "spring.security.authc.captcha.incorrect"),
+	/**
+	 * User credentials have expired
+	 */
 	SC_AUTHC_CREDENTIALS_EXPIRED("10009", "spring.security.authc.credentials.expired"),
+	/**
+	 * Bad credentials
+	 */
 	SC_AUTHC_CREDENTIALS_INCORRECT("10010", "spring.security.authc.credentials.incorrect"),
 	SC_AUTHC_USER_UNREGISTERED("10011", "spring.security.authc.principal.unregistered"),
 	SC_AUTHC_USER_REGISTERED("10012", "spring.security.authc.principal.registered"),
