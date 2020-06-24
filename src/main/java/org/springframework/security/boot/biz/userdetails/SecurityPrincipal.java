@@ -81,7 +81,12 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 * 用户是否扫脸登录
 	 */
 	private boolean face = Boolean.FALSE;
-
+	/**
+	 * 用户是否功能受限（false:无限制|true:有限制）
+	 */
+	private boolean restricted = false;
+	
+	
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
 	}
@@ -222,6 +227,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.face = face;
 	}
 	
+	public boolean isRestricted() {
+		return restricted;
+	}
+
+	public void setRestricted(boolean restricted) {
+		this.restricted = restricted;
+	}
+
 	public boolean isAdmin() {
 		if(!StringUtils.isNoneBlank(role)) {
 			return false;
@@ -295,6 +308,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		claims.put("userkey", this.getUserkey());
 		claims.put("usercode", this.getUsercode());
 		claims.put("initial", this.isInitial());
+		claims.put("restricted", this.isRestricted());
 		claims.put("faced", this.isFace());
 		claims.put("faceid", this.getFaceId());
 		if (CollectionUtils.isEmpty(this.getProfile())) {

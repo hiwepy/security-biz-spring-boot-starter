@@ -79,7 +79,7 @@ public class SecurityFormFilterAutoConfiguration {
 	@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
-   	static class FormWebSecurityConfigurerAdapter extends AbstractSecurityConfigurerAdapter {
+   	static class FormWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
     	
 	    private final SecurityFormProperties authcProperties;
 		
