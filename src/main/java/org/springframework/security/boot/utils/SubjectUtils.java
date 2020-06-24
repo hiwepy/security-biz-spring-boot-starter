@@ -151,7 +151,6 @@ public class SubjectUtils {
 			tokenMap.put("roleid", StringUtils.defaultString(securityPrincipal.getRoleid(), EMPTY ));
 			tokenMap.put("role", StringUtils.defaultString(securityPrincipal.getRole(), EMPTY));
 			tokenMap.put("roles", CollectionUtils.isEmpty(securityPrincipal.getRoles()) ? new ArrayList<>() : securityPrincipal.getRoles() );
-			tokenMap.put("restricted", securityPrincipal.isRestricted());
 			tokenMap.put("profile", CollectionUtils.isEmpty(securityPrincipal.getProfile()) ? new HashMap<>(0) : securityPrincipal.getProfile() );
 			tokenMap.put("faced", securityPrincipal.isFace());
 			tokenMap.put("faceId", StringUtils.defaultString(securityPrincipal.getFaceId(), EMPTY ));
@@ -168,7 +167,6 @@ public class SubjectUtils {
 			tokenMap.put("roleid", EMPTY);
 			tokenMap.put("role", EMPTY);
 			tokenMap.put("roles", new ArrayList<>(0));
-			tokenMap.put("restricted", false);
 			tokenMap.put("profile", new HashMap<>(0));
 			tokenMap.put("faced", false);
 			tokenMap.put("faceId", EMPTY);

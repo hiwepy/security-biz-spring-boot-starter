@@ -23,6 +23,8 @@ import com.github.hiwepy.jwt.JwtPayload.RolePair;
 @SuppressWarnings("serial")
 public class SecurityPrincipal extends User implements Cloneable {
 
+	protected static final String ADMIN_STRING = "admin";
+	
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
@@ -75,10 +77,6 @@ public class SecurityPrincipal extends User implements Cloneable {
    	 * 用户是否首次登录
    	 */
     private boolean initial = Boolean.FALSE;
-	/**
-	 * 用户是否功能受限（false:无限制|true:有限制）
-	 */
-	private boolean restricted = Boolean.FALSE;
     /**
 	 * 用户是否扫脸登录
 	 */
@@ -216,14 +214,6 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.profile = profile;
 	}
 
-	public boolean isRestricted() {
-		return restricted;
-	}
-
-	public void setRestricted(boolean restricted) {
-		this.restricted = restricted;
-	}
-
 	public boolean isFace() {
 		return face;
 	}
@@ -239,7 +229,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		if(CollectionUtils.isEmpty(roles)) {
 			return false;
 		}
-		return CollectionUtils.contains(getRoles().iterator(), "admin") || StringUtils.equalsIgnoreCase("admin", this.getRole()) || StringUtils.equalsIgnoreCase("admin", this.getRoleid());
+		return CollectionUtils.contains(getRoles().iterator(), ADMIN_STRING) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRole()) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRoleid());
 	}
 	
 	public boolean hasRole(String role) {
@@ -293,7 +283,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	
 	public Map<String, Object> toClaims(){
 		
-		Map<String, Object> claims = new HashMap<>(13);
+		Map<String, Object> claims = new HashMap<>(16);
 		
 		claims.put("role", this.getRole());
 		claims.put("roleid", this.getRoleid());
