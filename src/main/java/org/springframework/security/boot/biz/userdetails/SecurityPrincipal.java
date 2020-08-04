@@ -48,7 +48,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户别名（昵称）
 	 */
-	private String alias;
+	private String nickname;
 	/**
 	 * 用户角色ID
 	 */
@@ -203,12 +203,12 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.perms = perms;
 	}
 
-	public String getAlias() {
-		return alias;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public Map<String, Object> getProfile() {
@@ -302,7 +302,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		claims.put("roleid", this.getRoleid());
 		claims.put("roles", this.getRoles());
 		claims.put("perms", this.getPerms());
-		claims.put("alias", this.getAlias());
+		claims.put("nickname", this.getNickname());
 		claims.put("userid", this.getUserid());
 		claims.put("username", this.getUsername());
 		claims.put("userkey", this.getUserkey());

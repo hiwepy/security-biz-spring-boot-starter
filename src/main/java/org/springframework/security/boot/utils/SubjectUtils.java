@@ -142,7 +142,7 @@ public class SubjectUtils {
 		if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
 			SecurityPrincipal securityPrincipal = (SecurityPrincipal) userDetails;
 			tokenMap.put("initial", securityPrincipal.isInitial());
-			tokenMap.put("alias", StringUtils.defaultString(securityPrincipal.getAlias(), EMPTY));
+			tokenMap.put("nickname", StringUtils.defaultString(securityPrincipal.getNickname(), EMPTY));
 			tokenMap.put("userid", StringUtils.defaultString(securityPrincipal.getUserid(), EMPTY));
 			tokenMap.put("userkey", StringUtils.defaultString(securityPrincipal.getUserkey(), EMPTY));
 			tokenMap.put("usercode", StringUtils.defaultString(securityPrincipal.getUsercode(), EMPTY));
@@ -158,7 +158,7 @@ public class SubjectUtils {
 			tokenMap.put("token", token);
 		} else {
 			tokenMap.put("initial", false);
-			tokenMap.put("alias", "匿名账户");
+			tokenMap.put("nickname", EMPTY);
 			tokenMap.put("userid", EMPTY);
 			tokenMap.put("userkey", EMPTY);
 			tokenMap.put("usercode", EMPTY);
