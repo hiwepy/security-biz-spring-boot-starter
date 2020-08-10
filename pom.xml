@@ -480,7 +480,12 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-remoting</artifactId>
 		</dependency>
-		
+		<!-- For Spring WebFlux -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-webflux</artifactId>
+		    <scope>provided</scope>
+		</dependency>
 		<!-- Spring Boot Test 依赖 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
