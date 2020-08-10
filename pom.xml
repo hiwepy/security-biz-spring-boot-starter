@@ -458,7 +458,12 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 		</dependency>
-		 
+		
+		<dependency>
+			<groupId>com.github.hiwepy</groupId>
+			<artifactId>jwt-issuer-api</artifactId>
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
@@ -480,22 +485,12 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-remoting</artifactId>
 		</dependency>
+		
 		<!-- For Spring WebFlux -->
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-webflux</artifactId>
 		    <scope>provided</scope>
-		</dependency>
-		<!-- Spring Boot Test 依赖 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.github.hiwepy</groupId>
-			<artifactId>jwt-issuer-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		
 	</dependencies>
