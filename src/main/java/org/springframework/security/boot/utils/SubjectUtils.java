@@ -39,7 +39,7 @@ public class SubjectUtils {
 	}
 	
 	public static Authentication getAuthentication(){
-		return SecurityContextHolder.getContext().getAuthentication();
+		return getSecurityContext().getAuthentication();
 	}
 	
 	@SuppressWarnings("unchecked")
