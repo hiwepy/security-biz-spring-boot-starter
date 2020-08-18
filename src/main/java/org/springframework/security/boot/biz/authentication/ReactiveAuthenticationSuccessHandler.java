@@ -16,12 +16,12 @@
 package org.springframework.security.boot.biz.authentication;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
@@ -30,10 +30,10 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.authentication.nested.MatchedServerAuthenticationSuccessHandler;
+import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
+import org.springframework.security.boot.utils.SubjectUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.util.CollectionUtils;
@@ -85,31 +85,16 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 	protected Mono<Void> writeJSONString(ServerHttpRequest request, ServerHttpResponse response,
 			Authentication authentication) {
 
+		// 设置状态码和响应头
 		response.setStatusCode(HttpStatus.OK);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+		// 国际化后的异常信息
+		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
+		// 写出JSON
+		Map<String, Object> tokenMap = SubjectUtils.tokenMap(authentication, null);
 		
-		Map<String, Object> tokenMap = new HashMap<String, Object>(16);
-		tokenMap.put("code", AuthResponseCode.SC_AUTHC_SUCCESS.getCode());
-		tokenMap.put("msg", messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey()));
-		// 账号首次登陆标记
-		if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
-			SecurityPrincipal securityPrincipal = (SecurityPrincipal) userDetails;
-			tokenMap.putAll(securityPrincipal.toClaims());
-		} else {
-			tokenMap.put("initial", false);
-			tokenMap.put("nickname", "");
-			tokenMap.put("usercode", "");
-			tokenMap.put("userkey", "");
-			tokenMap.put("userid", "");
-		}
-		tokenMap.put("perms", userDetails.getAuthorities());
-		tokenMap.put("username", userDetails.getUsername());
-		
-        String body = JSONObject.toJSONString(tokenMap);
-
+		  
+        String body = JSONObject.toJSONString(AuthResponse.success(message, tokenMap));
         DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
 		
