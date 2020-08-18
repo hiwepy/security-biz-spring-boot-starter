@@ -65,7 +65,7 @@ public class DefaultMatchedAuthenticationEntryPoint implements MatchedAuthentica
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
 			throws IOException, ServletException {
 		
-		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		
