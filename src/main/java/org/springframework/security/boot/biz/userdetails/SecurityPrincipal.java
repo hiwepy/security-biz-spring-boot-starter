@@ -298,23 +298,23 @@ public class SecurityPrincipal extends User implements Cloneable {
 		
 		Map<String, Object> claims = new HashMap<>(16);
 		
-		claims.put("role", this.getRole());
-		claims.put("roleid", this.getRoleid());
-		claims.put("roles", this.getRoles());
-		claims.put("perms", this.getPerms());
-		claims.put("nickname", this.getNickname());
-		claims.put("userid", this.getUserid());
-		claims.put("username", this.getUsername());
-		claims.put("userkey", this.getUserkey());
-		claims.put("usercode", this.getUsercode());
-		claims.put("initial", this.isInitial());
-		claims.put("restricted", this.isRestricted());
-		claims.put("faced", this.isFace());
-		claims.put("faceid", this.getFaceId());
+		claims.put(UserProfiles.ROLE, this.getRole());
+		claims.put(UserProfiles.ROLEID, this.getRoleid());
+		claims.put(UserProfiles.ROLES, this.getRoles());
+		claims.put(UserProfiles.PERMS, this.getPerms());
+		claims.put(UserProfiles.NICKNAME, this.getNickname());
+		claims.put(UserProfiles.USERID, this.getUserid());
+		claims.put(UserProfiles.USERNAME, this.getUsername());
+		claims.put(UserProfiles.USERKEY, this.getUserkey());
+		claims.put(UserProfiles.USERCODE, this.getUsercode());
+		claims.put(UserProfiles.INITIAL, this.isInitial());
+		claims.put(UserProfiles.RESTRICTED, this.isRestricted());
+		claims.put(UserProfiles.FACED, this.isFace());
+		claims.put(UserProfiles.FACEID, this.getFaceId());
 		if (CollectionUtils.isEmpty(this.getProfile())) {
-			claims.put("profile", new HashMap<>(0));
+			claims.put(UserProfiles.PROFILE, new HashMap<>(0));
 		} else {
-			claims.put("profile", this.getProfile());
+			claims.put(UserProfiles.PROFILE, this.getProfile());
 		}
 		return claims;
 		
