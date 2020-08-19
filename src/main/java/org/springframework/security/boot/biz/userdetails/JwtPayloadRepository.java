@@ -53,6 +53,10 @@ public interface JwtPayloadRepository {
 	default boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException{
 		return false;
 	};
+	
+	default boolean verify(String token, boolean checkExpiry) throws AuthenticationException{
+		return false;
+	};
 
 	/**
 	 * Parser JWT 
@@ -62,6 +66,10 @@ public interface JwtPayloadRepository {
 	 * @return Jwt Payload
 	 */
 	default JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry){
+		return null;
+	};
+	
+	default JwtPayload getPayload(String token, boolean checkExpiry){
 		return null;
 	};
 	

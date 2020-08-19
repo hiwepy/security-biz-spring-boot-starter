@@ -1,4 +1,4 @@
-package org.springframework.security.boot.biz.authentication;
+package org.springframework.security.boot.biz.authentication.server;
 
 import java.nio.charset.StandardCharsets;
 

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.security.boot.biz.authentication;
+package org.springframework.security.boot.biz.authentication.server;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
