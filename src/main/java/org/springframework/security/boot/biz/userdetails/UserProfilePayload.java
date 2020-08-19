@@ -15,17 +15,37 @@ import lombok.Data;
 public class UserProfilePayload {
 	
 	/**
-	 * User ID
+	 * 用户ID（用户来源表Id）
 	 */
 	private String uid;
+	/**
+	 * 用户Key：用户业务表中的唯一ID
+	 */
+	private String ukey;
+	/**
+	 * 用户Code：用户业务表中的唯一编码
+	 */
+	private String ucode;
+	/**
+	 * 角色ID（角色表Id）
+	 */
+	private String rid;
+	/**
+	 * 角色Key：角色业务表中的唯一ID
+	 */
+	private String rkey;
+	/**
+	 * 角色Code：角色业务表中的唯一编码
+	 */
+	private String rcode;
 	/**
 	 * JWT Token
 	 */
 	private String token;
 	/**
-	 * JWT Sequence
-	 */
-	private String sequence;
+   	 * 用户是否完善信息
+   	 */
+    private boolean initial = Boolean.FALSE;
     /**
 	 * User Profile
 	 */
@@ -35,8 +55,8 @@ public class UserProfilePayload {
 	 */
     private Set<String> roles = new HashSet<>();
     /**
-	 * User Permissions
+	 * 用户权限标记列表
 	 */
-    private Set<String> permissions = new HashSet<>();
+	private Set<String> perms = new HashSet<>();
 
 }

@@ -1,19 +1,10 @@
 package org.springframework.security.boot.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
-import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.CollectionUtils;
 
 import reactor.core.publisher.Mono;
 
@@ -74,59 +65,6 @@ public class ReactiveSubjectUtils {
 			}
 		}
 		return false;
-	}
-	
-	public static Map<String, Object> tokenMap(Mono<Authentication> authentication, String token){
-		
-		
-		Map<String, Object> tokenMap = new HashMap<String, Object>(16);
-		
-		tokenMap.put("code", AuthResponseCode.SC_AUTHC_SUCCESS.getCode());
-		tokenMap.put("msg", messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey()));
-		tokenMap.put("status", "success");
-
-		UserDetails userDetails = authentication
-			.map(Authentication::getPrincipal)
-			.cast(UserDetails.class)
-			.block();
-		
-		// 账号首次登陆标记
-		if(SecurityPrincipal.class.isAssignableFrom(userDetails.getClass())) {
-			SecurityPrincipal securityPrincipal = (SecurityPrincipal) userDetails;
-			tokenMap.put("initial", securityPrincipal.isInitial());
-			tokenMap.put("nickname", StringUtils.defaultString(securityPrincipal.getNickname(), EMPTY));
-			tokenMap.put("userid", StringUtils.defaultString(securityPrincipal.getUserid(), EMPTY));
-			tokenMap.put("userkey", StringUtils.defaultString(securityPrincipal.getUserkey(), EMPTY));
-			tokenMap.put("usercode", StringUtils.defaultString(securityPrincipal.getUsercode(), EMPTY));
-			tokenMap.put("username", userDetails.getUsername());
-			tokenMap.put("perms", userDetails.getAuthorities());
-			tokenMap.put("roleid", StringUtils.defaultString(securityPrincipal.getRoleid(), EMPTY ));
-			tokenMap.put("role", StringUtils.defaultString(securityPrincipal.getRole(), EMPTY));
-			tokenMap.put("roles", CollectionUtils.isEmpty(securityPrincipal.getRoles()) ? new ArrayList<>() : securityPrincipal.getRoles() );
-			tokenMap.put("profile", CollectionUtils.isEmpty(securityPrincipal.getProfile()) ? new HashMap<>(0) : securityPrincipal.getProfile() );
-			tokenMap.put("faced", securityPrincipal.isFace());
-			tokenMap.put("faceId", StringUtils.defaultString(securityPrincipal.getFaceId(), EMPTY ));
-			// JSON Web Token (JWT)
-			tokenMap.put("token", token);
-		} else {
-			tokenMap.put("initial", false);
-			tokenMap.put("nickname", EMPTY);
-			tokenMap.put("userid", EMPTY);
-			tokenMap.put("userkey", EMPTY);
-			tokenMap.put("usercode", EMPTY);
-			tokenMap.put("username", EMPTY);
-			tokenMap.put("perms", new ArrayList<>(0));
-			tokenMap.put("roleid", EMPTY);
-			tokenMap.put("role", EMPTY);
-			tokenMap.put("roles", new ArrayList<>(0));
-			tokenMap.put("profile", new HashMap<>(0));
-			tokenMap.put("faced", false);
-			tokenMap.put("faceId", EMPTY);
-			tokenMap.put("token", EMPTY);
-		}
-		
-		return tokenMap;
-		
 	}
 	
 }

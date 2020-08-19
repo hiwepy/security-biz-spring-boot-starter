@@ -3,6 +3,7 @@ package org.springframework.security.boot.biz.userdetails;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,39 +29,31 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
-	private String userid;
+	private String uid;
 	/**
 	 * 用户Key：用户业务表中的唯一ID
 	 */
-	private String userkey;
+	private String ukey;
 	/**
 	 * 用户Code：用户业务表中的唯一编码
 	 */
-	private String usercode;
+	private String ucode;
 	/**
-	 * 用户密码盐：用于密码加解密
+	 * 角色ID（角色表Id）
 	 */
-	private String salt;
+	private String rid;
 	/**
-	 * 用户秘钥：用于用户JWT加解密
+	 * 角色Key：角色业务表中的唯一ID
 	 */
-	private String secret;
+	private String rkey;
 	/**
-	 * 用户别名（昵称）
+	 * 角色Code：角色业务表中的唯一编码
 	 */
-	private String nickname;
+	private String rcode;
 	/**
-	 * 用户角色ID
-	 */
-	private String roleid;
-	/**
-	 * 用户角色Key
-	 */
-	private String role;
-	/**
-	 * 用户人脸识别ID
-	 */
-	private String faceId;
+   	 * 用户是否完善信息
+   	 */
+    private boolean initial = Boolean.FALSE;
 	/**
 	 * 用户拥有角色列表
 	 */
@@ -68,24 +61,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户权限标记列表
 	 */
-	private Set<String> perms;
+	private Set<String> perms = new HashSet<>();
 	/**
 	 * 用户数据
 	 */
 	private Map<String, Object> profile = new HashMap<String, Object>();
-	/**
-   	 * 用户是否首次登录
-   	 */
-    private boolean initial = Boolean.FALSE;
-    /**
-	 * 用户是否扫脸登录
-	 */
-	private boolean face = Boolean.FALSE;
-	/**
-	 * 用户是否功能受限（false:无限制|true:有限制）
-	 */
-	private boolean restricted = false;
-	
 	
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
@@ -111,6 +91,54 @@ public class SecurityPrincipal extends User implements Cloneable {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
 
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
+
+	public String getUkey() {
+		return ukey;
+	}
+
+	public void setUkey(String ukey) {
+		this.ukey = ukey;
+	}
+
+	public String getUcode() {
+		return ucode;
+	}
+
+	public void setUcode(String ucode) {
+		this.ucode = ucode;
+	}
+
+	public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
+	}
+
+	public String getRkey() {
+		return rkey;
+	}
+
+	public void setRkey(String rkey) {
+		this.rkey = rkey;
+	}
+
+	public String getRcode() {
+		return rcode;
+	}
+
+	public void setRcode(String rcode) {
+		this.rcode = rcode;
+	}
+
 	public boolean isInitial() {
 		return initial;
 	}
@@ -118,75 +146,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	public void setInitial(boolean initial) {
 		this.initial = initial;
 	}
-
-	public String getUserid() {
-		return userid;
-	}
-
-	public void setUserid(String userid) {
-		this.userid = userid;
-	}
-
-	public String getUserkey() {
-		return userkey;
-	}
-
-	public void setUserkey(String userkey) {
-		this.userkey = userkey;
-	}
-
-	public String getUsercode() {
-		return usercode;
-	}
-
-	public void setUsercode(String usercode) {
-		this.usercode = usercode;
-	}
-
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
-
-	public String getCredentialsSalt() {
-		return salt;
-	}
-
-	public String getSecret() {
-		return secret;
-	}
-
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
-
-	public String getRoleid() {
-		return roleid;
-	}
-
-	public void setRoleid(String roleid) {
-		this.roleid = roleid;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public String getFaceId() {
-		return faceId;
-	}
-
-	public void setFaceId(String faceId) {
-		this.faceId = faceId;
-	}
-
+ 
 	public List<RolePair> getRoles() {
 		return roles;
 	}
@@ -203,14 +163,6 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.perms = perms;
 	}
 
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
 	public Map<String, Object> getProfile() {
 		return profile;
 	}
@@ -219,30 +171,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.profile = profile;
 	}
 
-	public boolean isFace() {
-		return face;
-	}
-
-	public void setFace(boolean face) {
-		this.face = face;
-	}
-	
-	public boolean isRestricted() {
-		return restricted;
-	}
-
-	public void setRestricted(boolean restricted) {
-		this.restricted = restricted;
-	}
-
 	public boolean isAdmin() {
-		if(!StringUtils.isNoneBlank(role)) {
-			return false;
-		}
 		if(CollectionUtils.isEmpty(roles)) {
 			return false;
 		}
-		return CollectionUtils.contains(getRoles().iterator(), ADMIN_STRING) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRole()) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRoleid());
+		return CollectionUtils.contains(getRoles().iterator(), ADMIN_STRING) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRkey()) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRid());
 	}
 	
 	public boolean hasRole(String role) {
@@ -274,7 +207,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 			return false;
 		}
 		SecurityPrincipal user = (SecurityPrincipal) o;
-		if (userid != null ? !userid.equals(user.getUserid()) : user.getUserid() != null) {
+		if (uid != null ? !uid.equals(user.getUid()) : user.getUid() != null) {
 			return false;
 		}
 		return true;
@@ -282,41 +215,38 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	@Override
 	public int hashCode() {
-		return userid != null ? userid.hashCode() : 0;
+		return uid != null ? uid.hashCode() : 0;
 	}
 
 	@Override
 	public String toString() {
-		return " User {" + "userid=" + userid + ", username='" + getUsername() + '\'' + ", password='" + getPassword()
-				+ '\'' + ", salt='" + salt + '\'' + ", enabled='" + isEnabled() + '\'' + ", accountNonExpired="
+		return " User {" + "userid=" + uid + ", username='" + getUsername() + '\'' + ", password='" + getPassword()
+				+ '\'' + ", enabled='" + isEnabled() + '\'' + ", accountNonExpired="
 				+ isAccountNonExpired() + ", credentialsNonExpired=" + isCredentialsNonExpired() + ", accountNonLocked="
 				+ isAccountNonLocked() + '}';
 	}
 
 	
-	public Map<String, Object> toClaims(){
+	public UserProfilePayload toPayload(){
 		
-		Map<String, Object> claims = new HashMap<>(16);
+		UserProfilePayload payload = new UserProfilePayload();
 		
-		claims.put(UserProfiles.ROLE, this.getRole());
-		claims.put(UserProfiles.ROLEID, this.getRoleid());
-		claims.put(UserProfiles.ROLES, this.getRoles());
-		claims.put(UserProfiles.PERMS, this.getPerms());
-		claims.put(UserProfiles.NICKNAME, this.getNickname());
-		claims.put(UserProfiles.USERID, this.getUserid());
-		claims.put(UserProfiles.USERNAME, this.getUsername());
-		claims.put(UserProfiles.USERKEY, this.getUserkey());
-		claims.put(UserProfiles.USERCODE, this.getUsercode());
-		claims.put(UserProfiles.INITIAL, this.isInitial());
-		claims.put(UserProfiles.RESTRICTED, this.isRestricted());
-		claims.put(UserProfiles.FACED, this.isFace());
-		claims.put(UserProfiles.FACEID, this.getFaceId());
+		payload.setUid(this.getUid());
+		payload.setUkey(this.getUkey());
+		payload.setUcode(this.getUcode());
+		payload.setPerms(new HashSet<String>(perms));
+		payload.setRid(this.getRid());
+		payload.setRkey(this.getRkey());
+		payload.setRcode(this.getRcode());
+		//payload.setRoles(this.getRoles());
+		payload.setInitial(this.isInitial());
+		
 		if (CollectionUtils.isEmpty(this.getProfile())) {
-			claims.put(UserProfiles.PROFILE, new HashMap<>(0));
+			payload.setProfile(new HashMap<>(0));
 		} else {
-			claims.put(UserProfiles.PROFILE, this.getProfile());
+			payload.setProfile(this.getProfile());
 		}
-		return claims;
+		return payload;
 		
 	}
 	

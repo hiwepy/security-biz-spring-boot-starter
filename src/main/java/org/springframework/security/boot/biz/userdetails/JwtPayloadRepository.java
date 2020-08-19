@@ -67,7 +67,17 @@ public interface JwtPayloadRepository {
 	 * @return Jwt Payload
 	 */
 	default UserProfilePayload getProfilePayload(AbstractAuthenticationToken token, boolean checkExpiry){
-		return null;
+
+		// 利用登陆用户信息
+		SecurityPrincipal principal = (SecurityPrincipal) token.getPrincipal();
+		
+		String tokenString = this.issueJwt(token);
+		
+		UserProfilePayload payload = principal.toPayload();
+		payload.setToken(tokenString);
+		
+		return payload;
+		
 	};;
 	
 }
