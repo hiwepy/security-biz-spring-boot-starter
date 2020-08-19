@@ -59,6 +59,7 @@ public class ReactiveAuthenticationFailureHandler implements ServerAuthenticatio
     @Override
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException e) {
     	
+    	// 1、获取ServerHttpResponse、ServerHttpResponse
     	ServerHttpRequest request = webFilterExchange.getExchange().getRequest();
 		ServerHttpResponse response = webFilterExchange.getExchange().getResponse();
 		
@@ -86,33 +87,39 @@ public class ReactiveAuthenticationFailureHandler implements ServerAuthenticatio
     protected Mono<Void> writeJSONString(ServerHttpRequest request, ServerHttpResponse response, AuthenticationException e) {
 
     	logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
-		
+    	
+    	// 2、设置状态码和响应头
 		response.setStatusCode(HttpStatus.OK);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-		String body = "{}";
+		
+		// 3、国际化后的异常信息
+		String message = null;
+		AuthResponse<String> authResponse = null;
 		if (e instanceof UsernameNotFoundException) {
-			body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getMsgKey(), e.getMessage())));
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getCode(), message);
 		} else if (e instanceof BadCredentialsException) {
-			body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getMsgKey(), e.getMessage())));
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getCode(), message);
 		}  else if (e instanceof DisabledException) {
-			body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_DISABLED.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_USER_DISABLED.getMsgKey(), e.getMessage())));
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_DISABLED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_DISABLED.getCode(), message);
 		}  else if (e instanceof LockedException) {
-			body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_LOCKED.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_USER_LOCKED.getMsgKey(), e.getMessage())));	
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_LOCKED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_LOCKED.getCode(), message);
 		}  else if (e instanceof AccountExpiredException) {
-			body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getMsgKey(), e.getMessage())));	
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getCode(), message);
 		}  else if (e instanceof CredentialsExpiredException) {
-			body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getMsgKey(), e.getMessage())));	
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getCode(), message);
 		} else {
-	        body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(),
-					messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey())));
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(), message);
 		}
-
+		
+		// 4、输出JSON格式数据
+		String body = JSONObject.toJSONString(authResponse);
 		DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
 		

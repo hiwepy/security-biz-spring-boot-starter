@@ -10,28 +10,28 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.server.WebFilterExchange;
-import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.springframework.security.web.server.authorization.ServerAccessDeniedHandler;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.alibaba.fastjson.JSONObject;
 
 import reactor.core.publisher.Mono;
 
-public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHandler {
 
+public class ReactiveServerAccessDeniedHandler implements ServerAccessDeniedHandler {
+	
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
 	@Override
-	public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
-		
-		// 1、获取ServerHttpResponse、ServerHttpResponse
-		// ServerHttpRequest request = exchange.getExchange().getRequest();
-		ServerHttpResponse response = exchange.getExchange().getResponse();
+	public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
+
+		// 1、获取ServerHttpResponse
+		ServerHttpResponse response = exchange.getResponse();
 		
 		// 2、设置状态码和响应头
 		response.setStatusCode(HttpStatus.OK);
@@ -39,13 +39,12 @@ public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHa
 		
 		// 3、国际化后的异常信息
 		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
-		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_LOGOUT.getMsgKey(), LocaleContextHolder.getLocale());
-		
+		String message = messages.getMessage(AuthResponseCode.SC_AUTHZ_FAIL.getMsgKey(), LocaleContextHolder.getLocale());
+				
 		// 4、输出JSON格式数据
-		String body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_LOGOUT.getCode(), message ));
+		String body = JSONObject.toJSONString(AuthResponse.fail(message));
 		DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
-        
 	}
 
 }

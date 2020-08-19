@@ -53,6 +53,7 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 	@Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
        
+		// 1、获取ServerHttpResponse、ServerHttpResponse
 		ServerHttpRequest request = webFilterExchange.getExchange().getRequest();
 		ServerHttpResponse response = webFilterExchange.getExchange().getResponse();
 		
@@ -83,12 +84,14 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 	protected Mono<Void> writeJSONString(ServerHttpRequest request, ServerHttpResponse response,
 			Authentication authentication) {
 
-		// 设置状态码和响应头
+		// 1、设置状态码和响应头
 		response.setStatusCode(HttpStatus.OK);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-		// 国际化后的异常信息
+		
+		// 2、国际化后的异常信息
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
-		// 写出JSON
+		
+		// 3、输出JSON格式数据
         String body = JSONObject.toJSONString(AuthResponse.success(message));
         DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
