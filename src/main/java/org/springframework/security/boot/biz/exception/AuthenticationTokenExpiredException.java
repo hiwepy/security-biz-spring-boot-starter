@@ -1,13 +1,11 @@
 package org.springframework.security.boot.biz.exception;
 
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Token Expired Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationTokenExpiredException extends AuthenticationException {
+public class AuthenticationTokenExpiredException extends AuthenticationExceptionAdapter {
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -19,7 +17,7 @@ public class AuthenticationTokenExpiredException extends AuthenticationException
 	 * @param msg the detail message
 	 */
 	public AuthenticationTokenExpiredException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_EXPIRED, msg);
 	}
 
 	/**
@@ -30,7 +28,7 @@ public class AuthenticationTokenExpiredException extends AuthenticationException
 	 * @param t   root cause
 	 */
 	public AuthenticationTokenExpiredException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_EXPIRED, msg, t);
 	}
 
 }

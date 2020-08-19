@@ -15,15 +15,12 @@
  */
 package org.springframework.security.boot.biz.exception;
 
-
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Captcha Not Found Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationCaptchaNotFoundException extends AuthenticationException {
+public class AuthenticationCaptchaNotFoundException extends AuthenticationExceptionAdapter {
 	// ~ Constructors
 	// ===================================================================================================
 
@@ -34,7 +31,7 @@ public class AuthenticationCaptchaNotFoundException extends AuthenticationExcept
 	 * @param msg the detail message
 	 */
 	public AuthenticationCaptchaNotFoundException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_REQUIRED, msg);
 	}
 
 	/**
@@ -45,6 +42,6 @@ public class AuthenticationCaptchaNotFoundException extends AuthenticationExcept
 	 * @param t root cause
 	 */
 	public AuthenticationCaptchaNotFoundException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_REQUIRED, msg, t);
 	}
 }

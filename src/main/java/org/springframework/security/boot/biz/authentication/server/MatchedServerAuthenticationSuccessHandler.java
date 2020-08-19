@@ -13,8 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.security.boot.biz.authentication.nested;
+package org.springframework.security.boot.biz.authentication.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.boot.utils.ReactiveSecurityResponseUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 
@@ -26,6 +31,8 @@ import reactor.core.publisher.Mono;
  */
 public interface MatchedServerAuthenticationSuccessHandler {
 
+	Logger logger = LoggerFactory.getLogger(MatchedServerAuthenticationSuccessHandler.class);
+	
 	/**
 	 * Whether it is supported
 	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
@@ -40,7 +47,16 @@ public interface MatchedServerAuthenticationSuccessHandler {
 	 * @param authentication the {@link Authentication}
 	 * @return a completion notification (success or error)
 	 */
-	Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange,
-		Authentication authentication);
+	default Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange,
+		Authentication authentication){
+		
+		// 1、获取ServerHttpResponse、ServerHttpResponse
+		ServerHttpRequest request = webFilterExchange.getExchange().getRequest();
+		ServerHttpResponse response = webFilterExchange.getExchange().getResponse();
+		
+		// 2、统一异常处理
+		return ReactiveSecurityResponseUtils.handleSuccess(request, response, authentication);
+		
+	};
 	
 }

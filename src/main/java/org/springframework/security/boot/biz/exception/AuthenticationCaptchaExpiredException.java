@@ -15,15 +15,13 @@
  */
 package org.springframework.security.boot.biz.exception;
 
-
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Captcha Expired Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationCaptchaExpiredException extends AuthenticationException {
+public class AuthenticationCaptchaExpiredException extends AuthenticationExceptionAdapter {
+	
 	// ~ Constructors
 	// ===================================================================================================
 
@@ -34,7 +32,7 @@ public class AuthenticationCaptchaExpiredException extends AuthenticationExcepti
 	 * @param msg the detail message
 	 */
 	public AuthenticationCaptchaExpiredException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_EXPIRED, msg);
 	}
 
 	/**
@@ -45,6 +43,6 @@ public class AuthenticationCaptchaExpiredException extends AuthenticationExcepti
 	 * @param t root cause
 	 */
 	public AuthenticationCaptchaExpiredException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_EXPIRED, msg, t);
 	}
 }

@@ -1,13 +1,11 @@
 package org.springframework.security.boot.biz.exception;
 
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Token Invalid Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationTokenInvalidException extends AuthenticationException {
+public class AuthenticationTokenInvalidException extends AuthenticationExceptionAdapter {
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -19,7 +17,7 @@ public class AuthenticationTokenInvalidException extends AuthenticationException
 	 * @param msg the detail message
 	 */
 	public AuthenticationTokenInvalidException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_INVALID, msg);
 	}
 
 	/**
@@ -30,6 +28,6 @@ public class AuthenticationTokenInvalidException extends AuthenticationException
 	 * @param t   root cause
 	 */
 	public AuthenticationTokenInvalidException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_INVALID, msg, t);
 	}
 }

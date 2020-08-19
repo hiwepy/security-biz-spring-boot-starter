@@ -29,6 +29,8 @@ public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHa
 	@Override
 	public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
 		
+		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
+		
 		// 1、获取ServerHttpResponse、ServerHttpResponse
 		// ServerHttpRequest request = exchange.getExchange().getRequest();
 		ServerHttpResponse response = exchange.getExchange().getResponse();
@@ -38,7 +40,6 @@ public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHa
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 		
 		// 3、国际化后的异常信息
-		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_LOGOUT.getMsgKey(), LocaleContextHolder.getLocale());
 		
 		// 4、输出JSON格式数据

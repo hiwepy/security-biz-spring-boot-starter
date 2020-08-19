@@ -13,8 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.security.boot.biz.authentication.nested;
+package org.springframework.security.boot.biz.authentication.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.boot.utils.ReactiveSecurityResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.WebFilterExchange;
 
@@ -26,6 +32,8 @@ import reactor.core.publisher.Mono;
  */
 public interface MatchedServerAuthenticationFailureHandler {
 
+	Logger logger = LoggerFactory.getLogger(MatchedServerAuthenticationFailureHandler.class);
+	
 	/**
 	 * Whether it is supported
 	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
@@ -40,7 +48,18 @@ public interface MatchedServerAuthenticationFailureHandler {
 	 * @param exception the reason authentication failed
 	 * @return a completion notification (success or error)
 	 */
-	Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, 
-			AuthenticationException exception);
+	default Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, 
+			AuthenticationException exception){
+		
+		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
+		
+		// 1、获取ServerHttpResponse、ServerHttpResponse
+		ServerHttpRequest request = webFilterExchange.getExchange().getRequest();
+		ServerHttpResponse response = webFilterExchange.getExchange().getResponse();
+		
+		// 2、统一异常处理
+		return ReactiveSecurityResponseUtils.handleFailure(request, response, exception);
+		
+	};
 	
 }

@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.boot.utils.SecurityResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -46,8 +47,10 @@ public interface MatchedAuthenticationFailureHandler {
 	 * @throws IOException IOException
 	 * @throws ServletException ServletException 
 	 */
-	public void onAuthenticationFailure(HttpServletRequest request,
+	public default void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception)
-			throws IOException, ServletException;
+			throws IOException, ServletException {
+		SecurityResponseUtils.handleException(request, response, exception);
+	};
 	
 }

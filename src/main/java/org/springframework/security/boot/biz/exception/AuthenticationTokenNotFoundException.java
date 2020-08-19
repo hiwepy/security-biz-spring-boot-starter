@@ -15,15 +15,12 @@
  */
 package org.springframework.security.boot.biz.exception;
 
-
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Token Not Found Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationTokenNotFoundException extends AuthenticationException {
+public class AuthenticationTokenNotFoundException extends AuthenticationExceptionAdapter {
 	// ~ Constructors
 	// ===================================================================================================
 
@@ -34,7 +31,7 @@ public class AuthenticationTokenNotFoundException extends AuthenticationExceptio
 	 * @param msg the detail message
 	 */
 	public AuthenticationTokenNotFoundException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_REQUIRED, msg);
 	}
 
 	/**
@@ -45,6 +42,6 @@ public class AuthenticationTokenNotFoundException extends AuthenticationExceptio
 	 * @param t root cause
 	 */
 	public AuthenticationTokenNotFoundException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_REQUIRED, msg, t);
 	}
 }

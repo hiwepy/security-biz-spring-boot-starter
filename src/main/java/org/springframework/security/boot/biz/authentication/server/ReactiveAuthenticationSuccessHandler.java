@@ -15,28 +15,19 @@
  */
 package org.springframework.security.boot.biz.authentication.server;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
-import org.springframework.security.boot.biz.authentication.nested.MatchedServerAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.exception.AuthResponse;
-import org.springframework.security.boot.biz.exception.AuthResponseCode;
+import org.springframework.security.boot.utils.ReactiveSecurityResponseUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.util.CollectionUtils;
-
-import com.alibaba.fastjson.JSONObject;
 
 import reactor.core.publisher.Mono;
 
@@ -59,7 +50,7 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 		
 		if (CollectionUtils.isEmpty(successHandlers)) {
 			
-			return this.writeJSONString(request, response, authentication);
+			return ReactiveSecurityResponseUtils.handleSuccess(request, response, authentication);
 			
 		} else {
 
@@ -73,7 +64,7 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 
 			}
 			if (!isMatched) {
-				return this.writeJSONString(request, response, authentication);
+				return ReactiveSecurityResponseUtils.handleSuccess(request, response, authentication);
 			}
 		}
 		
@@ -81,22 +72,7 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
         
     }
 
-	protected Mono<Void> writeJSONString(ServerHttpRequest request, ServerHttpResponse response,
-			Authentication authentication) {
-
-		// 1、设置状态码和响应头
-		response.setStatusCode(HttpStatus.OK);
-		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-		
-		// 2、国际化后的异常信息
-		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
-		
-		// 3、输出JSON格式数据
-        String body = JSONObject.toJSONString(AuthResponse.success(message));
-        DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
-        return response.writeWith(Mono.just(buffer));
-		
-	}
+	
 
 
 	public List<MatchedServerAuthenticationSuccessHandler> getSuccessHandlers() {

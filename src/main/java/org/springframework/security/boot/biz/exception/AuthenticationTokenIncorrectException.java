@@ -1,13 +1,11 @@
 package org.springframework.security.boot.biz.exception;
 
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Token Incorrect Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationTokenIncorrectException extends AuthenticationException {
+public class AuthenticationTokenIncorrectException extends AuthenticationExceptionAdapter {
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -19,7 +17,7 @@ public class AuthenticationTokenIncorrectException extends AuthenticationExcepti
 	 * @param msg the detail message
 	 */
 	public AuthenticationTokenIncorrectException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_INCORRECT, msg);
 	}
 
 	/**
@@ -30,6 +28,6 @@ public class AuthenticationTokenIncorrectException extends AuthenticationExcepti
 	 * @param t   root cause
 	 */
 	public AuthenticationTokenIncorrectException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_TOKEN_INCORRECT, msg, t);
 	}
 }

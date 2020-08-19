@@ -15,15 +15,12 @@
  */
 package org.springframework.security.boot.biz.exception;
 
-
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Captcha Send Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationCaptchaSendException extends AuthenticationException {
+public class AuthenticationCaptchaSendException extends AuthenticationExceptionAdapter {
 	// ~ Constructors
 	// ===================================================================================================
 
@@ -34,7 +31,7 @@ public class AuthenticationCaptchaSendException extends AuthenticationException 
 	 * @param msg the detail message
 	 */
 	public AuthenticationCaptchaSendException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_SEND_FAIL, msg);
 	}
 
 	/**
@@ -45,6 +42,6 @@ public class AuthenticationCaptchaSendException extends AuthenticationException 
 	 * @param t root cause
 	 */
 	public AuthenticationCaptchaSendException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_SEND_FAIL, msg, t);
 	}
 }

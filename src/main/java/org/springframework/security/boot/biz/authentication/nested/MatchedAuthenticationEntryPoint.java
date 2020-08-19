@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.boot.utils.SecurityResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -54,6 +55,9 @@ public interface MatchedAuthenticationEntryPoint {
 	 * @throws IOException IOException
 	 * @throws ServletException ServletException
 	 */
-	void commence(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException authException) throws IOException, ServletException;
+	default void commence(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException authException) throws IOException, ServletException{
+		SecurityResponseUtils.handleException(request, response, authException);
+	};
+	
 }

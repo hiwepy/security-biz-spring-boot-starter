@@ -58,6 +58,8 @@ public enum AuthResponseCode {
 	 * Bad credentials
 	 */
 	SC_AUTHC_CREDENTIALS_INCORRECT("10010", AuthConstants.RT_ERROR, "spring.security.authc.credentials.incorrect"),
+	
+	
 	SC_AUTHC_USER_UNREGISTERED("10011", AuthConstants.RT_ERROR, "spring.security.authc.principal.unregistered"),
 	SC_AUTHC_USER_REGISTERED("10012", AuthConstants.RT_ERROR, "spring.security.authc.principal.registered"),
 	SC_AUTHC_USER_NOT_FOUND("10013", AuthConstants.RT_ERROR, "spring.security.authc.principal.not-found"),
@@ -68,7 +70,7 @@ public enum AuthResponseCode {
 	SC_AUTHC_BOUND_NOT_FOUND("10018", AuthConstants.RT_ERROR, "spring.security.authc.bound.not-found"),
 	SC_AUTHC_BOUND_INCORRECT("10019", AuthConstants.RT_ERROR, "spring.security.authc.bound.incorrect"),
 	
-	SC_AUTHZ_SUCCESS("0", AuthConstants.RT_ERROR, "spring.security.authz.success"),
+	SC_AUTHZ_SUCCESS("200", AuthConstants.RT_SUCCESS, "spring.security.authz.success"),
 	SC_AUTHZ_FAIL("10021", AuthConstants.RT_ERROR, "spring.security.authz.fail"),
 	SC_AUTHZ_CODE_REQUIRED("10022", AuthConstants.RT_ERROR, "spring.security.authz.code.required"),
 	SC_AUTHZ_CODE_EXPIRED("10023", AuthConstants.RT_ERROR, "spring.security.authz.code.expired"),

@@ -15,15 +15,12 @@
  */
 package org.springframework.security.boot.biz.exception;
 
-
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Over Retry Remind Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationOverRetryRemindException extends AuthenticationException {
+public class AuthenticationOverRetryRemindException extends AuthenticationExceptionAdapter {
 	// ~ Constructors
 	// ===================================================================================================
 
@@ -34,7 +31,7 @@ public class AuthenticationOverRetryRemindException extends AuthenticationExcept
 	 * @param msg the detail message
 	 */
 	public AuthenticationOverRetryRemindException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHC_OVER_RETRY_REMIND, msg);
 	}
 
 	/**
@@ -45,6 +42,6 @@ public class AuthenticationOverRetryRemindException extends AuthenticationExcept
 	 * @param t root cause
 	 */
 	public AuthenticationOverRetryRemindException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHC_OVER_RETRY_REMIND, msg, t);
 	}
 }

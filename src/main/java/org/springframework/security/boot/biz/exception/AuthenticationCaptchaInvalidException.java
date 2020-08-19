@@ -15,15 +15,12 @@
  */
 package org.springframework.security.boot.biz.exception;
 
-
-import org.springframework.security.core.AuthenticationException;
-
 /**
  * Authentication Captcha Invalid Exception
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @SuppressWarnings("serial")
-public class AuthenticationCaptchaInvalidException extends AuthenticationException {
+public class AuthenticationCaptchaInvalidException extends AuthenticationExceptionAdapter {
 	// ~ Constructors
 	// ===================================================================================================
 
@@ -34,7 +31,7 @@ public class AuthenticationCaptchaInvalidException extends AuthenticationExcepti
 	 * @param msg the detail message
 	 */
 	public AuthenticationCaptchaInvalidException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_INVALID, msg);
 	}
 
 	/**
@@ -45,6 +42,6 @@ public class AuthenticationCaptchaInvalidException extends AuthenticationExcepti
 	 * @param t root cause
 	 */
 	public AuthenticationCaptchaInvalidException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHC_CAPTCHA_INVALID, msg, t);
 	}
 }
