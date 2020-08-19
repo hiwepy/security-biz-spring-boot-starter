@@ -17,12 +17,8 @@ package org.springframework.security.boot.biz.authentication.server;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.utils.ReactiveSecurityResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.WebFilterExchange;
@@ -33,8 +29,6 @@ import reactor.core.publisher.Mono;
 
 public class ReactiveAuthenticationFailureHandler implements ServerAuthenticationFailureHandler {
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
-	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private List<MatchedServerAuthenticationFailureHandler> failureHandlers;
 	
 	public ReactiveAuthenticationFailureHandler(List<MatchedServerAuthenticationFailureHandler> failureHandlers) {
