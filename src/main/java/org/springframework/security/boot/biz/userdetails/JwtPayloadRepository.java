@@ -15,6 +15,8 @@
  */
 package org.springframework.security.boot.biz.userdetails;
 
+import java.util.Map;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 
@@ -33,6 +35,10 @@ public interface JwtPayloadRepository {
 	 * @return Jwt String
 	 */
 	default String issueJwt(AbstractAuthenticationToken token) { 
+		return "";
+	};
+	
+	default String issueJwt(String uid, Map<String, Object> profile) { 
 		return "";
 	};
 
