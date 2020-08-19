@@ -91,10 +91,7 @@ public class ReactiveAuthenticationSuccessHandler implements ServerAuthenticatio
 		// 国际化后的异常信息
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
 		// 写出JSON
-		Map<String, Object> tokenMap = SubjectUtils.tokenMap(authentication, null);
-		
-		  
-        String body = JSONObject.toJSONString(AuthResponse.success(message, tokenMap));
+        String body = JSONObject.toJSONString(AuthResponse.success(message));
         DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
 		

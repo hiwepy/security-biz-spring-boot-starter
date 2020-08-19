@@ -9,11 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.boot.web.servlet.server.Session;
-import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -116,22 +114,6 @@ public class SubjectUtils {
 			newSession.setAttribute(String.valueOf(key), attributes.get(key));
 		}
 		return newSession;
-	}
-	
-	public static Map<String, Object> tokenMap(Authentication authentication, String token){
-		
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		
-		// 账号首次登陆标记
-		SecurityPrincipal securityPrincipal = (SecurityPrincipal) userDetails;
-
-		Map<String, Object> tokenMap = securityPrincipal.toClaims();
-			
-		// JSON Web Token (JWT)
-		tokenMap.put("token", token);
-		
-		return tokenMap;
-		
 	}
 	
 }

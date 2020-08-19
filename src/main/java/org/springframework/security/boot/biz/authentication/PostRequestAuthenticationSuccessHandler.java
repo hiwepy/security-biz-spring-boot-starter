@@ -3,7 +3,6 @@ package org.springframework.security.boot.biz.authentication;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.boot.utils.SubjectUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -103,9 +101,7 @@ public class PostRequestAuthenticationSuccessHandler extends SavedRequestAwareAu
 		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		// 国际化后的异常信息
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
-		// 写出JSON
-		Map<String, Object> tokenMap = SubjectUtils.tokenMap(authentication, null);
-		JSONObject.writeJSONString(response.getWriter(), AuthResponse.success(message, tokenMap));
+		JSONObject.writeJSONString(response.getWriter(), AuthResponse.success(message));
 		
 	}
 

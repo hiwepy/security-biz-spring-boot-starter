@@ -32,7 +32,9 @@ public interface JwtPayloadRepository {
 	 * @param token Authentication Token
 	 * @return Jwt String
 	 */
-	String issueJwt(AbstractAuthenticationToken token);
+	default String issueJwt(AbstractAuthenticationToken token) { 
+		return "";
+	};
 
 	/**
 	 * Check JWT 
@@ -42,7 +44,9 @@ public interface JwtPayloadRepository {
 	 * @return Effective or not
 	 * @throws AuthenticationException
 	 */
-	boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException;
+	default boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException{
+		return false;
+	};
 
 	/**
 	 * Parser JWT 
@@ -51,6 +55,19 @@ public interface JwtPayloadRepository {
 	 * @param checkExpiry Whether Check JWT expiration time
 	 * @return Jwt Payload
 	 */
-	JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry);
+	default JwtPayload getPayload(AbstractAuthenticationToken token, boolean checkExpiry){
+		return null;
+	};
+	
+	/**
+	 * Parser JWT 
+	 * @author 		： <a href="https://github.com/hiwepy">wandl</a>
+	 * @param token Authentication Token
+	 * @param checkExpiry Whether Check JWT expiration time
+	 * @return Jwt Payload
+	 */
+	default UserProfilePayload getProfilePayload(AbstractAuthenticationToken token, boolean checkExpiry){
+		return null;
+	};;
 	
 }
