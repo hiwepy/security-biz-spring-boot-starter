@@ -13,8 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.springframework.security.boot.biz.authentication.nested;
+package org.springframework.security.boot.biz.authentication.server;
 
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.security.boot.utils.ReactiveSecurityResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -41,6 +44,15 @@ public interface MatchedServerAuthenticationEntryPoint {
 	 * @param e
 	 * @return {@code Mono<Void>} to indicate when the request for authentication is complete
 	 */
-	Mono<Void> commence(ServerWebExchange exchange, AuthenticationException e);
+	default Mono<Void> commence(ServerWebExchange exchange, AuthenticationException e){
+		
+		// 1、获取ServerHttpResponse、ServerHttpResponse
+		ServerHttpRequest request = exchange.getRequest();
+		ServerHttpResponse response = exchange.getResponse();
+		
+		// 2、统一异常处理
+		return ReactiveSecurityResponseUtils.handleFailure(request, response, e);
+		
+	};
 	
 }
