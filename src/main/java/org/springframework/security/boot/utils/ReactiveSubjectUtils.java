@@ -1,7 +1,5 @@
 package org.springframework.security.boot.utils;
 
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -14,9 +12,6 @@ import reactor.core.publisher.Mono;
  */
 public class ReactiveSubjectUtils {
 	
-	private static MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
-	private static final String EMPTY = "";
-	
 	public static Mono<SecurityContext> getSecurityContext(){
 		return ReactiveSecurityContextHolder.getContext();
 	}
@@ -25,6 +20,11 @@ public class ReactiveSubjectUtils {
 		return getSecurityContext()
 				.switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))
                 .map(SecurityContext::getAuthentication);
+	}
+	
+	public static <T> Mono<T> getPrincipal(Authentication authentication, Class<T> clazz){
+		ReactiveSecurityContextHolder.withAuthentication(authentication);
+		return getPrincipal(clazz);
 	}
 	
 	public static <T> Mono<T> getPrincipal(Class<T> clazz){
