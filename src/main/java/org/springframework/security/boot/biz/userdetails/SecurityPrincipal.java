@@ -27,6 +27,18 @@ public class SecurityPrincipal extends User implements Cloneable {
 	protected static final String ADMIN_STRING = "admin";
 	
 	/**
+	 * 请求参数签名（可选）
+	 */
+	private String sign;
+	/**
+	 * 用户最新经度（可选）
+	 */
+	private String longitude;
+	/**
+	 * 用户最新纬度（可选）
+	 */
+	private String latitude;
+	/**
 	 * 用户ID（用户来源表Id）
 	 */
 	private String uid;
@@ -89,6 +101,30 @@ public class SecurityPrincipal extends User implements Cloneable {
 			boolean credentialsNonExpired, boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+	}
+	
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
 	}
 
 	public String getUid() {
