@@ -33,11 +33,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 	/**
 	 * 用户最新经度（可选）
 	 */
-	private String longitude;
+	private double longitude;
 	/**
 	 * 用户最新纬度（可选）
 	 */
-	private String latitude;
+	private double latitude;
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
@@ -111,19 +111,19 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.sign = sign;
 	}
 
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
-	public String getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(String latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
