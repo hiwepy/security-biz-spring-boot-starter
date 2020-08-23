@@ -27,21 +27,13 @@ public class SecurityPrincipal extends User implements Cloneable {
 	protected static final String ADMIN_STRING = "admin";
 	
 	/**
-	 * 请求参数签名（可选）
-	 */
-	private String sign;
-	/**
-	 * 用户最新经度（可选）
-	 */
-	private double longitude;
-	/**
-	 * 用户最新纬度（可选）
-	 */
-	private double latitude;
-	/**
 	 * 用户ID（用户来源表Id）
 	 */
 	private String uid;
+	/**
+	 * 用户UUID（用户唯一ID）
+	 */
+	private String uuid;
 	/**
 	 * 用户Key：用户业务表中的唯一ID
 	 */
@@ -66,6 +58,18 @@ public class SecurityPrincipal extends User implements Cloneable {
    	 * 用户是否完善信息
    	 */
     private boolean initial = Boolean.FALSE;
+    /**
+	 * 请求参数签名（可选）
+	 */
+	private String sign;
+	/**
+	 * 用户最新经度（可选）
+	 */
+	private double longitude;
+	/**
+	 * 用户最新纬度（可选）
+	 */
+	private double latitude;
 	/**
 	 * 用户拥有角色列表
 	 */
@@ -103,36 +107,20 @@ public class SecurityPrincipal extends User implements Cloneable {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
 	
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
 	public String getUid() {
 		return uid;
 	}
 
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+	
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public String getUkey() {
@@ -183,6 +171,30 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.initial = initial;
 	}
  
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	
 	public List<RolePair> getRoles() {
 		return roles;
 	}

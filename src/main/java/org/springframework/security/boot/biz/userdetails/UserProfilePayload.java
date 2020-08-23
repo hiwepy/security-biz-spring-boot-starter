@@ -30,6 +30,10 @@ public class UserProfilePayload {
 	 */
 	private String uid;
 	/**
+	 * 用户UUID（用户唯一ID）
+	 */
+	private String uuid;
+	/**
 	 * 用户Key：用户业务表中的唯一ID
 	 */
 	private String ukey;
