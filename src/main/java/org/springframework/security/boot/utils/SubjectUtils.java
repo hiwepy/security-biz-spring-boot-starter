@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.web.servlet.server.Session;
+import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * Subject Utils
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
+@SuppressWarnings("unchecked")
 public class SubjectUtils {
 	
 	public static SecurityContext getSecurityContext(){
@@ -30,7 +33,6 @@ public class SubjectUtils {
 		return getSecurityContext().getAuthentication();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> T getPrincipal(Class<T> clazz){
 		Object principal = getAuthentication().getPrincipal();
 		// 自身类.class.isAssignableFrom(自身类或子类.class) 
@@ -40,9 +42,48 @@ public class SubjectUtils {
 		return null;
 	}
 	
+	public static <T> T getPrincipal(Authentication authentication, Class<T> clazz){
+		Object principal = authentication.getPrincipal();
+		// 自身类.class.isAssignableFrom(自身类或子类.class) 
+		if( clazz.isAssignableFrom(principal.getClass()) ) {
+			return (T)principal;
+		}
+		return null;
+	}
+	
+	public String getProfileString(Authentication authentication, String key) {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+		return MapUtils.getString(principal.getProfile(), key);
+	}
+	
+	public int getProfileInt(Authentication authentication, String key) {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+		return MapUtils.getIntValue(principal.getProfile(), key);
+	}
+	
+	public Double getProfileDouble(Authentication authentication, String key) {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+		return MapUtils.getDouble(principal.getProfile(), key);
+	}
+	
 	public static Object getPrincipal(){
 		Authentication authentication = getAuthentication();
 		return authentication == null ? null : authentication.getPrincipal();
+	}
+	
+	public String getProfileString(String key) {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+		return MapUtils.getString(principal.getProfile(), key);
+	}
+	
+	public int getProfileInt(String key) {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+		return MapUtils.getIntValue(principal.getProfile(), key);
+	}
+	
+	public Double getProfileDouble(String key) {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+		return MapUtils.getDouble(principal.getProfile(), key);
 	}
 	
 	public static boolean isAuthenticated(){
