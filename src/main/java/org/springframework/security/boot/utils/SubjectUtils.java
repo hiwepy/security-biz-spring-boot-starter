@@ -51,17 +51,17 @@ public class SubjectUtils {
 		return null;
 	}
 	
-	public String getProfileString(Authentication authentication, String key) {
+	public static String getProfileString(Authentication authentication, String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
 		return MapUtils.getString(principal.getProfile(), key);
 	}
 	
-	public int getProfileInt(Authentication authentication, String key) {
+	public static int getProfileInt(Authentication authentication, String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
 		return MapUtils.getIntValue(principal.getProfile(), key);
 	}
 	
-	public Double getProfileDouble(Authentication authentication, String key) {
+	public static Double getProfileDouble(Authentication authentication, String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
 		return MapUtils.getDouble(principal.getProfile(), key);
 	}
@@ -71,17 +71,17 @@ public class SubjectUtils {
 		return authentication == null ? null : authentication.getPrincipal();
 	}
 	
-	public String getProfileString(String key) {
+	public static String getProfileString(String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
 		return MapUtils.getString(principal.getProfile(), key);
 	}
 	
-	public int getProfileInt(String key) {
+	public static int getProfileInt(String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
 		return MapUtils.getIntValue(principal.getProfile(), key);
 	}
 	
-	public Double getProfileDouble(String key) {
+	public static Double getProfileDouble(String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
 		return MapUtils.getDouble(principal.getProfile(), key);
 	}
