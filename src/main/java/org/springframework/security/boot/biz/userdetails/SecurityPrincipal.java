@@ -55,6 +55,10 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private String rcode;
 	/**
+   	 * 用户是否绑定信息
+   	 */
+    private boolean bound = Boolean.FALSE;
+    /**
    	 * 用户是否完善信息
    	 */
     private boolean initial = Boolean.FALSE;
@@ -161,6 +165,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setRcode(String rcode) {
 		this.rcode = rcode;
+	}
+
+	public boolean isBound() {
+		return bound;
+	}
+
+	public void setBound(boolean bound) {
+		this.bound = bound;
 	}
 
 	public boolean isInitial() {

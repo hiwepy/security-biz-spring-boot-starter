@@ -58,6 +58,10 @@ public class UserProfilePayload {
 	 */
 	private String token;
 	/**
+   	 * 用户是否绑定信息
+   	 */
+    private boolean bound = Boolean.FALSE;
+    /**
    	 * 用户是否完善信息
    	 */
     private boolean initial = Boolean.FALSE;
