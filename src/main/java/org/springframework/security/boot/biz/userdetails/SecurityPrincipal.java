@@ -292,6 +292,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		UserProfilePayload payload = new UserProfilePayload();
 		
 		payload.setUid(this.getUid());
+		payload.setUuid(this.getUuid());
 		payload.setUkey(this.getUkey());
 		payload.setUcode(this.getUcode());
 		payload.setPerms(new HashSet<String>(perms));
