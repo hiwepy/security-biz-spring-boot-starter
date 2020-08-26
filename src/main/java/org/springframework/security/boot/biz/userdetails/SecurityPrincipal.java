@@ -31,11 +31,15 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private String uid;
 	/**
-	 * 用户唯一UID（用户编号）
+	 * 用户UID（用户编号）
 	 */
 	private String uuid;
 	/**
-	 * 用户唯一编号（内部工号）
+	 * 用户Key（用户编号）
+	 */
+	private String ukey;
+	/**
+	 * 用户Code（内部工号）
 	 */
 	private String ucode;
 	/**
@@ -121,6 +125,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getUkey() {
+		return ukey;
+	}
+
+	public void setUkey(String ukey) {
+		this.ukey = ukey;
 	}
 
 	public String getUcode() {
