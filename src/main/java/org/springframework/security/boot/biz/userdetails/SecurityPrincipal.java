@@ -300,6 +300,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		payload.setRkey(this.getRkey());
 		payload.setRcode(this.getRcode());
 		//payload.setRoles(this.getRoles());
+		payload.setBound(this.isBound());
 		payload.setInitial(this.isInitial());
 		
 		if (CollectionUtils.isEmpty(this.getProfile())) {
