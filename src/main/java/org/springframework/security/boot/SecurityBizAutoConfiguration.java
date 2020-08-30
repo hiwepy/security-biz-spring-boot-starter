@@ -5,10 +5,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
@@ -18,6 +21,7 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.i18n.LocaleContextFilter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +30,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.servlet.LocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Configuration
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
 @EnableConfigurationProperties({ SecurityBizProperties.class })
 public class SecurityBizAutoConfiguration {
@@ -45,6 +51,12 @@ public class SecurityBizAutoConfiguration {
 		return new WebAuthenticationDetailsSource();
 	}
 
+	@Bean
+	@Order(value = Ordered.HIGHEST_PRECEDENCE)
+	protected LocaleContextFilter localeContextFilter(LocaleResolver localeResolver) {
+		return new LocaleContextFilter(localeResolver);
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	protected HttpFirewall httpFirewall() {

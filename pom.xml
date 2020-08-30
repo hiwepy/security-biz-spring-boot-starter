@@ -366,6 +366,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<fastjson.version>1.2.73</fastjson.version>
 		<jwt-issuer.version>1.0.6-SNAPSHOT</jwt-issuer.version>
+		<spring-biz.version>1.0.8.RELEASE</spring-biz.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -395,6 +396,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-collections4</artifactId>
 				<version>${commons-collections4.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.github.hiwepy/spring-biz -->
+			<dependency>
+			    <groupId>com.github.hiwepy</groupId>
+			    <artifactId>spring-biz</artifactId>
+			    <version>${spring-biz.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -471,6 +478,10 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>com.github.hiwepy</groupId>
+		    <artifactId>spring-biz</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.github.hiwepy</groupId>
 			<artifactId>jwt-issuer-api</artifactId>
 		</dependency>
@@ -497,6 +508,12 @@
 			<artifactId>spring-security-remoting</artifactId>
 		</dependency>
 		
+		<!-- For Spring WebMvc -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-webmvc</artifactId>
+		    <scope>provided</scope>
+		</dependency>
 		<!-- For Spring WebFlux -->
 		<dependency>
 		    <groupId>org.springframework</groupId>

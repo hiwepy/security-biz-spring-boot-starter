@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.boot.biz.authentication.server.DefaultMatchedServerAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.server.DefaultMatchedServerAuthenticationFailureHandler;
@@ -21,10 +23,12 @@ import org.springframework.security.boot.biz.authentication.server.ReactiveAuthe
 import org.springframework.security.boot.biz.authentication.server.ReactiveAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.server.ReactiveServerAccessDeniedHandler;
 import org.springframework.security.boot.biz.authentication.server.ReactiveServerLogoutSuccessHandler;
+import org.springframework.security.boot.biz.i18n.ReactiveLocaleContextFilter;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import org.springframework.web.server.i18n.LocaleContextResolver;
 
 /**
  *  基础对象初始化
@@ -36,6 +40,13 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
 public class ReactiveSecurityBizAutoConfiguration {
 
+	@Bean
+	@ConditionalOnMissingBean
+	@Order(value = Ordered.HIGHEST_PRECEDENCE)
+	protected ReactiveLocaleContextFilter localeContextFilter(LocaleContextResolver localeContextResolver) {
+		return new ReactiveLocaleContextFilter(localeContextResolver);
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	public DefaultMatchedServerAuthenticationFailureHandler defaultMatchedServerAuthenticationFailureHandler() {
