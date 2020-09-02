@@ -3,6 +3,7 @@ package org.springframework.security.boot;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.biz.web.server.ReactiveRequestContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -45,6 +46,13 @@ public class ReactiveSecurityBizAutoConfiguration {
 	@Order(value = Ordered.HIGHEST_PRECEDENCE)
 	protected ReactiveLocaleContextFilter localeContextFilter(LocaleContextResolver localeContextResolver) {
 		return new ReactiveLocaleContextFilter(localeContextResolver);
+	}
+	
+	@Bean
+	@Order(value = Ordered.HIGHEST_PRECEDENCE)
+	@ConditionalOnMissingBean
+	public ReactiveRequestContextFilter requestContextFilter() {
+		return new ReactiveRequestContextFilter();
 	}
 	
 	@Bean
