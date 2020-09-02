@@ -3,6 +3,7 @@ package org.springframework.security.boot;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.biz.web.server.ReactiveLocaleContextFilter;
 import org.springframework.biz.web.server.ReactiveRequestContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -24,7 +25,6 @@ import org.springframework.security.boot.biz.authentication.server.ReactiveAuthe
 import org.springframework.security.boot.biz.authentication.server.ReactiveAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.authentication.server.ReactiveServerAccessDeniedHandler;
 import org.springframework.security.boot.biz.authentication.server.ReactiveServerLogoutSuccessHandler;
-import org.springframework.security.boot.biz.i18n.ReactiveLocaleContextFilter;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;

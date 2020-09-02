@@ -2,6 +2,7 @@ package org.springframework.security.boot;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,7 +22,6 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.i18n.LocaleContextFilter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
