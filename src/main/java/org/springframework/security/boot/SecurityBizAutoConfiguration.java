@@ -30,7 +30,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,15 +55,6 @@ public class SecurityBizAutoConfiguration {
 	@Order(value = Ordered.HIGHEST_PRECEDENCE)
 	protected LocaleContextFilter localeContextFilter(LocaleResolver localeResolver) {
 		return new LocaleContextFilter(localeResolver);
-	}
-	
-	@Bean
-	@Order(value = Ordered.HIGHEST_PRECEDENCE)
-	@ConditionalOnMissingBean
-	public RequestContextFilter requestContextFilter() {
-		RequestContextFilter contextFilter = new RequestContextFilter();
-		contextFilter.setThreadContextInheritable(true);
-		return contextFilter;
 	}
 	
 	@Bean
