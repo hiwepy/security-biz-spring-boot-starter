@@ -9,10 +9,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class PostLoginRequest {
 	
+	/**
+	 * 认证账号（必选）
+	 */
     private String username;
+    /**
+   	 * 认证密码（必选）
+   	 */
     private String password;
+    /**
+   	 * 验证码（可选）
+   	 */
     private String captcha;
-
+	
     @JsonCreator
     public PostLoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("captcha") String captcha) {
         this.username = username;
