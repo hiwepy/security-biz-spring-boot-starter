@@ -39,7 +39,7 @@ public class ReactiveServerAccessDeniedHandler implements ServerAccessDeniedHand
 		
 		// 3、国际化后的异常信息
 		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
-		String message = messages.getMessage(AuthResponseCode.SC_AUTHZ_FAIL.getMsgKey(), LocaleContextHolder.getLocale());
+		String message = messages.getMessage(AuthResponseCode.SC_AUTHZ_FAIL.getMsgKey());
 				
 		// 4、输出JSON格式数据
 		String body = JSONObject.toJSONString(AuthResponse.fail(message));

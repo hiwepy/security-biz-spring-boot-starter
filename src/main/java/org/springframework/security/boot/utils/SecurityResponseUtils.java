@@ -37,7 +37,7 @@ public class SecurityResponseUtils {
 	public static void handleSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 		
-		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
+		logger.debug("Locale : {}" );
 		
 		// 1、设置状态码和响应头
 		response.setStatus(HttpStatus.OK.value());
@@ -45,7 +45,7 @@ public class SecurityResponseUtils {
 		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		
 		// 2、国际化后的异常信息
-		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey(), LocaleContextHolder.getLocale());
+		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey());
 		
 		// 3、输出JSON格式数据
 		JSONObject.writeJSONString(response.getWriter(), AuthResponse.success(message));
@@ -69,37 +69,37 @@ public class SecurityResponseUtils {
 		if (e instanceof AuthenticationExceptionAdapter) {
 			
 			AuthenticationExceptionAdapter ex = (AuthenticationExceptionAdapter)e;
-			message = messages.getMessage(ex.getCode().getMsgKey(), ex.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(ex.getCode().getMsgKey(), ex.getMessage());
 			authResponse = AuthResponse.of(ex.getCode().getCode(), message);
 			
 		} 
 		// 服务端认证异常扩展
 		else if (e instanceof AuthenticationServiceExceptionAdapter) {
 			AuthenticationServiceExceptionAdapter ex = (AuthenticationServiceExceptionAdapter)e;
-			message = messages.getMessage(ex.getAuthCode().getMsgKey(), ex.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(ex.getAuthCode().getMsgKey(), ex.getMessage());
 			authResponse = AuthResponse.of(ex.getAuthCode().getCode(), message);
 		} 
 		// 默认异常
 		else if (e instanceof UsernameNotFoundException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getCode(), message);
 		} else if (e instanceof BadCredentialsException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getCode(), message);
 		}  else if (e instanceof DisabledException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_DISABLED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_DISABLED.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_DISABLED.getCode(), message);
 		}  else if (e instanceof LockedException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_LOCKED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_LOCKED.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_LOCKED.getCode(), message);
 		}  else if (e instanceof AccountExpiredException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getCode(), message);
 		}  else if (e instanceof CredentialsExpiredException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getCode(), message);
 		} else {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey(), e.getMessage(), LocaleContextHolder.getLocale());
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(), message);
 		}
 				

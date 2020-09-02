@@ -40,7 +40,7 @@ public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHa
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 		
 		// 3、国际化后的异常信息
-		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_LOGOUT.getMsgKey(), LocaleContextHolder.getLocale());
+		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_LOGOUT.getMsgKey());
 		
 		// 4、输出JSON格式数据
 		String body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_LOGOUT.getCode(), message ));
