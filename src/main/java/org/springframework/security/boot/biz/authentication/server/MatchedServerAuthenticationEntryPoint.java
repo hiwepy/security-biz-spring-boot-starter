@@ -40,8 +40,8 @@ public interface MatchedServerAuthenticationEntryPoint {
 	/**
 	 * Initiates the authentication flow
 	 *
-	 * @param exchange
-	 * @param e
+	 * @param exchange the exchange
+	 * @param e the authentication exception
 	 * @return {@code Mono<Void>} to indicate when the request for authentication is complete
 	 */
 	default Mono<Void> commence(ServerWebExchange exchange, AuthenticationException e){

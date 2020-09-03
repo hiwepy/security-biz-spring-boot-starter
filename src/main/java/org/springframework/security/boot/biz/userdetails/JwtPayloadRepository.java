@@ -48,7 +48,7 @@ public interface JwtPayloadRepository {
 	 * @param token Authentication Token
 	 * @param checkExpiry Whether Check JWT expiration time
 	 * @return Effective or not
-	 * @throws AuthenticationException
+	 * @throws AuthenticationException if Authentication Exception
 	 */
 	default boolean verify(AbstractAuthenticationToken token, boolean checkExpiry) throws AuthenticationException{
 		return false;

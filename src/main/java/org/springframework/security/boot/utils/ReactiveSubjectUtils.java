@@ -44,11 +44,8 @@ public class ReactiveSubjectUtils {
 				.block();
 	}
 	
-	/**
+	/*
 	 * 检查target类型对是否是给出对象类型数组中任意一个的类型的子类或者子接口
-	 * @param target
-	 * @param classes
-	 * @return
 	 */
 	public static boolean isAssignableFrom(Class<?> target, Class<?> ... classes) {
 		if(target != null && classes != null) {

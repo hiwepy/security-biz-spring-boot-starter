@@ -272,6 +272,7 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 	 * authentication.
 	 * <p>
 	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
+	 * @param postOnly if postOnly
 	 */
 	public void setPostOnly(boolean postOnly) {
 		this.postOnly = postOnly;

@@ -33,7 +33,7 @@ public interface AuthenticatingFailureCounter {
 	 * @param request ServletRequest
 	 * @param response ServletResponse
 	 * @param retryTimesKeyAttribute The retryTimes Key Attribute
-	 * @return
+	 * @return the error count
 	 */
 	int get(ServletRequest request, ServletResponse response, String retryTimesKeyAttribute);
 	

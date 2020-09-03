@@ -226,9 +226,9 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	 * Headers 配置
 	 * 
 	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http
-	 * @param headers
-	 * @throws Exception
+	 * @param http  the HttpSecurity
+	 * @param properties the Security Headers Properties
+	 * @throws Exception the Exception
 	 */
 	@SuppressWarnings("rawtypes")
 	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception {
@@ -319,9 +319,9 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	 * CSRF 配置
 	 * 
 	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
-	 * @param http
-	 * @param csrf
-	 * @throws Exception
+	 * @param http  the HttpSecurity
+	 * @param csrf the Security Headers Csrf Properties
+	 * @throws Exception the Exception
 	 */
 	protected void configure(HttpSecurity http, SecurityHeaderCsrfProperties csrf) throws Exception {
 		// CSRF 配置
@@ -442,9 +442,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		}
 	}
 
-	/**
-	 * Cros 配置
-	 */
 	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties cors) throws Exception {
 		if (cors.isEnabled()) {
 			http.cors().configurationSource(this.configurationSource(cors));

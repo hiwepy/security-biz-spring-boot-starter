@@ -32,10 +32,10 @@ public class RemoteAddrUtils {
 	
 	/**
 	 * 
-	 * @description	： 获取请求客户端IP地址，支持代理服务器
+	 * 获取请求客户端IP地址，支持代理服务器
 	 * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
-	 * @param request
-	 * @return
+	 * @param request the HttpServletRequest
+	 * @return the Remote Addr
 	 */
 	public static String getRemoteAddr(HttpServletRequest request) {
 		
