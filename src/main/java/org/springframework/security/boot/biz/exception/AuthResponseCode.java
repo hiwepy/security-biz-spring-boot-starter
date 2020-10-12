@@ -9,7 +9,7 @@ public enum AuthResponseCode {
 	/**
 	 * Authentication success
 	 */
-	SC_AUTHC_SUCCESS("200", AuthConstants.RT_SUCCESS,  "spring.security.authc.success"),
+	SC_AUTHC_SUCCESS("0", AuthConstants.RT_SUCCESS,  "spring.security.authc.success"),
 	/**
 	 * Authentication Error
 	 */
