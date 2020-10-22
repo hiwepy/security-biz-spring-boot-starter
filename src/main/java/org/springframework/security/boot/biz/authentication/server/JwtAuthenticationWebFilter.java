@@ -20,7 +20,7 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 
 /**
  * 1、JWT Authentication Filter For Reactive  （负责请求拦截）
- * @author 		： <a href="https://github.com/vindell">vindell</a>
+ * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
  */
 public class JwtAuthenticationWebFilter extends AuthenticationWebFilter {
 
