@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.exception.AuthResponse;
-import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
@@ -40,10 +39,10 @@ public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHa
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 		
 		// 3、国际化后的异常信息
-		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_LOGOUT.getMsgKey());
+		String message = messages.getMessage("spring.security.authc.logout");
 		
 		// 4、输出JSON格式数据
-		String body = JSONObject.toJSONString(AuthResponse.of(AuthResponseCode.SC_AUTHC_LOGOUT.getCode(), message ));
+		String body = JSONObject.toJSONString(AuthResponse.of(HttpStatus.OK.value(), message ));
 		DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
         

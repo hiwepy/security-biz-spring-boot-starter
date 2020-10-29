@@ -68,20 +68,20 @@ public class ReactiveSecurityResponseUtils {
 			authResponse = AuthResponse.of(ex.getCode().getCode(), message);
 			
 		} else if (e instanceof UsernameNotFoundException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getMsgKey(), e.getMessage());
-			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_NOT_FOUND.getCode(), message);
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_ACCOUNT_NOT_FOUND.getMsgKey(), e.getMessage());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_ACCOUNT_NOT_FOUND.getCode(), message);
 		} else if (e instanceof BadCredentialsException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getMsgKey(), e.getMessage());
-			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_INCORRECT.getCode(), message);
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_BAD_CREDENTIALS.getMsgKey(), e.getMessage());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_BAD_CREDENTIALS.getCode(), message);
 		}  else if (e instanceof DisabledException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_DISABLED.getMsgKey(), e.getMessage());
-			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_DISABLED.getCode(), message);
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_ACCOUNT_DISABLED.getMsgKey(), e.getMessage());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_ACCOUNT_DISABLED.getCode(), message);
 		}  else if (e instanceof LockedException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_LOCKED.getMsgKey(), e.getMessage());
-			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_LOCKED.getCode(), message);
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_ACCOUNT_LOCKED.getMsgKey(), e.getMessage());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_ACCOUNT_LOCKED.getCode(), message);
 		}  else if (e instanceof AccountExpiredException) {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getMsgKey(), e.getMessage());
-			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_USER_EXPIRED.getCode(), message);
+			message = messages.getMessage(AuthResponseCode.SC_AUTHC_ACCOUNT_EXPIRED.getMsgKey(), e.getMessage());
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_ACCOUNT_EXPIRED.getCode(), message);
 		}  else if (e instanceof CredentialsExpiredException) {
 			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getCode(), message);
