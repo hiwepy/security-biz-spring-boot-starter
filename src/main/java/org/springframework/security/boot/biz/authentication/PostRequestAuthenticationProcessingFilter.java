@@ -7,8 +7,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -40,7 +38,6 @@ public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthentic
 	// ~ Static fields/initializers
 	// =====================================================================================
 	
-	private static Logger logger = LoggerFactory.getLogger(PostRequestAuthenticationProcessingFilter.class);
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
 	public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";

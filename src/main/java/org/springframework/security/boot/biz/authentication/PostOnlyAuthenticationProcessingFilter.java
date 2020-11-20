@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -26,10 +27,45 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 public abstract class PostOnlyAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
+	public static final String DEFAULT_LONGITUDE_LATITUDE = "0.000000";
+	
+	/**
+	 * HTTP Authorization header, equal to <code>X-Sign</code>
+	 */
+	public static final String SIGN_HEADER = "X-Sign";
+	/**
+	 * HTTP Authorization header, equal to <code>X-Longitude</code>
+	 */
+	public static final String LONGITUDE_HEADER = "X-Longitude";
+	/**
+	 * HTTP Authorization header, equal to <code>X-Latitude</code>
+	 */
+	public static final String LATITUDE_HEADER = "X-Latitude";
+	/**
+	 * HTTP Authorization header, equal to <code>X-X-APP-ID</code>
+	 */
+	public static final String APP_ID_HEADER = "X-APP-ID";
+	/**
+	 * HTTP Authorization header, equal to <code>X-APP-CHANNEL</code>
+	 */
+	public static final String APP_CHANNEL_HEADER = "X-APP-CHANNEL";
+
+	/**
+	 * HTTP Authorization header, equal to <code>X-APP-VERSION</code>
+	 */
+	public static final String APP_VERSION_HEADER = "X-APP-VERSION";
+	
+	private String signHeaderName = SIGN_HEADER;
+	private String longitudeHeaderName = LONGITUDE_HEADER;
+	private String latitudeHeaderName = LATITUDE_HEADER;
+	private String appIdHeaderName = APP_ID_HEADER;
+	private String appChannelHeaderName = APP_CHANNEL_HEADER;
+	private String appVersionHeaderName = APP_VERSION_HEADER;
+	
 	// ~ Static fields/initializers
 	// =====================================================================================
 	
-	private static Logger logger = LoggerFactory.getLogger(PostOnlyAuthenticationProcessingFilter.class);
+	protected static Logger logger = LoggerFactory.getLogger(PostOnlyAuthenticationProcessingFilter.class);
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	private boolean postOnly = true;
 	
@@ -120,6 +156,84 @@ public abstract class PostOnlyAuthenticationProcessingFilter extends AbstractAut
 	
 	public boolean isPostOnly() {
 		return postOnly;
+	}
+	
+	protected double obtainLongitude(HttpServletRequest request) {
+		return Double.parseDouble(StringUtils.defaultIfBlank(request.getHeader(getLongitudeHeaderName()), DEFAULT_LONGITUDE_LATITUDE));
+	}
+	
+	protected double obtainLatitude(HttpServletRequest request) {
+		return Double.parseDouble(StringUtils.defaultIfBlank(request.getHeader(getLatitudeHeaderName()), DEFAULT_LONGITUDE_LATITUDE));
+	}
+	
+	protected String obtainSign(HttpServletRequest request) {
+		return request.getHeader(getSignHeaderName());
+	}
+	
+	protected String obtainAppId(HttpServletRequest request) {
+		String appId = request.getHeader(getAppIdHeaderName());
+		logger.debug(APP_ID_HEADER + "：{}", appId);
+		return appId;
+	}
+	
+	protected String obtainAppChannel(HttpServletRequest request) {
+		String appChannel = request.getHeader(getAppChannelHeaderName());
+		logger.debug(APP_CHANNEL_HEADER + "：{}", appChannel);
+		return appChannel;
+	}
+	
+	protected String obtainAppVersion(HttpServletRequest request) {
+		String appVersion = request.getHeader(getAppVersionHeaderName());
+		logger.debug(APP_VERSION_HEADER + "：{}", appVersion);
+		return appVersion;
+	}
+	
+	public String getSignHeaderName() {
+		return signHeaderName;
+	}
+
+	public void setSignHeaderName(String signHeaderName) {
+		this.signHeaderName = signHeaderName;
+	}
+
+	public String getLongitudeHeaderName() {
+		return longitudeHeaderName;
+	}
+
+	public void setLongitudeHeaderName(String longitudeHeaderName) {
+		this.longitudeHeaderName = longitudeHeaderName;
+	}
+
+	public String getLatitudeHeaderName() {
+		return latitudeHeaderName;
+	}
+
+	public void setLatitudeHeaderName(String latitudeHeaderName) {
+		this.latitudeHeaderName = latitudeHeaderName;
+	}
+
+	public String getAppIdHeaderName() {
+		return appIdHeaderName;
+	}
+
+	public void setAppIdHeaderName(String appIdHeaderName) {
+		this.appIdHeaderName = appIdHeaderName;
+	}
+
+	public String getAppChannelHeaderName() {
+		return appChannelHeaderName;
+	}
+
+	public void setAppChannelHeaderName(String appChannelHeaderName) {
+		this.appChannelHeaderName = appChannelHeaderName;
+	}
+
+	public String getAppVersionHeaderName() {
+		return appVersionHeaderName;
+	}
+
+	public void setAppVersionHeaderName(String appVersionHeaderName) {
+		this.appVersionHeaderName = appVersionHeaderName;
 	}
 	
 }
