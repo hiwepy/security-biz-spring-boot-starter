@@ -18,13 +18,11 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
 import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
-import org.springframework.security.boot.biz.exception.AuthenticationMethodNotSupportedException;
 import org.springframework.security.boot.biz.exception.AuthenticationOverRetryRemindException;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
 
@@ -37,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 账号、密码、验证码认证过滤器
  * @author 		： <a href="https://github.com/hiwepy">hiwepy</a>
  */
-public class PostRequestAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class PostRequestAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
 	// ~ Static fields/initializers
 	// =====================================================================================
@@ -78,19 +76,11 @@ public class PostRequestAuthenticationProcessingFilter extends AbstractAuthentic
 
 	// ~ Methods
 	// ========================================================================================================
-
+	
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+	public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 
-		if (isPostOnly() && !WebUtils.isPostRequest(request) ) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
-			}
-			throw new AuthenticationMethodNotSupportedException(messages.getMessage(AuthResponseCode.SC_AUTHC_METHOD_NOT_ALLOWED.getMsgKey(), new Object[] { request.getMethod() }, 
-					"Authentication method not supported. Request method:" + request.getMethod()));
-		}
-		
 		try {
 
 			AbstractAuthenticationToken authRequest = null;
