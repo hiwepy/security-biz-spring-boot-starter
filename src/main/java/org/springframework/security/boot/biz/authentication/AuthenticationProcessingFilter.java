@@ -1,6 +1,7 @@
 package org.springframework.security.boot.biz.authentication;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -94,9 +95,11 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 		
-		// Set RequestContextHolder
-		ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request, response);
-		RequestContextHolder.setRequestAttributes(requestAttributes, true);
+		if(Objects.isNull(RequestContextHolder.getRequestAttributes())) {
+			// Set RequestContextHolder
+			ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request, response);
+			RequestContextHolder.setRequestAttributes(requestAttributes, true);
+		}
 		
 		// real method
 		return this.doAttemptAuthentication(request, response);
