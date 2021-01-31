@@ -61,6 +61,7 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	private String appIdHeaderName = APP_ID_HEADER;
 	private String appChannelHeaderName = APP_CHANNEL_HEADER;
 	private String appVersionHeaderName = APP_VERSION_HEADER;
+	private final String format = "{} ：{}";
 	
 	// ~ Static fields/initializers
 	// =====================================================================================
@@ -142,31 +143,31 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	
 	protected String obtainUid(HttpServletRequest request) {
 		String uid = request.getHeader(getUidHeaderName());
-		logger.debug(getUidHeaderName() + "：{}", uid);
+		logger.debug(format, getUidHeaderName(), uid);
 		return uid;
 	}
 	
 	protected String obtainSign(HttpServletRequest request) {
 		String sign = request.getHeader(getSignHeaderName());
-		logger.debug(getSignHeaderName() + "：{}", sign);
+		logger.debug(format, getSignHeaderName(), sign);
 		return sign;
 	}
 	
 	protected String obtainAppId(HttpServletRequest request) {
 		String appId = request.getHeader(getAppIdHeaderName());
-		logger.debug(getAppIdHeaderName() + "：{}", appId);
+		logger.debug(format,  getAppIdHeaderName(), appId);
 		return appId;
 	}
 	
 	protected String obtainAppChannel(HttpServletRequest request) {
 		String appChannel = request.getHeader(getAppChannelHeaderName());
-		logger.debug(getAppChannelHeaderName() + "：{}", appChannel);
+		logger.debug(format,  getAppChannelHeaderName(), appChannel);
 		return appChannel;
 	}
 	
 	protected String obtainAppVersion(HttpServletRequest request) {
 		String appVersion = request.getHeader(getAppVersionHeaderName());
-		logger.debug(getAppVersionHeaderName() + "：{}", appVersion);
+		logger.debug(format,  getAppVersionHeaderName(), appVersion);
 		return appVersion;
 	}
 	
