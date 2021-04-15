@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -132,6 +133,10 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	public abstract Authentication doAttemptAuthentication(HttpServletRequest request,
 			HttpServletResponse response) throws AuthenticationException, IOException,
 			ServletException;
+
+	protected void setDetails(HttpServletRequest request, AbstractAuthenticationToken authRequest) {
+		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+	}
 	
 	protected double obtainLongitude(HttpServletRequest request) {
 		return Double.parseDouble(StringUtils.defaultIfBlank(request.getHeader(getLongitudeHeaderName()), DEFAULT_LONGITUDE_LATITUDE));
