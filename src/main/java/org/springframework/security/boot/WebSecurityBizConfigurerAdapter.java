@@ -358,17 +358,16 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
 
 		UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
-
+		
 		/**
 		 * 批量设置参数
 		 */
 		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-
-		map.from(cors.isAlwaysUseFullPath()).to(configurationSource::setAlwaysUseFullPath);
+		
+		map.from(cors.isAllowInitLookupPath()).to(configurationSource::setAllowInitLookupPath);
 		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
-		map.from(cors.isRemoveSemicolonContent()).to(configurationSource::setRemoveSemicolonContent);
-		map.from(cors.isUrlDecode()).to(configurationSource::setUrlDecode);
-
+		configurationSource.setPathMatcher(null);
+		
 		return configurationSource;
 	}
 
