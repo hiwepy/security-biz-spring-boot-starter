@@ -19,7 +19,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 
 @SuppressWarnings("serial")
-public class AbstractAuthenticationToken extends org.springframework.security.authentication.AbstractAuthenticationToken {
+public abstract class AbstractAuthenticationToken extends org.springframework.security.authentication.AbstractAuthenticationToken {
     
     private final Object principal;
     private Object credentials;
