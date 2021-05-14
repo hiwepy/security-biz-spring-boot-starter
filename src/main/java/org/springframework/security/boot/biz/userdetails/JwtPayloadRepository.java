@@ -35,7 +35,15 @@ public interface JwtPayloadRepository {
 	 * @return Jwt String
 	 */
 	default String issueJwt(AbstractAuthenticationToken token) { 
+		if(token.getPrincipal() instanceof SecurityPrincipal) {
+			SecurityPrincipal principal = (SecurityPrincipal) token.getPrincipal();
+			return this.issueJwt(principal);
+		}
 		return "";
+	};
+	
+	default String issueJwt(SecurityPrincipal principal) { 
+		return this.issueJwt(principal.getUid(), principal.getProfile());
 	};
 	
 	default String issueJwt(String uid, Map<String, Object> profile) { 
