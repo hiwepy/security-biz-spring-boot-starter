@@ -13,6 +13,6 @@ security starter for spring boot
 <dependency>
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-biz-spring-boot-starter</artifactId>
-	<version>1.0.7.RELEASE</version>
+	<version>1.0.8.RELEASE</version>
 </dependency>
 ```
