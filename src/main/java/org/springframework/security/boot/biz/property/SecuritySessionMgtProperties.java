@@ -17,23 +17,19 @@ package org.springframework.security.boot.biz.property;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * Security Session Mgt Properties
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
-@Getter
-@Setter
-@ToString
+@Data
 public class SecuritySessionMgtProperties {
 	
 	private boolean allowSessionCreation = false;
-	/** if should allow the JSESSIONID to be rewritten into the URLs*/
 	
 	/**
 	 * If set to true, allows HTTP sessions to be rewritten in the URLs when using
@@ -56,7 +52,7 @@ public class SecuritySessionMgtProperties {
 	 * 
 	 * maximumSessions the maximum number of sessions for a user
 	 */
-	private Integer maximumSessions = Integer.MAX_VALUE;
+	private Integer maximumSessions;
 	/**
 	 * If true, prevents a user from authenticating when the
 	 * {@link #maximumSessions(int)} has been reached. Otherwise (default), the user
@@ -76,10 +72,12 @@ public class SecuritySessionMgtProperties {
 	 * "SPRING_SECURITY_SAVED_REQUEST".
 	 */
 	private String sessionAttrName = "SPRING_SECURITY_SAVED_REQUEST";
-	/**
-	 * If set to <tt>true</tt>, performs a forward to the failure destination URL instead
-	 * of a redirect. Defaults to <tt>false</tt>.
-	 */
-	private boolean useForward = false;
+
+	@NestedConfigurationProperty
+	private SecurityRememberMeProperties remember = new SecurityRememberMeProperties();
+	
+	@NestedConfigurationProperty
+	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
+	
 	
 }

@@ -41,9 +41,5 @@ public class SecurityBizProperties {
 	 * 类似Shiro的过滤链定义，用于初始化默认的过滤规则 Map<pattern, Chain name>
 	 */
 	private Map<String, String > filterChainDefinitionMap = new LinkedHashMap<>(16);
-	/** 
-     * Whether stateless session
-     */
-	private boolean stateless = false;
 	
 }

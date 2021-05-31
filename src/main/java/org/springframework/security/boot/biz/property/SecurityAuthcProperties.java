@@ -23,17 +23,13 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * Security Authc Properties
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
-@Getter
-@Setter
-@ToString
+@Data
 public class SecurityAuthcProperties {
 
 	/** Authorization Path Pattern */
@@ -83,6 +79,12 @@ public class SecurityAuthcProperties {
 	private boolean postOnly = true;
 	
 	/**
+	 * If set to <tt>true</tt>, performs a forward to the failure destination URL instead
+	 * of a redirect. Defaults to <tt>false</tt>.
+	 */
+	private boolean useForward = false;
+	
+	/**
 	 * If set to {@code true} the {@code Referer} header will be used (if available).
 	 * Defaults to {@code false}.
 	 */
@@ -102,9 +104,6 @@ public class SecurityAuthcProperties {
 
 	@NestedConfigurationProperty
 	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
-	
-	@NestedConfigurationProperty
-	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();

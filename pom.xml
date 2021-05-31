@@ -522,6 +522,13 @@
 		    <scope>provided</scope>
 		</dependency>
 		
+		<!-- For Spring Boot's Redis  -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-redis</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		
 		<dependency>
 		    <groupId>io.swagger</groupId>
 		    <artifactId>swagger-annotations</artifactId>
