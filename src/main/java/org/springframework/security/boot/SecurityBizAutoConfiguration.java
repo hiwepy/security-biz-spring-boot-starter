@@ -30,6 +30,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -99,6 +100,12 @@ public class SecurityBizAutoConfiguration {
    		return new IgnoreLogoutHandler();
    	}
 
+	@Bean
+	@ConditionalOnMissingBean
+	protected HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
+	
 	@Bean
 	@ConditionalOnMissingBean
 	public DefaultMatchedAuthenticationFailureHandler defaultMatchedAuthenticationFailureHandler() {
