@@ -1,5 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.springframework.security.boot.SecurityBizAutoConfiguration,\
-org.springframework.security.boot.SecurityFormFilterAutoConfiguration,\
 org.springframework.security.boot.ReactiveSecurityBizAutoConfiguration
