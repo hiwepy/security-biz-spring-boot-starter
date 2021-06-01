@@ -17,6 +17,7 @@ package org.springframework.security.boot.biz.property;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
@@ -26,8 +27,11 @@ import lombok.Data;
  * Security Session Mgt Properties
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
+@ConfigurationProperties(SecuritySessionMgtProperties.PREFIX)
 @Data
 public class SecuritySessionMgtProperties {
+
+	public static final String PREFIX = "spring.security.session";
 	
 	private boolean allowSessionCreation = false;
 	
