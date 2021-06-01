@@ -26,9 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -75,12 +73,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
-import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -108,16 +100,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	private final SecuritySessionMgtProperties sessionMgtProperties;
 	private final AuthenticationManager authenticationManager;
 	private final List<AuthenticationProvider> authenticationProviders;
-	
-	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
-			SecuritySessionMgtProperties sessionMgtProperties,
-			List<AuthenticationProvider> authenticationProviders, AuthenticationManager authenticationManager) {
-		this.bizProperties = bizProperties;
-		this.authcProperties = null;
-		this.sessionMgtProperties = sessionMgtProperties;
-		this.authenticationProviders = authenticationProviders;
-		this.authenticationManager = authenticationManager;
-	}
 	
 	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
 			SecurityAuthcProperties authcProperties,
@@ -479,8 +461,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		return redirectStrategy;
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean
 	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
  		// Session 管理器配置参数
  		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
@@ -495,22 +475,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
  			return new NullAuthenticatedSessionStrategy();
  		}
  	}
-	
-	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
-		return new CompositeLogoutHandler(logoutHandlers);
-	}
-	
-	protected LogoutSuccessHandler logoutSuccessHandler() {
-		return new HttpStatusReturningLogoutSuccessHandler();
-	}
-
-	protected LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
-		return new ForwardLogoutSuccessHandler(targetUrl);
-	}
-	
-	protected LogoutSuccessHandler logoutSuccessSimpleUrlHandler() {
-		return new SimpleUrlLogoutSuccessHandler();
-	}
 	
 	public SecuritySessionMgtProperties getSessionMgtProperties() {
 		return sessionMgtProperties;

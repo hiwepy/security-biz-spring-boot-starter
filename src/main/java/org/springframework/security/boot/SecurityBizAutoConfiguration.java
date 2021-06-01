@@ -30,24 +30,32 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
+import org.springframework.security.boot.biz.property.SessionFixationPolicy;
+import org.springframework.security.boot.biz.session.SessionAuthenticationFailureHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
+import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -172,42 +180,41 @@ public class SecurityBizAutoConfiguration {
 	@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
-   	static class DefaultWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
+   	static class DefaultWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
-	    private final AuthenticationFailureHandler authenticationFailureHandler;
+		private final SecuritySessionMgtProperties sessionMgtProperties;
+		
 	    private final InvalidSessionStrategy invalidSessionStrategy;
 	    private final LogoutHandler logoutHandler;
 	    private final LogoutSuccessHandler logoutSuccessHandler;
     	private final SessionRegistry sessionRegistry;
+		private final SessionAuthenticationFailureHandler sessionAuthenticationFailureHandler;
 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
 		private final SessionInformationExpiredStrategy expiredSessionStrategy;
 		
    		public DefaultWebSecurityConfigurerAdapter (
    				
-   				SecurityBizProperties bizProperties, 
    				SecuritySessionMgtProperties sessionMgtProperties,
    				
    				ObjectProvider<AuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
-   				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
+   				ObjectProvider<SessionAuthenticationFailureHandler> sessionAuthenticationFailureHandlerProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
    				ObjectProvider<SessionRegistry> sessionRegistryProvider,
    				ObjectProvider<SessionInformationExpiredStrategy> expiredSessionStrategyProvider,
    				ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider
 				
 			) {
-   			
-			super(bizProperties, sessionMgtProperties, authenticationProvider.stream().collect(Collectors.toList()),
-					authenticationManagerProvider.getIfAvailable());
+   			 
+   			this.sessionMgtProperties = sessionMgtProperties;
 			
-			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
-			this.authenticationFailureHandler = super.authenticationFailureHandler(authenticationListeners, authenticationFailureHandlerProvider.stream().collect(Collectors.toList()));
    			this.invalidSessionStrategy = invalidSessionStrategyProvider.getIfAvailable();
-   			this.logoutHandler = super.logoutHandler(logoutHandlerProvider.stream().collect(Collectors.toList()));
-   			this.logoutSuccessHandler = logoutSuccessHandler();
+   			this.logoutHandler = this.logoutHandler(logoutHandlerProvider.stream().collect(Collectors.toList()));
+   			this.logoutSuccessHandler = this.logoutSuccessHandler();
    			this.sessionRegistry = sessionRegistryProvider.getIfAvailable();
-   			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
+   			this.sessionAuthenticationFailureHandler = sessionAuthenticationFailureHandlerProvider.getIfAvailable();
+   			this.sessionAuthenticationStrategy = this.sessionAuthenticationStrategy();
    			this.expiredSessionStrategy = expiredSessionStrategyProvider.getIfAvailable();
    			
    		}
@@ -217,23 +224,23 @@ public class SecurityBizAutoConfiguration {
    		protected void configure(HttpSecurity http) throws Exception {
    			
    			// Session 管理器配置参数
-	    	SecurityLogoutProperties logout = getSessionMgtProperties().getLogout();
+	    	SecurityLogoutProperties logout = sessionMgtProperties.getLogout();
 	    	
 	    	// Session 管理器配置
 	    	http.sessionManagement()
-	    		.enableSessionUrlRewriting(getSessionMgtProperties().isEnableSessionUrlRewriting())
+	    		.enableSessionUrlRewriting(sessionMgtProperties.isEnableSessionUrlRewriting())
 	    		.invalidSessionStrategy(invalidSessionStrategy)
 	    		.invalidSessionUrl(logout.getLogoutUrl())
-	    		.maximumSessions(getSessionMgtProperties().getMaximumSessions())
-	    		.maxSessionsPreventsLogin(getSessionMgtProperties().isMaxSessionsPreventsLogin())
+	    		.maximumSessions(sessionMgtProperties.getMaximumSessions())
+	    		.maxSessionsPreventsLogin(sessionMgtProperties.isMaxSessionsPreventsLogin())
 	    		.expiredSessionStrategy(expiredSessionStrategy)
 				.expiredUrl(logout.getLogoutUrl())
 				.sessionRegistry(sessionRegistry)
 				.and()
-	    		.sessionAuthenticationErrorUrl(getSessionMgtProperties().getFailureUrl())
-	    		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
+	    		.sessionAuthenticationErrorUrl(sessionMgtProperties.getFailureUrl())
+	    		.sessionAuthenticationFailureHandler(sessionAuthenticationFailureHandler)
 	    		.sessionAuthenticationStrategy(sessionAuthenticationStrategy)
-	    		.sessionCreationPolicy(getSessionMgtProperties().getCreationPolicy())
+	    		.sessionCreationPolicy(sessionMgtProperties.getCreationPolicy())
 	    		// Session 注销配置
 	    		.and()
 	    		.logout()
@@ -246,6 +253,37 @@ public class SecurityBizAutoConfiguration {
 	    	
    		}
 
+   		protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
+   			return new CompositeLogoutHandler(logoutHandlers);
+   		}
+   		
+   		protected LogoutSuccessHandler logoutSuccessHandler() {
+   			return new HttpStatusReturningLogoutSuccessHandler();
+   		}
+
+   		protected LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
+   			return new ForwardLogoutSuccessHandler(targetUrl);
+   		}
+   		
+   		protected LogoutSuccessHandler logoutSuccessSimpleUrlHandler() {
+   			return new SimpleUrlLogoutSuccessHandler();
+   		}
+   		
+   		public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+   	 		// Session 管理器配置参数
+   	 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
+   	 			return new ChangeSessionIdAuthenticationStrategy();
+   	 		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
+   	 			return new SessionFixationProtectionStrategy();
+   	 		} else if (SessionFixationPolicy.NEW_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
+   	 			SessionFixationProtectionStrategy sessionFixationProtectionStrategy = new SessionFixationProtectionStrategy();
+   	 			sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
+   	 			return sessionFixationProtectionStrategy;
+   	 		} else {
+   	 			return new NullAuthenticatedSessionStrategy();
+   	 		}
+   	 	}
+   		
    	}
 
 }
