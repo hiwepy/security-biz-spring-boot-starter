@@ -67,7 +67,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
-@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityAuthcProperties.class, SecuritySessionMgtProperties.class })
 public class SecurityBizAutoConfiguration {
 
 	@Bean
@@ -170,7 +170,7 @@ public class SecurityBizAutoConfiguration {
 	}
 
 	@Configuration
-	@EnableConfigurationProperties({ SecurityBizProperties.class })
+	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityAuthcProperties.class, SecuritySessionMgtProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
    	static class DefaultWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
     	
