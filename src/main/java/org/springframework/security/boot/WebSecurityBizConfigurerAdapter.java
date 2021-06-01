@@ -73,6 +73,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -461,6 +463,10 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		return redirectStrategy;
 	}
 	
+	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
+		return new CompositeLogoutHandler(logoutHandlers);
+	}
+
 	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
  		// Session 管理器配置参数
  		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
