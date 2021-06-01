@@ -30,7 +30,6 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
@@ -75,7 +74,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
-@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityAuthcProperties.class, SecuritySessionMgtProperties.class })
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
 public class SecurityBizAutoConfiguration {
 
 	@Bean
