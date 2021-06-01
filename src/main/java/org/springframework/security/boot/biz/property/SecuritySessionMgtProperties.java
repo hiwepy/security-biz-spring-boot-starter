@@ -33,7 +33,7 @@ public class SecuritySessionMgtProperties {
 
 	public static final String PREFIX = "spring.security.session";
 	
-	private boolean allowSessionCreation = false;
+	private boolean allowSessionCreation = true;
 	
 	/**
 	 * If set to true, allows HTTP sessions to be rewritten in the URLs when using

@@ -176,7 +176,7 @@ public class SecurityBizAutoConfiguration {
 		return invalidSessionStrategy;
 	}
 
-	@Configuration
+	/*@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
    	static class DefaultWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
@@ -283,6 +283,6 @@ public class SecurityBizAutoConfiguration {
    	 		}
    	 	}
    		
-   	}
+   	}*/
 
 }

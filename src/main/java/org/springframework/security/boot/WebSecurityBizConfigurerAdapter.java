@@ -31,17 +31,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
-import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
-import org.springframework.security.boot.biz.authentication.AuthenticationListener;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
 import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
@@ -56,7 +45,6 @@ import org.springframework.security.boot.biz.property.header.HeaderHpkpPropertie
 import org.springframework.security.boot.biz.property.header.HeaderHstsProperties;
 import org.springframework.security.boot.biz.property.header.HeaderReferrerPolicyProperties;
 import org.springframework.security.boot.biz.property.header.HeaderXssProtectionProperties;
-import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -65,25 +53,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
-import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -97,76 +69,21 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	private Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
 	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
 	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
-	private final SecurityBizProperties bizProperties;
-	private final SecurityAuthcProperties authcProperties;
-	private final SecuritySessionMgtProperties sessionMgtProperties;
+	protected final SecurityBizProperties bizProperties;
+	protected final SecuritySessionMgtProperties sessionMgtProperties;
 	private final AuthenticationManager authenticationManager;
 	private final List<AuthenticationProvider> authenticationProviders;
 	
 	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
-			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
-			List<AuthenticationProvider> authenticationProviders, AuthenticationManager authenticationManager) {
+			List<AuthenticationProvider> authenticationProviders,
+			AuthenticationManager authenticationManager) {
 		this.bizProperties = bizProperties;
-		this.authcProperties = authcProperties;
 		this.sessionMgtProperties = sessionMgtProperties;
 		this.authenticationProviders = authenticationProviders;
 		this.authenticationManager = authenticationManager;
 	}
 	
-	protected AccessDeniedHandler accessDeniedHandler() {
-		AccessDeniedHandler accessDeniedHandler = new AccessDeniedHandlerImpl();
-		return accessDeniedHandler;
-	}
-	
-	protected AuthenticatingFailureCounter authenticatingFailureCounter() {
-		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
-		failureCounter.setRetryTimesKeyParameter(authcProperties.getRetry().getRetryTimesKeyParameter());
-		return failureCounter;
-	}
-
-	protected PostRequestAuthenticationEntryPoint authenticationEntryPoint(
-			List<MatchedAuthenticationEntryPoint> entryPoints) {
-		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(
-				authcProperties.getPathPattern(), entryPoints);
-		entryPoint.setForceHttps(authcProperties.getEntryPoint().isForceHttps());
-		entryPoint.setStateless(SessionCreationPolicy.STATELESS.equals(sessionMgtProperties.getCreationPolicy()));
-		entryPoint.setUseForward(authcProperties.getEntryPoint().isUseForward());
-		return entryPoint;
-	}
-	
-	protected PostRequestAuthenticationFailureHandler authenticationFailureHandler(
-			List<AuthenticationListener> authenticationListeners,
-			List<MatchedAuthenticationFailureHandler> failureHandlers) {
-
-		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, failureHandlers);
-
-		failureHandler.setAllowSessionCreation(sessionMgtProperties.isAllowSessionCreation());
-		failureHandler.setDefaultFailureUrl(authcProperties.getFailureUrl());
-		failureHandler.setRedirectStrategy(redirectStrategy());
-		failureHandler.setStateless(SessionCreationPolicy.STATELESS.equals(sessionMgtProperties.getCreationPolicy()));
-		failureHandler.setUseForward(authcProperties.isUseForward());
-
-		return failureHandler;
-
-	}
-	
-	protected ForwardAuthenticationFailureHandler authenticationFailureForwardHandler(String forwardUrl) {
-		return new ForwardAuthenticationFailureHandler(forwardUrl);
-	}
-	
-	protected SimpleUrlAuthenticationFailureHandler authenticationFailureSimpleUrlHandler() {
-
-		SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-
-		failureHandler.setAllowSessionCreation(sessionMgtProperties.isAllowSessionCreation());
-		failureHandler.setDefaultFailureUrl(authcProperties.getFailureUrl());
-		failureHandler.setRedirectStrategy(redirectStrategy());
-		failureHandler.setUseForward(authcProperties.isUseForward());
-
-		return failureHandler;
-	}
 	
 	@Override
 	protected AuthenticationManager authenticationManager() throws Exception {
@@ -182,29 +99,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		authenticationManager.setEraseCredentialsAfterAuthentication(false);
 		return authenticationManager;
 	}
-
-	public PostRequestAuthenticationProvider authenticationProvider(UserDetailsServiceAdapter userDetailsService,
-			PasswordEncoder passwordEncoder) {
-		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
-	}
-	
-	protected PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
-			List<AuthenticationListener> authenticationListeners,
-			List<MatchedAuthenticationSuccessHandler> successHandlers) {
-
-		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
-				authenticationListeners, successHandlers);
-		successHandler.setAlwaysUseDefaultTargetUrl(authcProperties.isAlwaysUseDefaultTargetUrl());
-		successHandler.setDefaultTargetUrl(authcProperties.getSuccessUrl());
-		successHandler.setRedirectStrategy(redirectStrategy());
-		successHandler.setRequestCache(requestCache());
-		successHandler.setStateless(SessionCreationPolicy.STATELESS.equals(sessionMgtProperties.getCreationPolicy()));
-		successHandler.setTargetUrlParameter(authcProperties.getTargetUrlParameter());
-		successHandler.setUseReferer(authcProperties.isUseReferer());
-
-		return successHandler;
-	}
-
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -449,38 +343,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		}
 		return new HttpSessionCsrfTokenRepository();
 	}
-	
-	protected RequestCache requestCache() {
- 		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
- 		requestCache.setCreateSessionAllowed(sessionMgtProperties.isAllowSessionCreation());
- 		requestCache.setSessionAttrName(sessionMgtProperties.getSessionAttrName());
- 		return requestCache;
- 	}
-	
-	protected RedirectStrategy redirectStrategy() {
-		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-		redirectStrategy.setContextRelative(authcProperties.getRedirect().isContextRelative());
-		return redirectStrategy;
-	}
-	
-	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
-		return new CompositeLogoutHandler(logoutHandlers);
-	}
-
-	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
- 		// Session 管理器配置参数
- 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
- 			return new ChangeSessionIdAuthenticationStrategy();
- 		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
- 			return new SessionFixationProtectionStrategy();
- 		} else if (SessionFixationPolicy.NEW_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
- 			SessionFixationProtectionStrategy sessionFixationProtectionStrategy = new SessionFixationProtectionStrategy();
- 			sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
- 			return sessionFixationProtectionStrategy;
- 		} else {
- 			return new NullAuthenticatedSessionStrategy();
- 		}
- 	}
 	
 	public SecuritySessionMgtProperties getSessionMgtProperties() {
 		return sessionMgtProperties;
