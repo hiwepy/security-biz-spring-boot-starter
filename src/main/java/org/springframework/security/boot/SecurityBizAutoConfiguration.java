@@ -170,7 +170,7 @@ public class SecurityBizAutoConfiguration {
 	}
 
 	@Configuration
-	@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityAuthcProperties.class, SecuritySessionMgtProperties.class })
+	@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
    	static class DefaultWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
     	
@@ -185,7 +185,6 @@ public class SecurityBizAutoConfiguration {
    		public DefaultWebSecurityConfigurerAdapter (
    				
    				SecurityBizProperties bizProperties, 
-   				SecurityAuthcProperties authcProperties,
    				SecuritySessionMgtProperties sessionMgtProperties,
    				
    				ObjectProvider<AuthenticationProvider> authenticationProvider,
@@ -199,7 +198,7 @@ public class SecurityBizAutoConfiguration {
 				
 			) {
    			
-			super(bizProperties, authcProperties, sessionMgtProperties, authenticationProvider.stream().collect(Collectors.toList()),
+			super(bizProperties, sessionMgtProperties, authenticationProvider.stream().collect(Collectors.toList()),
 					authenticationManagerProvider.getIfAvailable());
 			
 			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());

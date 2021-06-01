@@ -110,6 +110,16 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	private final List<AuthenticationProvider> authenticationProviders;
 	
 	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
+			SecuritySessionMgtProperties sessionMgtProperties,
+			List<AuthenticationProvider> authenticationProviders, AuthenticationManager authenticationManager) {
+		this.bizProperties = bizProperties;
+		this.authcProperties = null;
+		this.sessionMgtProperties = sessionMgtProperties;
+		this.authenticationProviders = authenticationProviders;
+		this.authenticationManager = authenticationManager;
+	}
+	
+	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
 			List<AuthenticationProvider> authenticationProviders, AuthenticationManager authenticationManager) {
