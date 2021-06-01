@@ -50,7 +50,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -179,7 +178,6 @@ public class SecurityBizAutoConfiguration {
 	    private final InvalidSessionStrategy invalidSessionStrategy;
 	    private final LogoutHandler logoutHandler;
 	    private final LogoutSuccessHandler logoutSuccessHandler;
-    	private final RequestCache requestCache;
     	private final SessionRegistry sessionRegistry;
 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
 		private final SessionInformationExpiredStrategy expiredSessionStrategy;
@@ -209,7 +207,6 @@ public class SecurityBizAutoConfiguration {
    			this.invalidSessionStrategy = invalidSessionStrategyProvider.getIfAvailable();
    			this.logoutHandler = super.logoutHandler(logoutHandlerProvider.stream().collect(Collectors.toList()));
    			this.logoutSuccessHandler = logoutSuccessHandler();
-   			this.requestCache = super.requestCache();
    			this.sessionRegistry = sessionRegistryProvider.getIfAvailable();
    			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
    			this.expiredSessionStrategy = expiredSessionStrategyProvider.getIfAvailable();
@@ -223,12 +220,8 @@ public class SecurityBizAutoConfiguration {
    			// Session 管理器配置参数
 	    	SecurityLogoutProperties logout = getSessionMgtProperties().getLogout();
 	    	
-	    	// Request 缓存配置
-	    	http.requestCache()
-	        	.requestCache(requestCache)
-	        	// Session 管理器配置
-	        	.and()
-	        	.sessionManagement()
+	    	// Session 管理器配置
+	    	http.sessionManagement()
 	    		.enableSessionUrlRewriting(getSessionMgtProperties().isEnableSessionUrlRewriting())
 	    		.invalidSessionStrategy(invalidSessionStrategy)
 	    		.invalidSessionUrl(logout.getLogoutUrl())
