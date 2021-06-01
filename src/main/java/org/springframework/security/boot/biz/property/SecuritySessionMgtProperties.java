@@ -56,7 +56,7 @@ public class SecuritySessionMgtProperties {
 	 * 
 	 * maximumSessions the maximum number of sessions for a user
 	 */
-	private Integer maximumSessions;
+	private Integer maximumSessions = 1;
 	/**
 	 * If true, prevents a user from authenticating when the
 	 * {@link #maximumSessions(int)} has been reached. Otherwise (default), the user
