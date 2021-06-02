@@ -1,7 +1,10 @@
 package org.springframework.security.boot;
 
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -15,7 +18,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.boot.biz.IgnoreLogoutHandler;
 import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
@@ -23,16 +29,25 @@ import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaR
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
+import org.springframework.security.boot.biz.property.SessionFixationPolicy;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -109,6 +124,14 @@ public class SecurityBizAutoConfiguration {
    		return new IgnoreLogoutHandler();
    	}
 
+    @Bean
+	@ConditionalOnMissingBean
+	protected AuthenticationManager authenticationManager(ObjectProvider<AuthenticationProvider> authenticationProvider) {
+    	ProviderManager authenticationManager = new ProviderManager(authenticationProvider.stream().collect(Collectors.toList()));
+		authenticationManager.setEraseCredentialsAfterAuthentication(false);
+		return authenticationManager;
+	}
+    
 	@Bean
 	@ConditionalOnMissingBean
 	protected HttpSessionEventPublisher httpSessionEventPublisher() {
@@ -153,5 +176,35 @@ public class SecurityBizAutoConfiguration {
 		invalidSessionStrategy.setCreateNewSession(sessionMgtProperties.isAllowSessionCreation());
 		return invalidSessionStrategy;
 	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public AccessDeniedHandler accessDeniedHandler() {
+		AccessDeniedHandler accessDeniedHandler = new AccessDeniedHandlerImpl();
+		return accessDeniedHandler;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public LogoutSuccessHandler logoutSuccessHandler() {
+		return new HttpStatusReturningLogoutSuccessHandler();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public SessionAuthenticationStrategy sessionAuthenticationStrategy(SecuritySessionMgtProperties sessionMgtProperties) {
+ 		// Session 管理器配置参数
+ 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
+ 			return new ChangeSessionIdAuthenticationStrategy();
+ 		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
+ 			return new SessionFixationProtectionStrategy();
+ 		} else if (SessionFixationPolicy.NEW_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
+ 			SessionFixationProtectionStrategy sessionFixationProtectionStrategy = new SessionFixationProtectionStrategy();
+ 			sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
+ 			return sessionFixationProtectionStrategy;
+ 		} else {
+ 			return new NullAuthenticatedSessionStrategy();
+ 		}
+ 	}
 
 }

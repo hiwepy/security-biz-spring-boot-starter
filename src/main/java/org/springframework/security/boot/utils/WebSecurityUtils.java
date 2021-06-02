@@ -1,4 +1,19 @@
-package org.springframework.security.boot;
+/*
+ * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.springframework.security.boot.utils;
 
 import java.util.List;
 
@@ -20,37 +35,29 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.ForwardAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
 import org.springframework.security.web.authentication.logout.ForwardLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
-public class SecurityBizAutoConfigurationAapter {
+public class WebSecurityUtils {
 
-	protected AccessDeniedHandler accessDeniedHandler() {
-		AccessDeniedHandler accessDeniedHandler = new AccessDeniedHandlerImpl();
-		return accessDeniedHandler;
+	public static CsrfTokenRepository csrfTokenRepository(SecuritySessionMgtProperties sessionMgtProperties) {
+		// Session 管理器配置参数
+		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
+			return new CookieCsrfTokenRepository();
+		}
+		return new HttpSessionCsrfTokenRepository();
 	}
 	
-	protected AuthenticatingFailureCounter authenticatingFailureCounter(SecurityAuthcProperties authcProperties) {
-		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
-		failureCounter.setRetryTimesKeyParameter(authcProperties.getRetry().getRetryTimesKeyParameter());
-		return failureCounter;
-	}
-
-	protected PostRequestAuthenticationEntryPoint authenticationEntryPoint(
+	public static PostRequestAuthenticationEntryPoint authenticationEntryPoint(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
 			List<MatchedAuthenticationEntryPoint> entryPoints) {
@@ -62,7 +69,7 @@ public class SecurityBizAutoConfigurationAapter {
 		return entryPoint;
 	}
 	
-	protected PostRequestAuthenticationFailureHandler authenticationFailureHandler(
+	public static PostRequestAuthenticationFailureHandler authenticationFailureHandler(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
 			List<AuthenticationListener> authenticationListeners,
@@ -73,7 +80,7 @@ public class SecurityBizAutoConfigurationAapter {
 
 		failureHandler.setAllowSessionCreation(sessionMgtProperties.isAllowSessionCreation());
 		failureHandler.setDefaultFailureUrl(authcProperties.getFailureUrl());
-		failureHandler.setRedirectStrategy(this.redirectStrategy(authcProperties));
+		failureHandler.setRedirectStrategy(WebSecurityUtils.redirectStrategy(authcProperties));
 		failureHandler.setStateless(SessionCreationPolicy.STATELESS.equals(sessionMgtProperties.getCreationPolicy()));
 		failureHandler.setUseForward(authcProperties.isUseForward());
 
@@ -81,30 +88,7 @@ public class SecurityBizAutoConfigurationAapter {
 
 	}
 	
-	protected ForwardAuthenticationFailureHandler authenticationFailureForwardHandler(String forwardUrl) {
-		return new ForwardAuthenticationFailureHandler(forwardUrl);
-	}
-	
-	protected SimpleUrlAuthenticationFailureHandler authenticationFailureSimpleUrlHandler(
-			SecurityAuthcProperties authcProperties,
-			SecuritySessionMgtProperties sessionMgtProperties ) {
-
-		SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
-
-		failureHandler.setAllowSessionCreation(sessionMgtProperties.isAllowSessionCreation());
-		failureHandler.setDefaultFailureUrl(authcProperties.getFailureUrl());
-		failureHandler.setRedirectStrategy(this.redirectStrategy(authcProperties));
-		failureHandler.setUseForward(authcProperties.isUseForward());
-
-		return failureHandler;
-	}
-
-	public PostRequestAuthenticationProvider authenticationProvider(UserDetailsServiceAdapter userDetailsService,
-			PasswordEncoder passwordEncoder) {
-		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
-	}
-	
-	protected PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
+	public static PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
 			SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties,
 			List<AuthenticationListener> authenticationListeners,
@@ -114,8 +98,8 @@ public class SecurityBizAutoConfigurationAapter {
 				authenticationListeners, successHandlers);
 		successHandler.setAlwaysUseDefaultTargetUrl(authcProperties.isAlwaysUseDefaultTargetUrl());
 		successHandler.setDefaultTargetUrl(authcProperties.getSuccessUrl());
-		successHandler.setRedirectStrategy(this.redirectStrategy(authcProperties));
-		successHandler.setRequestCache(this.requestCache(authcProperties, sessionMgtProperties));
+		successHandler.setRedirectStrategy(WebSecurityUtils.redirectStrategy(authcProperties));
+		successHandler.setRequestCache(WebSecurityUtils.requestCache(authcProperties, sessionMgtProperties));
 		successHandler.setStateless(SessionCreationPolicy.STATELESS.equals(sessionMgtProperties.getCreationPolicy()));
 		successHandler.setTargetUrlParameter(authcProperties.getTargetUrlParameter());
 		successHandler.setUseReferer(authcProperties.isUseReferer());
@@ -123,7 +107,7 @@ public class SecurityBizAutoConfigurationAapter {
 		return successHandler;
 	}
 	
-	protected RequestCache requestCache(SecurityAuthcProperties authcProperties,
+	public static RequestCache requestCache(SecurityAuthcProperties authcProperties,
 			SecuritySessionMgtProperties sessionMgtProperties) {
  		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
  		requestCache.setCreateSessionAllowed(sessionMgtProperties.isAllowSessionCreation());
@@ -131,41 +115,51 @@ public class SecurityBizAutoConfigurationAapter {
  		return requestCache;
  	}
 	
-	protected RedirectStrategy redirectStrategy(SecurityAuthcProperties authcProperties) {
+	public static RedirectStrategy redirectStrategy(SecurityAuthcProperties authcProperties) {
 		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		redirectStrategy.setContextRelative(authcProperties.getRedirect().isContextRelative());
 		return redirectStrategy;
 	}
 	
-	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
+
+	
+	public static AuthenticatingFailureCounter authenticatingFailureCounter(SecurityAuthcProperties authcProperties) {
+		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
+		failureCounter.setRetryTimesKeyParameter(authcProperties.getRetry().getRetryTimesKeyParameter());
+		return failureCounter;
+	}
+
+	
+	public static ForwardAuthenticationFailureHandler authenticationFailureForwardHandler(String forwardUrl) {
+		return new ForwardAuthenticationFailureHandler(forwardUrl);
+	}
+	
+	public static SimpleUrlAuthenticationFailureHandler authenticationFailureSimpleUrlHandler(
+			SecurityAuthcProperties authcProperties,
+			SecuritySessionMgtProperties sessionMgtProperties ) {
+
+		SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+
+		failureHandler.setAllowSessionCreation(sessionMgtProperties.isAllowSessionCreation());
+		failureHandler.setDefaultFailureUrl(authcProperties.getFailureUrl());
+		failureHandler.setRedirectStrategy(WebSecurityUtils.redirectStrategy(authcProperties));
+		failureHandler.setUseForward(authcProperties.isUseForward());
+
+		return failureHandler;
+	}
+
+	public static PostRequestAuthenticationProvider authenticationProvider(UserDetailsServiceAdapter userDetailsService,
+			PasswordEncoder passwordEncoder) {
+		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
+	}
+	
+	public static LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
 		return new CompositeLogoutHandler(logoutHandlers);
 	}
 	
-	protected LogoutSuccessHandler logoutSuccessHandler() {
-		return new HttpStatusReturningLogoutSuccessHandler();
-	}
-
-	protected LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
+	public static LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
 		return new ForwardLogoutSuccessHandler(targetUrl);
 	}
-	
-	protected LogoutSuccessHandler logoutSuccessSimpleUrlHandler() {
-		return new SimpleUrlLogoutSuccessHandler();
-	}
-	
-	public SessionAuthenticationStrategy sessionAuthenticationStrategy(SecuritySessionMgtProperties sessionMgtProperties) {
- 		// Session 管理器配置参数
- 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
- 			return new ChangeSessionIdAuthenticationStrategy();
- 		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
- 			return new SessionFixationProtectionStrategy();
- 		} else if (SessionFixationPolicy.NEW_SESSION.equals(sessionMgtProperties.getFixationPolicy())) {
- 			SessionFixationProtectionStrategy sessionFixationProtectionStrategy = new SessionFixationProtectionStrategy();
- 			sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
- 			return sessionFixationProtectionStrategy;
- 		} else {
- 			return new NullAuthenticatedSessionStrategy();
- 		}
- 	}
 
+	
 }

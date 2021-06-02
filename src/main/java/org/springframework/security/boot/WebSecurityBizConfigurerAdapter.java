@@ -28,14 +28,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
-import org.springframework.security.boot.biz.property.SessionFixationPolicy;
 import org.springframework.security.boot.biz.property.header.HeaderCacheControlProperties;
 import org.springframework.security.boot.biz.property.header.HeaderContentSecurityPolicyProperties;
 import org.springframework.security.boot.biz.property.header.HeaderContentTypeOptionsProperties;
@@ -46,6 +43,7 @@ import org.springframework.security.boot.biz.property.header.HeaderHstsPropertie
 import org.springframework.security.boot.biz.property.header.HeaderReferrerPolicyProperties;
 import org.springframework.security.boot.biz.property.header.HeaderXssProtectionProperties;
 import org.springframework.security.boot.utils.StringUtils;
+import org.springframework.security.boot.utils.WebSecurityUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -54,8 +52,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -71,35 +67,16 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
 	protected final SecurityBizProperties bizProperties;
 	protected final SecuritySessionMgtProperties sessionMgtProperties;
-	private final AuthenticationManager authenticationManager;
 	private final List<AuthenticationProvider> authenticationProviders;
 	
 	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, 
 			SecuritySessionMgtProperties sessionMgtProperties,
-			List<AuthenticationProvider> authenticationProviders,
-			AuthenticationManager authenticationManager) {
+			List<AuthenticationProvider> authenticationProviders) {
 		this.bizProperties = bizProperties;
 		this.sessionMgtProperties = sessionMgtProperties;
 		this.authenticationProviders = authenticationProviders;
-		this.authenticationManager = authenticationManager;
 	}
 	
-	
-	@Override
-	protected AuthenticationManager authenticationManager() throws Exception {
-		AuthenticationManager parentManager = authenticationManager == null ? super.authenticationManagerBean()
-				: authenticationManager;
-		return parentManager;
-	}
-	
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
-		// 不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
-		authenticationManager.setEraseCredentialsAfterAuthentication(false);
-		return authenticationManager;
-	}
-
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		super.configure(auth);
@@ -213,7 +190,7 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		// CSRF 配置
 		if (csrf.isEnabled()) {
 			http.csrf()
-				.csrfTokenRepository(this.csrfTokenRepository())
+				.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
 				.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 		} else {
@@ -334,14 +311,6 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		} else {
 			http.cors().disable();
 		}
-	}
-
-	protected CsrfTokenRepository csrfTokenRepository() {
-		// Session 管理器配置参数
-		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
-			return new CookieCsrfTokenRepository();
-		}
-		return new HttpSessionCsrfTokenRepository();
 	}
 	
 	public SecuritySessionMgtProperties getSessionMgtProperties() {

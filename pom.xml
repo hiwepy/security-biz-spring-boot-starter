@@ -43,19 +43,19 @@
 		</developer>
 	</developers>
 	
+	
 	<distributionManagement>
-        <repository>
-            <id>nexus-releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://nexus.hzzhangxian.com/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://nexus.hzzhangxian.com/repository/maven-snapshots/</url>
-			<uniqueVersion>true</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<name>Maven Snapshots Repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+		    <id>ossrh</id>
+			<name>Maven Central Staging Repository</name>
+		    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		  </repository>
+	</distributionManagement>
 	
 	<build>
 		<pluginManagement>
