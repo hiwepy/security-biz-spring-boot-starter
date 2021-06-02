@@ -28,7 +28,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
@@ -75,6 +77,14 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		this.bizProperties = bizProperties;
 		this.sessionMgtProperties = sessionMgtProperties;
 		this.authenticationProviders = authenticationProviders;
+	}
+
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
+		// 不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
+		authenticationManager.setEraseCredentialsAfterAuthentication(false);
+		return authenticationManager;
 	}
 	
 	@Override
