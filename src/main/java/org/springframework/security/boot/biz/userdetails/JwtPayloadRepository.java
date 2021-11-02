@@ -46,7 +46,7 @@ public interface JwtPayloadRepository {
 		return this.issueJwt(principal.getUid(), principal.getProfile());
 	};
 	
-	default String issueJwt(String uid, Map<String, Object> profile) { 
+	default String issueJwt(String uid, Map<String, Object> claims) { 
 		return "";
 	};
 
