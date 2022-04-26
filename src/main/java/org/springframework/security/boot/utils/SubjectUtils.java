@@ -1,8 +1,11 @@
 package org.springframework.security.boot.utils;
 
+import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +27,14 @@ import org.springframework.web.context.request.ServletWebRequest;
  */
 @SuppressWarnings("unchecked")
 public class SubjectUtils {
-	
+
+	public static final Function<Object, Long> TO_LONG = member -> {
+		if(Objects.isNull(member)) {
+			return null;
+		}
+		return member instanceof Long ? (Long) member : new BigDecimal(member.toString()).longValue();
+	};
+
 	public static SecurityContext getSecurityContext(){
 		return SecurityContextHolder.getContext();
 	}
@@ -50,7 +60,22 @@ public class SubjectUtils {
 		}
 		return null;
 	}
-	
+
+	public static Object getPrincipal(){
+		Authentication authentication = getAuthentication();
+		return authentication == null ? null : authentication.getPrincipal();
+	}
+
+	public static String getUserId() {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
+		return principal.getUid();
+	}
+
+	public static Long getUserIdLong() {
+		SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
+		return TO_LONG.apply(principal.getUid());
+	}
+
 	public static String getProfileString(Authentication authentication, String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
 		return MapUtils.getString(principal.getProfile(), key);
@@ -65,11 +90,7 @@ public class SubjectUtils {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
 		return MapUtils.getDouble(principal.getProfile(), key);
 	}
-	
-	public static Object getPrincipal(){
-		Authentication authentication = getAuthentication();
-		return authentication == null ? null : authentication.getPrincipal();
-	}
+
 	
 	public static String getProfileString(String key) {
 		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
