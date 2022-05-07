@@ -9,20 +9,39 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 @SuppressWarnings("serial")
 public abstract class AuthenticationServiceExceptionAdapter extends AuthenticationServiceException {
 
-	private final AuthResponseCode authCode;
+	private final int code;
+	private final String msgKey;
 	
 	public AuthenticationServiceExceptionAdapter(AuthResponseCode code, String msg) {
 		super(msg);
-		this.authCode = code;
+		this.code = code.getCode();
+		this.msgKey = code.getMsgKey();
 	}
 
 	public AuthenticationServiceExceptionAdapter(AuthResponseCode code, String msg, Throwable t) {
 		super(msg, t);
-		this.authCode = code;
+		this.code = code.getCode();
+		this.msgKey = code.getMsgKey();
 	}
 
-	public AuthResponseCode getAuthCode() {
-		return authCode;
+	public AuthenticationServiceExceptionAdapter(int code, String msg, Throwable t) {
+		super(msg, t);
+		this.code = code;
+		this.msgKey = null;
+	}
+
+	public AuthenticationServiceExceptionAdapter(int code, String msgKey, String msg, Throwable t) {
+		super(msg, t);
+		this.code = code;
+		this.msgKey = msgKey;
+	}
+
+	public int getCode() {
+		return code;
+	}
+
+	public String getMsgKey() {
+		return msgKey;
 	}
 
 }
