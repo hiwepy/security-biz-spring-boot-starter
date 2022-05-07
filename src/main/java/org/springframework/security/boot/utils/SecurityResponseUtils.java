@@ -2,6 +2,7 @@ package org.springframework.security.boot.utils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -69,15 +70,15 @@ public class SecurityResponseUtils {
 		if (e instanceof AuthenticationExceptionAdapter) {
 			
 			AuthenticationExceptionAdapter ex = (AuthenticationExceptionAdapter)e;
-			message = messages.getMessage(ex.getCode().getMsgKey(), ex.getMessage());
-			authResponse = AuthResponse.of(ex.getCode().getCode(), message);
+			message = Objects.nonNull(ex.getMsgKey()) ? messages.getMessage(ex.getMsgKey(), ex.getMessage()) : ex.getMessage();
+			authResponse = AuthResponse.of(ex.getCode(), message);
 			
 		} 
 		// 服务端认证异常扩展
 		else if (e instanceof AuthenticationServiceExceptionAdapter) {
 			AuthenticationServiceExceptionAdapter ex = (AuthenticationServiceExceptionAdapter)e;
-			message = messages.getMessage(ex.getAuthCode().getMsgKey(), ex.getMessage());
-			authResponse = AuthResponse.of(ex.getAuthCode().getCode(), message);
+			message = Objects.nonNull(ex.getMsgKey()) ? messages.getMessage(ex.getMsgKey(), ex.getMessage()) : ex.getMessage();
+			authResponse = AuthResponse.of(ex.getCode(), message);
 		} 
 		// 默认异常
 		else if (e instanceof UsernameNotFoundException) {
@@ -99,8 +100,7 @@ public class SecurityResponseUtils {
 			message = messages.getMessage(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getMsgKey(), e.getMessage());
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_CREDENTIALS_EXPIRED.getCode(), message);
 		} else {
-			message = messages.getMessage(AuthResponseCode.SC_AUTHC_FAIL.getMsgKey(), e.getMessage());
-			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(), message);
+			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(), e.getMessage());
 		}
 		
 		// 3、输出JSON格式数据
