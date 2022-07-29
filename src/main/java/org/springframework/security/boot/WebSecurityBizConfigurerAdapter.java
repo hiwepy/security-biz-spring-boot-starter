@@ -113,7 +113,7 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 	private final SecurityAuthcProperties authcProperties;
 	private final AuthenticationManager authenticationManager;
 	private final List<AuthenticationProvider> authenticationProviders;
-
+	
 	public WebSecurityBizConfigurerAdapter(SecurityBizProperties bizProperties, SecurityAuthcProperties authcProperties,
 			List<AuthenticationProvider> authenticationProviders, AuthenticationManager authenticationManager) {
 		this.bizProperties = bizProperties;

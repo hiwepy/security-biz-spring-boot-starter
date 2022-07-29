@@ -1,9 +1,11 @@
 package org.springframework.security.boot;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,15 +32,19 @@ import org.springframework.security.boot.biz.property.SecuritySessionMgtProperti
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
@@ -47,21 +53,21 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Security Form Filter Auto Configuration
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @Configuration
-@AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
+@AutoConfigureBefore({ WebSecurityConfiguration.class, SecurityFilterAutoConfiguration.class })
 @ConditionalOnClass({ AbstractSecurityWebApplicationInitializer.class, SessionCreationPolicy.class })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnProperty(prefix = SecurityFormProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class, SecurityFormProperties.class })
 public class SecurityFormFilterAutoConfiguration {
 
-
-	@Bean("formLogoutHandler")
+	@Bean
 	public SecurityContextLogoutHandler formLogoutHandler(SecurityFormProperties authcProperties) {
 		
 		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
@@ -72,7 +78,7 @@ public class SecurityFormFilterAutoConfiguration {
 		return logoutHandler;
 	}
 	
-	@Bean("formAuthenticationProvider")
+	@Bean
 	public PostRequestAuthenticationProvider formAuthenticationProvider(
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
 		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
@@ -81,7 +87,7 @@ public class SecurityFormFilterAutoConfiguration {
 	@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
-   	static class FormWebSecurityConfigurerAdapter extends WebSecurityBizConfigurerAdapter {
+   	static class FormWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
     	
 	    private final SecurityFormProperties authcProperties;
 		
@@ -91,7 +97,9 @@ public class SecurityFormFilterAutoConfiguration {
 	    private final AuthenticationFailureHandler authenticationFailureHandler;
 	    private final CaptchaResolver captchaResolver;
 	    private final InvalidSessionStrategy invalidSessionStrategy;
+		private final LocaleContextFilter localeContextFilter;
 	    private final LogoutHandler logoutHandler;
+		private final LogoutSuccessHandler logoutSuccessHandler;
 	    private final ObjectMapper objectMapper;
     	private final RequestCache requestCache;
     	private final RememberMeServices rememberMeServices;
@@ -111,13 +119,14 @@ public class SecurityFormFilterAutoConfiguration {
    				ObjectProvider<MatchedAuthenticationSuccessHandler> authenticationSuccessHandlerProvider,
    				ObjectProvider<MatchedAuthenticationFailureHandler> authenticationFailureHandlerProvider,
    				ObjectProvider<CaptchaResolver> captchaResolverProvider,
+				ObjectProvider<LocaleContextFilter> localeContextProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
+				ObjectProvider<LogoutSuccessHandler> logoutSuccessHandlerProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider
 				
 			) {
    			
-			super(bizProperties, authcProperties, authenticationProvider.stream().collect(Collectors.toList()),
-					authenticationManagerProvider.getIfAvailable());
+			super(bizProperties, authcProperties, authenticationProvider.stream().collect(Collectors.toList()));
 			
 			this.authcProperties = authcProperties;
    			
@@ -128,7 +137,9 @@ public class SecurityFormFilterAutoConfiguration {
    			this.authenticationFailureHandler = super.authenticationFailureHandler(authenticationListeners, authenticationFailureHandlerProvider.stream().collect(Collectors.toList()));
    			this.captchaResolver = captchaResolverProvider.getIfAvailable();
    			this.invalidSessionStrategy = super.invalidSessionStrategy();
+			this.localeContextFilter = localeContextProvider.getIfAvailable();
    			this.logoutHandler = super.logoutHandler(logoutHandlerProvider.stream().collect(Collectors.toList()));
+		    this.logoutSuccessHandler = logoutSuccessHandlerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
    			this.requestCache = super.requestCache();
    			this.rememberMeServices = super.rememberMeServices();
@@ -138,7 +149,7 @@ public class SecurityFormFilterAutoConfiguration {
    			
    		}
 
-   		public PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
+   		PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    			
    			// Form Login With Captcha
    			PostRequestAuthenticationProcessingFilter authenticationFilter = new PostRequestAuthenticationProcessingFilter(
@@ -174,65 +185,39 @@ public class SecurityFormFilterAutoConfiguration {
 			
    			return authenticationFilter;
    		}
-   	    
-   	    @Override
-   	    public void configure(HttpSecurity http) throws Exception {
-   			
-   			// Session 管理器配置参数
-   	    	SecuritySessionMgtProperties sessionMgt = authcProperties.getSessionMgt();
-   	    	// Session 注销配置参数
-   	    	SecurityLogoutProperties logout = authcProperties.getLogout();
-   	    	
-   		    // Session 管理器配置
-   	    	http.sessionManagement()
-   	    		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
-   	    		.invalidSessionStrategy(invalidSessionStrategy)
-   	    		.invalidSessionUrl(logout.getLogoutUrl())
-   	    		.maximumSessions(sessionMgt.getMaximumSessions())
-   	    		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
-   	    		.expiredSessionStrategy(sessionInformationExpiredStrategy)
-   				.expiredUrl(logout.getLogoutUrl())
-   				.sessionRegistry(sessionRegistry)
-   				.and()
-   	    		.sessionAuthenticationErrorUrl(sessionMgt.getFailureUrl())
-   	    		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
-   	    		.sessionAuthenticationStrategy(sessionAuthenticationStrategy)
-   	    		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
-   	    		// Session 注销配置
-   	    		.and()
-   	    		.logout()
-   	    		.logoutUrl(logout.getPathPatterns())
-   	    		.logoutSuccessUrl(logout.getLogoutSuccessUrl())
-   	    		.addLogoutHandler(logoutHandler)
-   	    		.clearAuthentication(logout.isClearAuthentication())
-   	    		.invalidateHttpSession(logout.isInvalidateHttpSession())
-   	        	// Request 缓存配置
-   	        	.and()
-   	    		.requestCache()
-   	        	.requestCache(requestCache)
-   	        	// 异常处理
-   	        	.and()
-   	        	.exceptionHandling()
-   	        	.authenticationEntryPoint(authenticationEntryPoint)
-   	        	.and()
-   	        	.httpBasic()
-   	        	.authenticationEntryPoint(authenticationEntryPoint)
-   	        	.and()
-   	        	.antMatcher(authcProperties.getPathPattern())
-   	        	.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class); 
 
-   	    	super.configure(http, authcProperties.getCors());
-   	    	super.configure(http, authcProperties.getCsrf());
-   	    	super.configure(http, authcProperties.getHeaders());
-	    	super.configure(http);
-   	    	
-   	    }
-   	    
-   	    @Override
-   	    public void configure(WebSecurity web) throws Exception {
-   	    	super.configure(web);
-   	    }
+		@Bean
+		public SecurityFilterChain formSecurityFilterChain(HttpSecurity http) throws Exception {
+			// new DefaultSecurityFilterChain(new AntPathRequestMatcher(authcProperties.getPathPattern()), localeContextFilter, authenticationProcessingFilter());
+			http.antMatcher(authcProperties.getPathPattern())
+					// 请求鉴权配置
+					.authorizeRequests(this.authorizeRequestsCustomizer())
+					// 跨站请求配置
+					.csrf(this.csrfCustomizer(authcProperties.getCsrf()))
+					// 跨域配置
+					.cors(this.corsCustomizer(authcProperties.getCors()))
+					// 异常处理
+					.exceptionHandling((configurer) -> configurer.authenticationEntryPoint(authenticationEntryPoint))
+					// 请求头配置
+					.headers(this.headersCustomizer(authcProperties.getHeaders()))
+					// Request 缓存配置
+					.requestCache((request) -> request.requestCache(requestCache))
+					// Session 管理器配置参数
+					.sessionManagement(this.sessionManagementCustomizer(authcProperties.getSessionMgt(), authcProperties.getLogout(),
+							invalidSessionStrategy, sessionRegistry, sessionInformationExpiredStrategy,
+							authenticationFailureHandler, sessionAuthenticationStrategy))
+					// Session 注销配置
+					.logout(this.logoutCustomizer(authcProperties.getLogout(), logoutHandler, logoutSuccessHandler))
+					// 禁用 Http Basic
+					.httpBasic((basic) -> basic.disable())
+					// Filter 配置
+					.addFilterBefore(localeContextFilter, UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+
+			return http.build();
+		}
 
    	}
+
 
 }

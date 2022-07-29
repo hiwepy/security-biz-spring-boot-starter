@@ -43,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
-@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
+@EnableConfigurationProperties({ SecurityBizProperties.class })
 public class SecurityBizAutoConfiguration {
 
 	@Bean
@@ -110,6 +110,11 @@ public class SecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public DefaultMatchedAuthenticationEntryPoint defaultMatchedAuthenticationEntryPoint() {
 		return new DefaultMatchedAuthenticationEntryPoint();
+	}
+
+	@Bean
+	public IngoringWebSecurityCustomizer ingoringWebSecurityCustomizer(SecurityBizProperties bizProperties) {
+		return new IngoringWebSecurityCustomizer(bizProperties);
 	}
 
 }
