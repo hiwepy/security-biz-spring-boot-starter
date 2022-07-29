@@ -16,7 +16,7 @@ security ext starter for spring boot
 <dependency>
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-biz-spring-boot-starter</artifactId>
-	<version>${project.version}</version>
+	<version>2.0.3.RELEASE</version>
 </dependency>
 ```
 
