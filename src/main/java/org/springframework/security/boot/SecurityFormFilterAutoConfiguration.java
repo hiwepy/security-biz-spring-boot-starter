@@ -69,28 +69,28 @@ public class SecurityFormFilterAutoConfiguration {
 
 	@Bean
 	public SecurityContextLogoutHandler formLogoutHandler(SecurityFormProperties authcProperties) {
-		
+
 		SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-		
+
 		logoutHandler.setClearAuthentication(authcProperties.getLogout().isClearAuthentication());
 		logoutHandler.setInvalidateHttpSession(authcProperties.getLogout().isInvalidateHttpSession());
-		
+
 		return logoutHandler;
 	}
-	
+
 	@Bean
 	public PostRequestAuthenticationProvider formAuthenticationProvider(
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
 		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
-	
+
 	@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class })
 	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
    	static class FormWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
-    	
+
 	    private final SecurityFormProperties authcProperties;
-		
+
 	    private final AuthenticatingFailureCounter authenticatingFailureCounter;
 	    private final AuthenticationEntryPoint authenticationEntryPoint;
 	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -106,12 +106,12 @@ public class SecurityFormFilterAutoConfiguration {
     	private final SessionRegistry sessionRegistry;
 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
 		private final SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
-		
+
    		public FormWebSecurityConfigurerAdapter (
-   				
+
    				SecurityBizProperties bizProperties,
    				SecurityFormProperties authcProperties,
-   				
+
    				ObjectProvider<AuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
@@ -122,14 +122,15 @@ public class SecurityFormFilterAutoConfiguration {
 				ObjectProvider<LocaleContextFilter> localeContextProvider,
    				ObjectProvider<LogoutHandler> logoutHandlerProvider,
 				ObjectProvider<LogoutSuccessHandler> logoutSuccessHandlerProvider,
-   				ObjectProvider<ObjectMapper> objectMapperProvider
-				
+   				ObjectProvider<ObjectMapper> objectMapperProvider,
+				ObjectProvider<RememberMeServices> rememberMeServicesProvider
+
 			) {
-   			
+
 			super(bizProperties, authcProperties, authenticationProvider.stream().collect(Collectors.toList()));
-			
+
 			this.authcProperties = authcProperties;
-   			
+
    			this.authenticatingFailureCounter = super.authenticatingFailureCounter();
    			List<AuthenticationListener> authenticationListeners = authenticationListenerProvider.stream().collect(Collectors.toList());
    			this.authenticationEntryPoint = super.authenticationEntryPoint(authenticationEntryPointProvider.stream().collect(Collectors.toList()));
@@ -142,35 +143,35 @@ public class SecurityFormFilterAutoConfiguration {
 		    this.logoutSuccessHandler = logoutSuccessHandlerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
    			this.requestCache = super.requestCache();
-   			this.rememberMeServices = super.rememberMeServices();
+   			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
    			this.sessionRegistry = super.sessionRegistry();
    			this.sessionAuthenticationStrategy = super.sessionAuthenticationStrategy();
    			this.sessionInformationExpiredStrategy = super.sessionInformationExpiredStrategy();
-   			
+
    		}
 
    		PostRequestAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
-   			
+
    			// Form Login With Captcha
    			PostRequestAuthenticationProcessingFilter authenticationFilter = new PostRequestAuthenticationProcessingFilter(
    					objectMapper);
-   			
+
    			/**
 			 * 批量设置参数
 			 */
 			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-			
+
 			map.from(authcProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
-			
+
 			map.from(authenticationManagerBean()).to(authenticationFilter::setAuthenticationManager);
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
-			
+
 			map.from(authcProperties.getCaptcha().getParamName()).to(authenticationFilter::setCaptchaParameter);
 			map.from(authcProperties.getCaptcha().isRequired()).to(authenticationFilter::setCaptchaRequired);
 			map.from(captchaResolver).to(authenticationFilter::setCaptchaResolver);
 			map.from(authenticatingFailureCounter).to(authenticationFilter::setFailureCounter);
-			
+
 			map.from(authcProperties.getUsernameParameter()).to(authenticationFilter::setUsernameParameter);
 			map.from(authcProperties.getPasswordParameter()).to(authenticationFilter::setPasswordParameter);
 			map.from(authcProperties.isPostOnly()).to(authenticationFilter::setPostOnly);
@@ -178,11 +179,11 @@ public class SecurityFormFilterAutoConfiguration {
 
 			map.from(authcProperties.getRetry().getRetryTimesKeyAttribute()).to(authenticationFilter::setRetryTimesKeyAttribute);
 			map.from(authcProperties.getRetry().getRetryTimesWhenAccessDenied()).to(authenticationFilter::setRetryTimesWhenAccessDenied);
-			
+
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
 			map.from(authcProperties.isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);
-			
+
    			return authenticationFilter;
    		}
 

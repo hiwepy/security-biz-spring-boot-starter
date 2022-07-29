@@ -91,12 +91,12 @@ public abstract class SecurityFilterChainConfigurer {
 		this.authcProperties = authcProperties;
 		this.authenticationProviders = authenticationProviders;
 	}
-	
+
 	protected AccessDeniedHandler accessDeniedHandler() {
 		AccessDeniedHandler accessDeniedHandler = new AccessDeniedHandlerImpl();
 		return accessDeniedHandler;
 	}
-	
+
 	protected AuthenticatingFailureCounter authenticatingFailureCounter() {
 		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
 		failureCounter.setRetryTimesKeyParameter(authcProperties.getRetry().getRetryTimesKeyParameter());
@@ -112,7 +112,7 @@ public abstract class SecurityFilterChainConfigurer {
 		entryPoint.setUseForward(authcProperties.getEntryPoint().isUseForward());
 		return entryPoint;
 	}
-	
+
 	protected PostRequestAuthenticationFailureHandler authenticationFailureHandler(
 			List<AuthenticationListener> authenticationListeners,
 			List<MatchedAuthenticationFailureHandler> failureHandlers) {
@@ -129,11 +129,11 @@ public abstract class SecurityFilterChainConfigurer {
 		return failureHandler;
 
 	}
-	
+
 	protected ForwardAuthenticationFailureHandler authenticationFailureForwardHandler(String forwardUrl) {
 		return new ForwardAuthenticationFailureHandler(forwardUrl);
 	}
-	
+
 	protected SimpleUrlAuthenticationFailureHandler authenticationFailureSimpleUrlHandler() {
 
 		SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
@@ -157,7 +157,7 @@ public abstract class SecurityFilterChainConfigurer {
 			PasswordEncoder passwordEncoder) {
 		return new PostRequestAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
-	
+
 	protected PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
 			List<AuthenticationListener> authenticationListeners,
 			List<MatchedAuthenticationSuccessHandler> successHandlers) {
@@ -261,7 +261,7 @@ public abstract class SecurityFilterChainConfigurer {
 
 	/**
 	 * Headers 配置
-	 * 
+	 *
 	 * @author ： <a href="https://github.com/hiwepy">wandl</a>
 	 * @param http  the HttpSecurity
 	 * @param properties the Security Headers Properties
@@ -411,16 +411,16 @@ public abstract class SecurityFilterChainConfigurer {
 	protected CorsConfigurationSource configurationSource(SecurityHeaderCorsProperties cors) {
 
 		UrlBasedCorsConfigurationSource configurationSource = new UrlBasedCorsConfigurationSource();
-		
+
 		/**
 		 * 批量设置参数
 		 */
 		PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-		
+
 		map.from(cors.isAllowInitLookupPath()).to(configurationSource::setAllowInitLookupPath);
 		map.from(cors.getCorsConfigurations()).to(configurationSource::setCorsConfigurations);
 		configurationSource.setPathMatcher(null);
-		
+
 		return configurationSource;
 	}
 
@@ -442,28 +442,22 @@ public abstract class SecurityFilterChainConfigurer {
 	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
 		return new CompositeLogoutHandler(logoutHandlers);
 	}
-	
-	protected LogoutSuccessHandler logoutSuccessHandler() {
-		return new HttpStatusReturningLogoutSuccessHandler();
-	}
+
 
 	protected LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
 		return new ForwardLogoutSuccessHandler(targetUrl);
 	}
-	
+
 	protected LogoutSuccessHandler lLogoutSuccessSimpleUrlHandler() {
 		return new SimpleUrlLogoutSuccessHandler();
 	}
-	
+
 	protected RedirectStrategy redirectStrategy() {
 		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 		redirectStrategy.setContextRelative(authcProperties.getRedirect().isContextRelative());
 		return redirectStrategy;
 	}
 
-	protected RememberMeServices rememberMeServices() {
-		return new NullRememberMeServices();
-	}
 
 	protected RequestCache requestCache() {
 		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();

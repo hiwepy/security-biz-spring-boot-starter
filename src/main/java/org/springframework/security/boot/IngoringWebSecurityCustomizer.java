@@ -1,6 +1,5 @@
 package org.springframework.security.boot;
 
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.util.CollectionUtils;

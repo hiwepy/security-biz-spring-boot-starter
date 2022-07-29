@@ -27,8 +27,12 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.NullRememberMeServices;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.servlet.LocaleResolver;
@@ -57,7 +61,7 @@ public class SecurityBizAutoConfiguration {
 	protected LocaleContextFilter localeContextFilter(LocaleResolver localeResolver) {
 		return new LocaleContextFilter(localeResolver);
 	}
-	
+
 	@Bean
 	@ConditionalOnMissingBean
 	protected HttpFirewall httpFirewall() {
@@ -89,23 +93,35 @@ public class SecurityBizAutoConfiguration {
 	}
 
     @Bean
-	@ConditionalOnMissingBean 
+	@ConditionalOnMissingBean
 	public CaptchaResolver captchaResolver() {
 		return new NullCaptchaResolver();
 	}
-    
+
     @Bean
-   	@ConditionalOnMissingBean 
+   	@ConditionalOnMissingBean
    	public LogoutHandler ignoreLogoutHandler() {
    		return new IgnoreLogoutHandler();
    	}
 
 	@Bean
 	@ConditionalOnMissingBean
+	public LogoutSuccessHandler logoutSuccessHandler() {
+		return new HttpStatusReturningLogoutSuccessHandler();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public RememberMeServices rememberMeServices() {
+		return new NullRememberMeServices();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
 	public DefaultMatchedAuthenticationFailureHandler defaultMatchedAuthenticationFailureHandler() {
 		return new DefaultMatchedAuthenticationFailureHandler();
 	}
-	
+
 	@Bean
 	@ConditionalOnMissingBean
 	public DefaultMatchedAuthenticationEntryPoint defaultMatchedAuthenticationEntryPoint() {
