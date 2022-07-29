@@ -22,6 +22,7 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.captcha.NullCaptchaResolver;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.DefaultMatchedAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,7 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @ConditionalOnClass(DefaultAuthenticationEventPublisher.class)
-@EnableConfigurationProperties({ SecurityBizProperties.class })
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySessionMgtProperties.class })
 public class SecurityBizAutoConfiguration {
 
 	@Bean

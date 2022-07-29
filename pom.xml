@@ -13,7 +13,7 @@
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-biz-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Security Biz</description>
-	<version>2.0.3-SNAPSHOT</version>
+	<version>2.0.3.RELEASE</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -358,6 +358,7 @@
 		<fastjson.version>2.0.10</fastjson.version>
 		<jwt-issuer.version>1.0.9.RELEASE</jwt-issuer.version>
 		<spring-biz.version>1.1.4.RELEASE</spring-biz.version>
+		<swagger.version>1.6.6</swagger.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -366,7 +367,6 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<swagger.version>1.6.2</swagger.version>
 	</properties>
 
 	<dependencyManagement>
