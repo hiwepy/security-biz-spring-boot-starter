@@ -53,7 +53,4 @@ public class SecurityFormProperties extends SecurityAuthcProperties {
 	@NestedConfigurationProperty
 	private SecurityCaptchaProperties captcha = new SecurityCaptchaProperties();
 	
-	@NestedConfigurationProperty
-	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
-	
 }

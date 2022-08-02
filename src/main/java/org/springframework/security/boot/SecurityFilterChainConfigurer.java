@@ -48,10 +48,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.logout.*;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+import org.springframework.security.web.authentication.session.*;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -81,15 +78,13 @@ public abstract class SecurityFilterChainConfigurer {
 	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
 	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
 	private final SecurityBizProperties bizProperties;
-	private final SecurityAuthcProperties authcProperties;
-	private final List<AuthenticationProvider> authenticationProviders;
+	private final RedirectStrategy redirectStrategy;
+	private final RequestCache requestCache;
 
-
-	public SecurityFilterChainConfigurer(SecurityBizProperties bizProperties, SecurityAuthcProperties authcProperties,
-										 List<AuthenticationProvider> authenticationProviders) {
+	public SecurityFilterChainConfigurer(SecurityBizProperties bizProperties, RedirectStrategy redirectStrategy, RequestCache requestCache) {
 		this.bizProperties = bizProperties;
-		this.authcProperties = authcProperties;
-		this.authenticationProviders = authenticationProviders;
+		this.redirectStrategy = redirectStrategy;
+		this.requestCache = requestCache;
 	}
 
 	protected AccessDeniedHandler accessDeniedHandler() {
@@ -97,19 +92,13 @@ public abstract class SecurityFilterChainConfigurer {
 		return accessDeniedHandler;
 	}
 
-	protected AuthenticatingFailureCounter authenticatingFailureCounter() {
-		AuthenticatingFailureRequestCounter failureCounter = new AuthenticatingFailureRequestCounter();
-		failureCounter.setRetryTimesKeyParameter(authcProperties.getRetry().getRetryTimesKeyParameter());
-		return failureCounter;
-	}
-
 	protected PostRequestAuthenticationEntryPoint authenticationEntryPoint(
+			String pathPattern,
 			List<MatchedAuthenticationEntryPoint> entryPoints) {
-		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(
-				authcProperties.getPathPattern(), entryPoints);
-		entryPoint.setForceHttps(authcProperties.getEntryPoint().isForceHttps());
+		PostRequestAuthenticationEntryPoint entryPoint = new PostRequestAuthenticationEntryPoint(pathPattern, entryPoints);
+		entryPoint.setForceHttps(bizProperties.getEntryPoint().isForceHttps());
 		entryPoint.setStateless(bizProperties.isStateless());
-		entryPoint.setUseForward(authcProperties.getEntryPoint().isUseForward());
+		entryPoint.setUseForward(bizProperties.getEntryPoint().isUseForward());
 		return entryPoint;
 	}
 
@@ -120,11 +109,11 @@ public abstract class SecurityFilterChainConfigurer {
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
 				authenticationListeners, failureHandlers);
 
-		failureHandler.setAllowSessionCreation(authcProperties.getSessionMgt().isAllowSessionCreation());
-		failureHandler.setDefaultFailureUrl(authcProperties.getSessionMgt().getFailureUrl());
-		failureHandler.setRedirectStrategy(redirectStrategy());
+		failureHandler.setAllowSessionCreation(bizProperties.getSession().isAllowSessionCreation());
+		failureHandler.setDefaultFailureUrl(bizProperties.getSession().getFailureUrl());
+		failureHandler.setRedirectStrategy(redirectStrategy);
 		failureHandler.setStateless(bizProperties.isStateless());
-		failureHandler.setUseForward(authcProperties.getSessionMgt().isUseForward());
+		failureHandler.setUseForward(bizProperties.getSession().isUseForward());
 
 		return failureHandler;
 
@@ -138,15 +127,15 @@ public abstract class SecurityFilterChainConfigurer {
 
 		SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
 
-		failureHandler.setAllowSessionCreation(authcProperties.getSessionMgt().isAllowSessionCreation());
-		failureHandler.setDefaultFailureUrl(authcProperties.getSessionMgt().getFailureUrl());
-		failureHandler.setRedirectStrategy(redirectStrategy());
-		failureHandler.setUseForward(authcProperties.getSessionMgt().isUseForward());
+		failureHandler.setAllowSessionCreation(bizProperties.getSession().isAllowSessionCreation());
+		failureHandler.setDefaultFailureUrl(bizProperties.getSession().getFailureUrl());
+		failureHandler.setRedirectStrategy(redirectStrategy);
+		failureHandler.setUseForward(bizProperties.getSession().isUseForward());
 
 		return failureHandler;
 	}
 
-	public AuthenticationManager authenticationManagerBean() throws Exception {
+	public AuthenticationManager authenticationManagerBean(List<AuthenticationProvider> authenticationProviders) throws Exception {
 		ProviderManager authenticationManager = new ProviderManager(authenticationProviders);
 		// 不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
 		authenticationManager.setEraseCredentialsAfterAuthentication(false);
@@ -159,6 +148,7 @@ public abstract class SecurityFilterChainConfigurer {
 	}
 
 	protected PostRequestAuthenticationSuccessHandler authenticationSuccessHandler(
+			SecurityAuthcProperties authcProperties,
 			List<AuthenticationListener> authenticationListeners,
 			List<MatchedAuthenticationSuccessHandler> successHandlers) {
 
@@ -166,8 +156,8 @@ public abstract class SecurityFilterChainConfigurer {
 				authenticationListeners, successHandlers);
 		successHandler.setAlwaysUseDefaultTargetUrl(authcProperties.isAlwaysUseDefaultTargetUrl());
 		successHandler.setDefaultTargetUrl(authcProperties.getSuccessUrl());
-		successHandler.setRedirectStrategy(redirectStrategy());
-		successHandler.setRequestCache(requestCache());
+		successHandler.setRedirectStrategy(redirectStrategy);
+		successHandler.setRequestCache(requestCache);
 		successHandler.setStateless(bizProperties.isStateless());
 		successHandler.setTargetUrlParameter(authcProperties.getTargetUrlParameter());
 		successHandler.setUseReferer(authcProperties.isUseReferer());
@@ -175,16 +165,9 @@ public abstract class SecurityFilterChainConfigurer {
 		return successHandler;
 	}
 
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		for (AuthenticationProvider authenticationProvider : authenticationProviders) {
-			auth.authenticationProvider(authenticationProvider);
-		}
-	}
 
 	Customizer<ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry> authorizeRequestsCustomizer(){
-		return (requests) -> {
-
-			requests.anyRequest().authenticated();
+		return (authorize) -> {
 
 			// 对过滤链按过滤器名称进行分组
 			Map<Object, List<Entry<String, String>>> groupingMap = bizProperties.getFilterChainDefinitionMap().entrySet()
@@ -197,7 +180,7 @@ public abstract class SecurityFilterChainConfigurer {
 					return mapper.getKey();
 				}).collect(Collectors.toList());
 			}
-			requests.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).anonymous();
+			authorize.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()])).anonymous();
 
 			// https://www.jianshu.com/p/01498e0e0c83
 			Set<Object> keySet = groupingMap.keySet();
@@ -214,10 +197,10 @@ public abstract class SecurityFilterChainConfigurer {
 					if (ArrayUtils.isNotEmpty(roles)) {
 						if (roles.length > 1) {
 							// 如果用户具备给定角色中的某一个的话，就允许访问
-							requests.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyRole(roles);
+							authorize.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyRole(roles);
 						} else {
 							// 如果用户具备给定角色的话，就允许访问
-							requests.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasRole(roles[0]);
+							authorize.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasRole(roles[0]);
 						}
 					}
 				}
@@ -233,10 +216,10 @@ public abstract class SecurityFilterChainConfigurer {
 					if (ArrayUtils.isNotEmpty(perms)) {
 						if (perms.length > 1) {
 							// 如果用户具备给定全权限的某一个的话，就允许访问
-							requests.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyAuthority(perms);
+							authorize.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAnyAuthority(perms);
 						} else {
 							// 如果用户具备给定权限的话，就允许访问
-							requests.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAuthority(perms[0]);
+							authorize.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasAuthority(perms[0]);
 						}
 					}
 				}
@@ -251,10 +234,17 @@ public abstract class SecurityFilterChainConfigurer {
 					String ipaddr = ipMatcher.group(1);
 					if (StringUtils.hasText(ipaddr)) {
 						// 如果请求来自给定IP地址的话，就允许访问
-						requests.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasIpAddress(ipaddr);
+						authorize.antMatchers(antPatterns.toArray(new String[antPatterns.size()])).hasIpAddress(ipaddr);
 					}
 				}
 			}
+
+			//requests.anyRequest().authenticated();
+		};
+	}
+
+	Customizer<AnonymousConfigurer<HttpSecurity>> anonymousCustomizer(){
+		return (requests) -> {
 
 		};
 	}
@@ -348,35 +338,39 @@ public abstract class SecurityFilterChainConfigurer {
 		};
 	}
 
-	Customizer<SessionManagementConfigurer<HttpSecurity>> sessionManagementCustomizer(SecuritySessionMgtProperties sessionMgt,
-																					  SecurityLogoutProperties logout,
-																					  InvalidSessionStrategy invalidSessionStrategy,
+	Customizer<RememberMeConfigurer<HttpSecurity>> rememberMeCustomizer(RememberMeServices rememberMeServices){
+		return (configurer) -> {
+			configurer.rememberMeServices(rememberMeServices);
+		};
+	}
+
+	Customizer<SessionManagementConfigurer<HttpSecurity>> sessionManagementCustomizer(InvalidSessionStrategy invalidSessionStrategy,
 																					  SessionRegistry sessionRegistry,
 																					  SessionInformationExpiredStrategy sessionInformationExpiredStrategy,
 																					  AuthenticationFailureHandler sessionAuthenticationFailureHandler,
 																					  SessionAuthenticationStrategy sessionAuthenticationStrategy){
 		return (configurer) -> {
-			configurer.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
+			configurer.enableSessionUrlRewriting(bizProperties.getSession().isEnableSessionUrlRewriting())
 					.invalidSessionStrategy(invalidSessionStrategy)
-					.invalidSessionUrl(logout.getLogoutUrl())
-					.maximumSessions(sessionMgt.getMaximumSessions())
-					.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
+					.invalidSessionUrl(bizProperties.getLogout().getLogoutUrl())
+					.maximumSessions(bizProperties.getSession().getMaximumSessions())
+					.maxSessionsPreventsLogin(bizProperties.getSession().isMaxSessionsPreventsLogin())
 					.expiredSessionStrategy(sessionInformationExpiredStrategy)
-					.expiredUrl(logout.getLogoutUrl())
+					.expiredUrl(bizProperties.getLogout().getLogoutUrl())
 					.sessionRegistry(sessionRegistry)
 					.and()
-					.sessionAuthenticationErrorUrl(sessionMgt.getFailureUrl())
+					.sessionAuthenticationErrorUrl(bizProperties.getSession().getFailureUrl())
 					.sessionAuthenticationFailureHandler(sessionAuthenticationFailureHandler)
 					.sessionAuthenticationStrategy(sessionAuthenticationStrategy)
-					.sessionCreationPolicy(sessionMgt.getCreationPolicy());
+					.sessionCreationPolicy(bizProperties.getSession().getCreationPolicy());
 		};
 	}
 
-	Customizer<CsrfConfigurer<HttpSecurity>> csrfCustomizer(SecurityHeaderCsrfProperties csrf){
+	Customizer<CsrfConfigurer<HttpSecurity>> csrfCustomizer(SecurityHeaderCsrfProperties csrf, CsrfTokenRepository csrfTokenRepository){
 		return (configurer) -> {
 			// CSRF 配置
 			if (csrf.isEnabled()) {
-				configurer.csrfTokenRepository(this.csrfTokenRepository())
+				configurer.csrfTokenRepository(csrfTokenRepository)
 						.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 			} else {
@@ -424,72 +418,19 @@ public abstract class SecurityFilterChainConfigurer {
 		return configurationSource;
 	}
 
-	protected CsrfTokenRepository csrfTokenRepository() {
-		// Session 管理器配置参数
-		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(authcProperties.getSessionMgt().getFixationPolicy())) {
-			return new CookieCsrfTokenRepository();
-		}
-		return new HttpSessionCsrfTokenRepository();
-	}
-
-	protected InvalidSessionStrategy invalidSessionStrategy() {
-		SimpleRedirectInvalidSessionStrategy invalidSessionStrategy = new SimpleRedirectInvalidSessionStrategy(
-				authcProperties.getSessionMgt().getFailureUrl());
-		invalidSessionStrategy.setCreateNewSession(authcProperties.getSessionMgt().isAllowSessionCreation());
-		return invalidSessionStrategy;
-	}
 
 	protected LogoutHandler logoutHandler(List<LogoutHandler> logoutHandlers) {
 		return new CompositeLogoutHandler(logoutHandlers);
 	}
 
-
 	protected LogoutSuccessHandler logoutSuccessForwardHandler(String targetUrl) {
 		return new ForwardLogoutSuccessHandler(targetUrl);
 	}
 
-	protected LogoutSuccessHandler lLogoutSuccessSimpleUrlHandler() {
+	protected LogoutSuccessHandler logoutSuccessSimpleUrlHandler() {
 		return new SimpleUrlLogoutSuccessHandler();
 	}
 
-	protected RedirectStrategy redirectStrategy() {
-		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-		redirectStrategy.setContextRelative(authcProperties.getRedirect().isContextRelative());
-		return redirectStrategy;
-	}
-
-
-	protected RequestCache requestCache() {
-		HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-		requestCache.setCreateSessionAllowed(authcProperties.getSessionMgt().isAllowSessionCreation());
-		requestCache.setSessionAttrName(authcProperties.getSessionMgt().getSessionAttrName());
-		return requestCache;
-	}
-
-	protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-		// Session 管理器配置参数
-		SecuritySessionMgtProperties sessionMgt = authcProperties.getSessionMgt();
-		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgt.getFixationPolicy())) {
-			return new ChangeSessionIdAuthenticationStrategy();
-		} else if (SessionFixationPolicy.MIGRATE_SESSION.equals(sessionMgt.getFixationPolicy())) {
-			return new SessionFixationProtectionStrategy();
-		} else if (SessionFixationPolicy.NEW_SESSION.equals(sessionMgt.getFixationPolicy())) {
-			SessionFixationProtectionStrategy sessionFixationProtectionStrategy = new SessionFixationProtectionStrategy();
-			sessionFixationProtectionStrategy.setMigrateSessionAttributes(false);
-			return sessionFixationProtectionStrategy;
-		} else {
-			return new NullAuthenticatedSessionStrategy();
-		}
-	}
-
-	protected SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
-		return new SimpleRedirectSessionInformationExpiredStrategy(authcProperties.getSessionMgt().getFailureUrl(),
-				redirectStrategy());
-	}
-
-	protected SessionRegistry sessionRegistry() {
-		return new SessionRegistryImpl();
-	}
 
 
 }

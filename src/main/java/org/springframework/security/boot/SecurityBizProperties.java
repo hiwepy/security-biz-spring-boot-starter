@@ -23,6 +23,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.security.boot.biz.property.*;
 
 /**
  * 
@@ -45,5 +47,29 @@ public class SecurityBizProperties {
      * Whether stateless session
      */
 	private boolean stateless = false;
-	
+
+	@NestedConfigurationProperty
+	private SecurityHeadersProperties headers = new SecurityHeadersProperties();
+
+	@NestedConfigurationProperty
+	private SecurityHeaderCorsProperties cors = new SecurityHeaderCorsProperties();
+
+	@NestedConfigurationProperty
+	private SecurityHeaderCsrfProperties csrf = new SecurityHeaderCsrfProperties();
+
+	@NestedConfigurationProperty
+	private SecuritySessionMgtProperties session = new SecuritySessionMgtProperties();
+
+	@NestedConfigurationProperty
+	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
+
+	@NestedConfigurationProperty
+	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
+
+	@NestedConfigurationProperty
+	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
+
+	@NestedConfigurationProperty
+	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
+
 }

@@ -88,26 +88,6 @@ public class SecurityAuthcProperties {
 	 */
 	private boolean useReferer = false;
 
-	@NestedConfigurationProperty
-	private SecurityHeadersProperties headers = new SecurityHeadersProperties();
-
-	@NestedConfigurationProperty
-	private SecurityHeaderCorsProperties cors = new SecurityHeaderCorsProperties();
-	
-	@NestedConfigurationProperty
-	private SecurityHeaderCsrfProperties csrf = new SecurityHeaderCsrfProperties();
-
-	@NestedConfigurationProperty
-	private SecurityFailureRetryProperties retry = new SecurityFailureRetryProperties();
-
-	@NestedConfigurationProperty
-	private SecurityEntryPointProperties entryPoint = new SecurityEntryPointProperties();
-	
-	@NestedConfigurationProperty
-	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
-	
-	@NestedConfigurationProperty
-	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
 	
 	/**
 	 * If this property is set, the current request will be checked for this a parameter
