@@ -87,7 +87,6 @@ public class SecurityFormFilterAutoConfiguration {
 
 	@Configuration
 	@EnableConfigurationProperties({ SecurityBizProperties.class })
-	@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
    	static class FormWebSecurityConfigurerAdapter extends SecurityFilterChainConfigurer {
 
 		private final SecurityBizProperties bizProperties;
@@ -182,6 +181,7 @@ public class SecurityFormFilterAutoConfiguration {
    		}
 
 		@Bean
+		@Order(SecurityProperties.DEFAULT_FILTER_ORDER + 1)
 		public SecurityFilterChain formSecurityFilterChain(HttpSecurity http) throws Exception {
 			// new DefaultSecurityFilterChain(new AntPathRequestMatcher(authcProperties.getPathPattern()), localeContextFilter, authenticationProcessingFilter());
 			http.antMatcher(authcProperties.getPathPattern())
