@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.hiwepy.jwt.JwtPayload;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,6 +64,10 @@ public class SecurityPrincipal extends User implements Cloneable {
    	 * 用户是否完善信息
    	 */
     private boolean initial = Boolean.FALSE;
+	/**
+	 * 用户是否需要多因子验证
+	 */
+	private boolean verify = Boolean.FALSE;
     /**
 	 * 请求参数签名（可选）
 	 */
@@ -182,7 +188,15 @@ public class SecurityPrincipal extends User implements Cloneable {
 	public void setInitial(boolean initial) {
 		this.initial = initial;
 	}
- 
+
+	public void setVerify(boolean verify) {
+		this.verify = verify;
+	}
+
+	public boolean isVerify() {
+		return verify;
+	}
+
 	public String getSign() {
 		return sign;
 	}
@@ -299,9 +313,10 @@ public class SecurityPrincipal extends User implements Cloneable {
 		payload.setRid(this.getRid());
 		payload.setRkey(this.getRkey());
 		payload.setRcode(this.getRcode());
-		//payload.setRoles(this.getRoles());
+		payload.setRoles(this.getRoles());
 		payload.setBound(this.isBound());
 		payload.setInitial(this.isInitial());
+		payload.setVerify(this.isVerify());
 		
 		if (CollectionUtils.isEmpty(this.getProfile())) {
 			payload.setProfile(new HashMap<>(0));
