@@ -13,7 +13,7 @@
 	<groupId>com.github.hiwepy</groupId>
 	<artifactId>security-biz-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Security Biz</description>
-	<version>1.1.5-SNAPSHOT</version>
+	<version>1.1.5.RELEASE</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
@@ -356,8 +356,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<fastjson.version>2.0.10</fastjson.version>
-		<jwt-issuer.version>1.0.9.RELEASE</jwt-issuer.version>
+		<fastjson.version>2.0.12</fastjson.version>
+		<jwt-issuer.version>1.1.0.RELEASE</jwt-issuer.version>
 		<spring-biz.version>1.1.4.RELEASE</spring-biz.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
 		<maven.version>3.0</maven.version>

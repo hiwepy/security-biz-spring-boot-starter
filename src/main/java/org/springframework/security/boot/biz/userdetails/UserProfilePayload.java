@@ -15,11 +15,9 @@
  */
 package org.springframework.security.boot.biz.userdetails;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import com.github.hiwepy.jwt.JwtPayload;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -78,6 +76,11 @@ public class UserProfilePayload {
    	 */
 	@ApiModelProperty(name = "initial", dataType = "Boolean", value = "用户是否完善信息")
 	private boolean initial = Boolean.FALSE;
+	/**
+	 * 用户是否需要多因子验证
+	 */
+	@ApiModelProperty(name = "verify", dataType = "Boolean", value = "用户是否需要多因子验证")
+	private boolean verify = Boolean.FALSE;
     /**
 	 * User Profile
 	 */
@@ -87,7 +90,7 @@ public class UserProfilePayload {
 	 * User Roles
 	 */
 	@ApiModelProperty(name = "roles", dataType = "java.util.Set<String>", value = "用户角色信息")
-	private Set<String> roles = new HashSet<>();
+	private List<JwtPayload.RolePair> roles = new ArrayList<>();
     /**
 	 * 用户权限标记列表
 	 */
