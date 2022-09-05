@@ -286,6 +286,7 @@ public class SecurityBizAutoConfiguration {
 		}
 
 		@Bean
+		@Order(Ordered.HIGHEST_PRECEDENCE)
 		public SecurityFilterChain iniSecurityFilterChain(HttpSecurity http) throws Exception {
 			// 跨站请求配置
 			http.csrf(this.csrfCustomizer(bizProperties.getCsrf(), csrfTokenRepository))

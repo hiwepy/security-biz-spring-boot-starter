@@ -344,6 +344,12 @@ public abstract class SecurityFilterChainConfigurer {
 		};
 	}
 
+	Customizer<RequestCacheConfigurer<HttpSecurity>> requestCacheCustomizer(){
+		return (configurer) -> {
+			configurer.requestCache(requestCache);
+		};
+	}
+
 	Customizer<SessionManagementConfigurer<HttpSecurity>> sessionManagementCustomizer(InvalidSessionStrategy invalidSessionStrategy,
 																					  SessionRegistry sessionRegistry,
 																					  SessionInformationExpiredStrategy sessionInformationExpiredStrategy,
