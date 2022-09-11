@@ -83,8 +83,8 @@ public class SecurityBizAutoConfiguration {
 
 	@Bean
 	@Order(value = Ordered.HIGHEST_PRECEDENCE)
-	protected LocaleContextFilter localeContextFilter(LocaleResolver localeResolver) {
-		return new LocaleContextFilter(localeResolver);
+	protected LocaleContextFilter localeContextFilter(ObjectProvider<LocaleResolver> localeResolverProvider) {
+		return new LocaleContextFilter(localeResolverProvider.getIfAvailable());
 	}
 
 	@Bean
