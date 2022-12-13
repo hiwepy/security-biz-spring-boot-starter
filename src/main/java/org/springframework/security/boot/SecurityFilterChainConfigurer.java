@@ -225,7 +225,7 @@ public abstract class SecurityFilterChainConfigurer {
 				}
 				// Ant表达式 = ipaddr[192.168.1.0/24]
 				Matcher ipMatcher = ipaddrPattern.matcher(key.toString());
-				if (rolesMatcher.find()) {
+				if (ipMatcher.find()) {
 
 					List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
 						return mapper.getKey();
