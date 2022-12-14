@@ -28,9 +28,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.boot.biz.CustomWebSecurityExpressionHandler;
 import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperties;
 import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
@@ -53,6 +55,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
+import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -267,12 +270,16 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 				if (ArrayUtils.isNotEmpty(roles)) {
 					if (roles.length > 1) {
 						// 如果用户具备给定角色中的某一个的话，就允许访问
-						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyRole(roles);
+						http = http.authorizeRequests()
+								.expressionHandler(customWebSecurityExpressionHandler())
+								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasAnyRole(roles).and();
 					} else {
 						// 如果用户具备给定角色的话，就允许访问
-						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasRole(roles[0]);
+						http = http.authorizeRequests()
+								.expressionHandler(customWebSecurityExpressionHandler())
+								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasRole(roles[0]).and();
 					}
 				}
 			}
@@ -288,12 +295,16 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 				if (ArrayUtils.isNotEmpty(perms)) {
 					if (perms.length > 1) {
 						// 如果用户具备给定全权限的某一个的话，就允许访问
-						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAnyAuthority(perms);
+						http = http.authorizeRequests()
+								.expressionHandler(customWebSecurityExpressionHandler())
+								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasAnyAuthority(perms).and();
 					} else {
 						// 如果用户具备给定权限的话，就允许访问
-						http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-								.hasAuthority(perms[0]);
+						http = http.authorizeRequests()
+								.expressionHandler(customWebSecurityExpressionHandler())
+								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.hasAuthority(perms[0]).and();
 					}
 				}
 			}
@@ -308,11 +319,17 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 				String ipaddr = ipMatcher.group(1);
 				if (StringUtils.hasText(ipaddr)) {
 					// 如果请求来自给定IP地址的话，就允许访问
-					http.authorizeRequests().antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
-							.hasIpAddress(ipaddr);
+					http = http.authorizeRequests()
+							.expressionHandler(customWebSecurityExpressionHandler())
+							.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+							.hasIpAddress(ipaddr).and();
 				}
 			}
 		}
+	}
+
+	public SecurityExpressionHandler<FilterInvocation> customWebSecurityExpressionHandler() {
+		return new CustomWebSecurityExpressionHandler();
 	}
 
 	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties cors) throws Exception {
