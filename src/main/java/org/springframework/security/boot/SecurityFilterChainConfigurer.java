@@ -77,9 +77,9 @@ public abstract class SecurityFilterChainConfigurer {
 	private Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
 	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
 	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
-	private final SecurityBizProperties bizProperties;
-	private final RedirectStrategy redirectStrategy;
-	private final RequestCache requestCache;
+	protected final SecurityBizProperties bizProperties;
+	protected final RedirectStrategy redirectStrategy;
+	protected final RequestCache requestCache;
 
 	public SecurityFilterChainConfigurer(SecurityBizProperties bizProperties, RedirectStrategy redirectStrategy, RequestCache requestCache) {
 		this.bizProperties = bizProperties;
