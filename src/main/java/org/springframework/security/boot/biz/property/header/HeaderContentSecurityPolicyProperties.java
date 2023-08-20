@@ -15,11 +15,10 @@
  */
 package org.springframework.security.boot.biz.property.header;
 
-import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 
 /**
  * Header Content Security Policy Properties

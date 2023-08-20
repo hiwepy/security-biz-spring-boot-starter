@@ -1,12 +1,5 @@
 package org.springframework.security.boot.biz.authentication;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
@@ -15,6 +8,12 @@ import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.util.CollectionUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Post认证请求成功后的处理实现

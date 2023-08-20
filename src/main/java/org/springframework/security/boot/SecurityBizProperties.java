@@ -15,16 +15,15 @@
  */
 package org.springframework.security.boot;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.*;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 

@@ -15,19 +15,10 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import org.springframework.security.boot.biz.property.header.HeaderCacheControlProperties;
-import org.springframework.security.boot.biz.property.header.HeaderContentSecurityPolicyProperties;
-import org.springframework.security.boot.biz.property.header.HeaderContentTypeOptionsProperties;
-import org.springframework.security.boot.biz.property.header.HeaderFeaturePolicyProperties;
-import org.springframework.security.boot.biz.property.header.HeaderFrameOptionsProperties;
-import org.springframework.security.boot.biz.property.header.HeaderHpkpProperties;
-import org.springframework.security.boot.biz.property.header.HeaderHstsProperties;
-import org.springframework.security.boot.biz.property.header.HeaderReferrerPolicyProperties;
-import org.springframework.security.boot.biz.property.header.HeaderXssProtectionProperties;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.boot.biz.property.header.*;
 
 /**
  * Security Headers Properties

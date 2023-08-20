@@ -15,12 +15,12 @@
  */
 package org.springframework.security.boot.biz.userdetails;
 
-import java.util.*;
-
 import com.github.hiwepy.jwt.JwtPayload;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.*;
 
 @ApiModel(value = "UserProfilePayload", description = "用户信息载体对象")
 @Data

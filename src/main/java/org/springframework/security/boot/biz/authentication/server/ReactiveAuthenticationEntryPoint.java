@@ -15,8 +15,6 @@
  */
 package org.springframework.security.boot.biz.authentication.server;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -28,8 +26,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
-
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Post Request Authentication Entry Point

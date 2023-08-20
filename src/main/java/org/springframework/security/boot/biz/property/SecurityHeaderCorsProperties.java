@@ -15,17 +15,16 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.util.ServletRequestPathUtils;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.pattern.PathPattern;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.Map;
 
 /**
  * Security Header Cors Properties

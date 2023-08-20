@@ -1,16 +1,5 @@
 package org.springframework.security.boot.utils;
 
-import java.math.BigDecimal;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
@@ -20,6 +9,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Subject Utils

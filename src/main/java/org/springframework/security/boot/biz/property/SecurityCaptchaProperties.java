@@ -15,11 +15,10 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProcessingFilter;
 
 /**
  * Security Captcha Properties
