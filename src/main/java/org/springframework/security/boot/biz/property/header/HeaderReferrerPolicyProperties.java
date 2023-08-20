@@ -15,11 +15,10 @@
  */
 package org.springframework.security.boot.biz.property.header;
 
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 /**
  * Header Referrer Policy Properties

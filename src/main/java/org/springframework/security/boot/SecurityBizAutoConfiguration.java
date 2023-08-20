@@ -1,9 +1,6 @@
 package org.springframework.security.boot;
 
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -17,11 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.*;
 import org.springframework.security.boot.biz.IgnoreLogoutHandler;
 import org.springframework.security.boot.biz.authentication.AuthorizationPermissionEvaluator;
 import org.springframework.security.boot.biz.authentication.captcha.CaptchaResolver;
@@ -50,14 +43,11 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.security.web.session.InvalidSessionStrategy;
-import org.springframework.security.web.session.SessionInformationExpiredStrategy;
-import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
-import org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy;
+import org.springframework.security.web.session.*;
 import org.springframework.web.servlet.LocaleResolver;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 /**
  *  基础对象初始化

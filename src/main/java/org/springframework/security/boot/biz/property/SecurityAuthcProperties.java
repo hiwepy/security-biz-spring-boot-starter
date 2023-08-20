@@ -15,15 +15,14 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.Data;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.Assert;
 
-import lombok.Data;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Security Authc Properties

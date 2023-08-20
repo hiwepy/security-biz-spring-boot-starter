@@ -15,14 +15,7 @@
  */
 package org.springframework.security.boot.biz.session;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,7 +25,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Slf4j
 @SuppressWarnings("unchecked")

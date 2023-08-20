@@ -1,7 +1,6 @@
 package org.springframework.security.boot.biz.authentication.server;
 
-import java.nio.charset.StandardCharsets;
-
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -15,10 +14,9 @@ import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
-
-import com.alibaba.fastjson.JSONObject;
-
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHandler {
 

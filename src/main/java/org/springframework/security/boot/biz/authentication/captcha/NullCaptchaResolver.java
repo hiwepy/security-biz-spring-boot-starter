@@ -15,10 +15,9 @@
  */
 package org.springframework.security.boot.biz.authentication.captcha;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 /**
  * Null Captcha Resolver

@@ -15,13 +15,12 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import lombok.Data;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Security Session Mgt Properties

@@ -15,12 +15,11 @@
  */
 package org.springframework.security.boot.biz.userdetails;
 
-import java.util.Map;
-
+import com.github.hiwepy.jwt.JwtPayload;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 
-import com.github.hiwepy.jwt.JwtPayload;
+import java.util.Map;
 
 /**
  * Abstract JSON Web Token (JWT) Payload Repository

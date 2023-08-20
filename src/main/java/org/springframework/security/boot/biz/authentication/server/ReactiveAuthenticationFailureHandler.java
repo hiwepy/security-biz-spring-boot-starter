@@ -15,8 +15,6 @@
  */
 package org.springframework.security.boot.biz.authentication.server;
 
-import java.util.List;
-
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.boot.utils.ReactiveSecurityResponseUtils;
@@ -24,8 +22,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.util.CollectionUtils;
-
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 public class ReactiveAuthenticationFailureHandler implements ServerAuthenticationFailureHandler {
 

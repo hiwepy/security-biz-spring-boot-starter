@@ -1,16 +1,7 @@
 package org.springframework.security.boot.biz.userdetails;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.github.hiwepy.jwt.JwtPayload;
-import io.swagger.annotations.ApiModelProperty;
+import com.github.hiwepy.jwt.JwtPayload.RolePair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.CollectionUtils;
 
-import com.github.hiwepy.jwt.JwtPayload.RolePair;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="https://github.com/hiwepy">hiwepy</a>

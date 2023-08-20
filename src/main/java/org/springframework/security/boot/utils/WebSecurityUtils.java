@@ -15,15 +15,7 @@
  */
 package org.springframework.security.boot.utils;
 
-import java.util.List;
-
-import org.springframework.security.boot.biz.authentication.AuthenticatingFailureCounter;
-import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
-import org.springframework.security.boot.biz.authentication.AuthenticationListener;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationProvider;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
+import org.springframework.security.boot.biz.authentication.*;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
@@ -47,12 +39,14 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
+import java.util.List;
+
 public class WebSecurityUtils {
 
 	public static CsrfTokenRepository csrfTokenRepository(SecuritySessionMgtProperties sessionMgtProperties) {
 		// Session 管理器配置参数
 		if (SessionFixationPolicy.CHANGE_SESSION_ID.equals(sessionMgtProperties.getFixationPolicy())) {
-			return new CookieCsrfTokenRepository();
+			return CookieCsrfTokenRepository.withHttpOnlyFalse();
 		}
 		return new HttpSessionCsrfTokenRepository();
 	}

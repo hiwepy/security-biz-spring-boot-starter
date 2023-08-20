@@ -15,17 +15,15 @@
  */
 package org.springframework.security.boot.biz;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 
-import com.alibaba.fastjson.JSONObject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * TODO

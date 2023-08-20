@@ -3,7 +3,6 @@ package org.springframework.security.boot.utils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
-
 import reactor.core.publisher.Mono;
 
 /**

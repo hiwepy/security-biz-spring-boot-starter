@@ -15,16 +15,6 @@
  */
 package org.springframework.security.boot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.http.HttpMethod;
@@ -37,15 +27,7 @@ import org.springframework.security.boot.biz.property.SecurityHeaderCorsProperti
 import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
 import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
-import org.springframework.security.boot.biz.property.header.HeaderCacheControlProperties;
-import org.springframework.security.boot.biz.property.header.HeaderContentSecurityPolicyProperties;
-import org.springframework.security.boot.biz.property.header.HeaderContentTypeOptionsProperties;
-import org.springframework.security.boot.biz.property.header.HeaderFeaturePolicyProperties;
-import org.springframework.security.boot.biz.property.header.HeaderFrameOptionsProperties;
-import org.springframework.security.boot.biz.property.header.HeaderHpkpProperties;
-import org.springframework.security.boot.biz.property.header.HeaderHstsProperties;
-import org.springframework.security.boot.biz.property.header.HeaderReferrerPolicyProperties;
-import org.springframework.security.boot.biz.property.header.HeaderXssProtectionProperties;
+import org.springframework.security.boot.biz.property.header.*;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebSecurityUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -56,10 +38,15 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Web Security Biz Configurer Adapter
@@ -204,8 +191,7 @@ public abstract class WebSecurityBizConfigurerAdapter extends WebSecurityConfigu
 		if (csrf.isEnabled()) {
 			http.csrf()
 				.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
-				.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()))
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+				.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()));
 		} else {
 			http.csrf().disable();
 		}

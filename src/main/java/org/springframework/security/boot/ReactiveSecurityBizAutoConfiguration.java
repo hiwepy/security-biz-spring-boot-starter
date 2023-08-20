@@ -1,7 +1,5 @@
 package org.springframework.security.boot;
 
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.biz.web.server.ReactiveLocaleContextFilter;
 import org.springframework.biz.web.server.ReactiveRequestContextFilter;
@@ -15,21 +13,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
-import org.springframework.security.boot.biz.authentication.server.DefaultMatchedServerAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.server.DefaultMatchedServerAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.server.MatchedServerAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.server.MatchedServerAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.server.MatchedServerAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.server.ReactiveAuthenticationEntryPoint;
-import org.springframework.security.boot.biz.authentication.server.ReactiveAuthenticationFailureHandler;
-import org.springframework.security.boot.biz.authentication.server.ReactiveAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.server.ReactiveServerAccessDeniedHandler;
-import org.springframework.security.boot.biz.authentication.server.ReactiveServerLogoutSuccessHandler;
+import org.springframework.security.boot.biz.authentication.server.*;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.web.server.i18n.LocaleContextResolver;
+
+import java.util.stream.Collectors;
 
 /**
  *  基础对象初始化

@@ -14,9 +14,10 @@
  * the License.
  */
 package org.springframework.security.boot.biz.authentication;
-import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 @SuppressWarnings("serial")
 public class AbstractAuthenticationToken extends org.springframework.security.authentication.AbstractAuthenticationToken {
