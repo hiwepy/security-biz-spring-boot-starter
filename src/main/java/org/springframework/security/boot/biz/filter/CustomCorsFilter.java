@@ -1,10 +1,10 @@
 package org.springframework.security.boot.biz.filter;
 
-import java.util.Arrays;
-
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
 
 /**
  * CustomCorsFilter

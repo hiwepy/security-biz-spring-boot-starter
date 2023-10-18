@@ -1,11 +1,6 @@
 package org.springframework.security.boot.biz.authentication.server;
 
-import org.springframework.security.boot.biz.exception.AuthenticationCaptchaIncorrectException;
-import org.springframework.security.boot.biz.exception.AuthenticationCaptchaNotFoundException;
-import org.springframework.security.boot.biz.exception.AuthenticationMethodNotSupportedException;
-import org.springframework.security.boot.biz.exception.AuthenticationTokenExpiredException;
-import org.springframework.security.boot.biz.exception.AuthenticationTokenIncorrectException;
-import org.springframework.security.boot.biz.exception.AuthenticationTokenNotFoundException;
+import org.springframework.security.boot.biz.exception.*;
 import org.springframework.security.boot.utils.SubjectUtils;
 import org.springframework.security.core.AuthenticationException;
 

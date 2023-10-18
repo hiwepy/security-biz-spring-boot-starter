@@ -15,12 +15,12 @@
  */
 package org.springframework.security.boot.biz.property.header;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Header Hpkp Properties
