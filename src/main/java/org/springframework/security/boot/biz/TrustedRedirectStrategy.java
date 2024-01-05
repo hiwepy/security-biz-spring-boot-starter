@@ -37,7 +37,7 @@ public class TrustedRedirectStrategy extends DefaultRedirectStrategy {
 
     private boolean isTrustedTarget(String url) {
         if (CollectionUtils.isEmpty(trustedRedirects)) {
-            return false;
+            return true;
         }
         for (String trustedRedirectUrl : trustedRedirects) {
             if (StringUtils.hasText(trustedRedirectUrl) && antpathMatcher.match(trustedRedirectUrl, url)) {
