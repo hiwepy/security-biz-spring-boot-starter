@@ -1,10 +1,8 @@
 spring:
   # Spring Security 配置
   security:
-
     redirect:
       context-relative: true
-      trusted-targets: http://localhost:8080,http://localhost:8081
     # 默认路径拦截规则定义
     filter-chain-definition-map:
        '[/]' : anon
