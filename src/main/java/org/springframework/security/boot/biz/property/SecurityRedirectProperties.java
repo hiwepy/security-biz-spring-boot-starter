@@ -19,6 +19,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.*;
+
 /**
  * Security Redirect Properties
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
@@ -33,5 +35,12 @@ public class SecurityRedirectProperties {
 	 * and context path (defaults to <tt>false</tt>).
 	 */
 	private boolean contextRelative;
-	
+
+	private String defaultRedirectUrl = "/";
+
+	/**
+	 * The Trusted Redirects that are allowed to redirect to.
+	 */
+	private List<String> trustedRedirects = new ArrayList<>(Arrays.asList("/*"));
+
 }

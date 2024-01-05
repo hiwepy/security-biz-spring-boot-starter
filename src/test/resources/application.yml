@@ -1,6 +1,10 @@
 spring:
   # Spring Security 配置
   security:
+
+    redirect:
+      context-relative: true
+      trusted-targets: http://localhost:8080,http://localhost:8081
     # 默认路径拦截规则定义
     filter-chain-definition-map:
        '[/]' : anon
@@ -22,7 +26,9 @@ spring:
        '[/monitoring2]' : roles[1,admin]
        '[/monitoring3]' : perms[1,admin]
        '[/monitoring4]' : perms[1]
-    form:      authc:        path-pattern: /authz/login
+    form:
+      authc:
+        path-pattern: /authz/login
         always-use-default-target-url: false
         success-url: /index
         failure-url: /error

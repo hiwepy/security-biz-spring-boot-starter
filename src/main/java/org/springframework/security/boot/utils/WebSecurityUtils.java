@@ -15,6 +15,7 @@
  */
 package org.springframework.security.boot.utils;
 
+import org.springframework.security.boot.biz.TrustedRedirectStrategy;
 import org.springframework.security.boot.biz.authentication.*;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
@@ -110,8 +111,10 @@ public class WebSecurityUtils {
  	}
 	
 	public static RedirectStrategy redirectStrategy(SecurityAuthcProperties authcProperties) {
-		DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+		TrustedRedirectStrategy redirectStrategy = new TrustedRedirectStrategy();
 		redirectStrategy.setContextRelative(authcProperties.getRedirect().isContextRelative());
+		redirectStrategy.setDefaultRedirectUrl(authcProperties.getRedirect().getDefaultRedirectUrl());
+		redirectStrategy.setTrustedRedirects(authcProperties.getRedirect().getTrustedRedirects());
 		return redirectStrategy;
 	}
 	
