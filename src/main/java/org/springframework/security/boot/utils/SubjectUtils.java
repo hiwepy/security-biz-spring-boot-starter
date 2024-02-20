@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 /**
  * Subject Utils
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
@@ -66,48 +68,123 @@ public class SubjectUtils {
 	}
 
 	public static String getUserId() {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
-		return principal.getUid();
+		if(isAuthenticated()){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
+			return principal.getUid();
+		}
+		return null;
 	}
 
 	public static Long getUserIdLong() {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
-		return TO_LONG.apply(principal.getUid());
+		if(isAuthenticated()){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal(SecurityPrincipal.class);
+			return TO_LONG.apply(principal.getUid());
+		}
+		return null;
+	}
+
+	public static String getProfileString(String key) {
+		return getProfileString(key, EMPTY);
+	}
+
+	public static String getProfileString(String key, String defaultValue) {
+		if(isAuthenticated()){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+			return MapUtils.getString(principal.getProfile(), key, defaultValue);
+		}
+		return null;
 	}
 
 	public static String getProfileString(Authentication authentication, String key) {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
-		return MapUtils.getString(principal.getProfile(), key);
+		return getProfileString(authentication, key, null);
 	}
 
-	public static int getProfileInt(Authentication authentication, String key) {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
-		return MapUtils.getIntValue(principal.getProfile(), key);
+	public static String getProfileString(Authentication authentication, String key, String defaultValue) {
+		if(isAuthenticated(authentication)){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+			return MapUtils.getString(principal.getProfile(), key, defaultValue);
+		}
+		return null;
 	}
 
-	public static Double getProfileDouble(Authentication authentication, String key) {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
-		return MapUtils.getDouble(principal.getProfile(), key);
+	public static Integer getProfileInteger(String key) {
+		return getProfileInteger(key, null);
 	}
 
-
-	public static String getProfileString(String key) {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
-		return MapUtils.getString(principal.getProfile(), key);
+	public static Integer getProfileInteger(String key, Integer defaultValue) {
+		if(isAuthenticated()){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+			return MapUtils.getInteger(principal.getProfile(), key, defaultValue);
+		}
+		return null;
 	}
 
-	public static int getProfileInt(String key) {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
-		return MapUtils.getIntValue(principal.getProfile(), key);
+	public static Integer getProfileInteger(Authentication authentication, String key) {
+		return getProfileInteger(authentication, key, null);
+	}
+
+	public static Integer getProfileInteger(Authentication authentication, String key, Integer defaultValue) {
+		if(isAuthenticated(authentication)){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+			return MapUtils.getInteger(principal.getProfile(), key, defaultValue);
+		}
+		return null;
+	}
+
+	public static Long getProfileLong(String key) {
+		return getProfileLong(key, null);
+	}
+
+	public static Long getProfileLong(String key, Long defaultValue) {
+		if(isAuthenticated()){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+			return MapUtils.getLong(principal.getProfile(), key, defaultValue);
+		}
+		return null;
+	}
+
+	public static Long getProfileLong(Authentication authentication, String key) {
+		return getProfileLong(authentication, key, null);
+	}
+
+	public static Long getProfileLong(Authentication authentication, String key, Long defaultValue) {
+		if(isAuthenticated(authentication)){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+			return MapUtils.getLong(principal.getProfile(), key, defaultValue);
+		}
+		return null;
 	}
 
 	public static Double getProfileDouble(String key) {
-		SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
-		return MapUtils.getDouble(principal.getProfile(), key);
+		return getProfileDouble(key, null);
+	}
+
+	public static Double getProfileDouble(String key, Double defaultValue) {
+		if(isAuthenticated()){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal( SecurityPrincipal.class);
+			return MapUtils.getDouble(principal.getProfile(), key, defaultValue);
+		}
+		return null;
+	}
+
+	public static Double getProfileDouble(Authentication authentication, String key) {
+		return getProfileDouble(authentication, key, null);
+	}
+
+	public static Double getProfileDouble(Authentication authentication, String key, Double defaultValue) {
+		if(isAuthenticated(authentication)){
+			SecurityPrincipal principal = SubjectUtils.getPrincipal(authentication, SecurityPrincipal.class);
+			return MapUtils.getDouble(principal.getProfile(), key, defaultValue);
+		}
+		return null;
 	}
 
 	public static boolean isAuthenticated(){
 		Authentication authentication = getAuthentication();
+		return isAuthenticated(authentication);
+	}
+
+	public static boolean isAuthenticated(Authentication authentication){
 		return authentication == null ? false : authentication.isAuthenticated();
 	}
 
@@ -138,7 +215,7 @@ public class SubjectUtils {
 				 *	1、类Class1和Class2是否相同。
 				 *	2、Class1是否是Class2的父类或接口
 				 */
-				// clazz是否和target类型相同或者，clazz是否是target的父类或接口 
+				// clazz是否和target类型相同或者，clazz是否是target的父类或接口
 				if(clazz != null && clazz.isAssignableFrom(target)) {
 					return true;
 				};
