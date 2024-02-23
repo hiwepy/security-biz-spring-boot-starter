@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class SecurityPrincipal extends User implements Cloneable {
 
 	protected static final String ADMIN_STRING = "admin";
-	
+
 	/**
 	 * 用户ID（用户来源表Id）
 	 */
@@ -65,6 +65,10 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 */
 	private String sign;
 	/**
+	 * 授权方式（可选）
+	 */
+	private String authType;
+	/**
 	 * 用户最新经度（可选）
 	 */
 	private double longitude;
@@ -84,7 +88,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	 * 用户数据
 	 */
 	private Map<String, Object> profile = new HashMap<String, Object>();
-	
+
 	public SecurityPrincipal(String username, String password, String... roles) {
 		super(username, password, roleAuthorities(Arrays.asList(roles)));
 	}
@@ -108,7 +112,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
-	
+
 	public String getUid() {
 		return uid;
 	}
@@ -116,7 +120,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
-	
+
 	public String getUuid() {
 		return uuid;
 	}
@@ -197,6 +201,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 		this.sign = sign;
 	}
 
+	public String getAuthType() {
+		return authType;
+	}
+
+	public void setAuthType(String authType) {
+		this.authType = authType;
+	}
+
 	public double getLongitude() {
 		return longitude;
 	}
@@ -212,7 +224,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
-	
+
 	public List<JwtPayload.RolePair> getRoles() {
 		return roles;
 	}
@@ -243,7 +255,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		}
 		return CollectionUtils.contains(getRoles().iterator(), ADMIN_STRING) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRkey()) || StringUtils.equalsIgnoreCase(ADMIN_STRING, this.getRid());
 	}
-	
+
 	public boolean hasRole(String role) {
 		if(!StringUtils.isNoneBlank(role)) {
 			return false;
@@ -253,7 +265,7 @@ public class SecurityPrincipal extends User implements Cloneable {
 		}
 		return roles.stream().anyMatch(entry -> StringUtils.equalsIgnoreCase(entry.getKey(), role));
 	}
-	
+
 	public boolean hasAnyRole(String... roles) {
 		if(!StringUtils.isNoneBlank(roles)) {
 			return false;
@@ -292,11 +304,11 @@ public class SecurityPrincipal extends User implements Cloneable {
 				+ isAccountNonLocked() + '}';
 	}
 
-	
+
 	public UserProfilePayload toPayload(){
-		
+
 		UserProfilePayload payload = new UserProfilePayload();
-		
+
 		payload.setUid(this.getUid());
 		payload.setUuid(this.getUuid());
 		payload.setUkey(this.getUkey());
@@ -309,14 +321,14 @@ public class SecurityPrincipal extends User implements Cloneable {
 		payload.setBound(this.isBound());
 		payload.setInitial(this.isInitial());
 		payload.setVerify(this.isVerify());
-		
+
 		if (CollectionUtils.isEmpty(this.getProfile())) {
 			payload.setProfile(new HashMap<>(0));
 		} else {
 			payload.setProfile(this.getProfile());
 		}
 		return payload;
-		
+
 	}
-	
+
 }
