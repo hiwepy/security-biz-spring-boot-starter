@@ -1,6 +1,6 @@
 package org.springframework.security.boot.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -41,10 +41,8 @@ public class SecurityResponseUtils {
 
 		// 2、国际化后的异常信息
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey());
-
 		// 3、输出JSON格式数据
-		JSONObject.writeJSONString(response.getOutputStream(), AuthResponse.success(message));
-
+		JSON.writeTo(response.getOutputStream(), AuthResponse.success(message));
 	}
 
 	public static void handleException(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
@@ -98,7 +96,7 @@ public class SecurityResponseUtils {
 		}
 
 		// 3、输出JSON格式数据
-		JSONObject.writeJSONString(response.getOutputStream(), authResponse);
+		JSON.writeTo(response.getOutputStream(), authResponse);
 
 	}
 

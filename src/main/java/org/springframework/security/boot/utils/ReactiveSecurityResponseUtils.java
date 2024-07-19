@@ -1,6 +1,6 @@
 package org.springframework.security.boot.utils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,25 +35,25 @@ public class ReactiveSecurityResponseUtils {
 		// 1、设置状态码和响应头
 		response.setStatusCode(HttpStatus.OK);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-		
+
 		// 2、国际化后的异常信息
 		String message = messages.getMessage(AuthResponseCode.SC_AUTHC_SUCCESS.getMsgKey());
-		
+
 		// 3、输出JSON格式数据
         String body = JSONObject.toJSONString(AuthResponse.success(message));
         DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
-		
+
 	}
-	
+
 	public static Mono<Void> handleFailure(ServerHttpRequest request, ServerHttpResponse response, AuthenticationException e) {
-		
+
 		logger.debug("Locale : {}", LocaleContextHolder.getLocale());
-		
+
     	// 2、设置状态码和响应头
 		response.setStatusCode(HttpStatus.OK);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-		
+
 		// 3、国际化后的异常信息
 		String message = null;
 		AuthResponse<String> authResponse = null;
@@ -93,12 +93,12 @@ public class ReactiveSecurityResponseUtils {
 		} else {
 			authResponse = AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(), e.getMessage());
 		}
-		
+
 		// 4、输出JSON格式数据
 		String body = JSONObject.toJSONString(authResponse);
 		DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
-		
+
 	}
-	
+
 }

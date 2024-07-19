@@ -356,10 +356,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<fastjson.version>2.0.12</fastjson.version>
-		<jwt-issuer.version>1.1.0.RELEASE</jwt-issuer.version>
+		<jwt-issuer.version>1.1.2-SNAPSHOT</jwt-issuer.version>
 		<spring-biz.version>1.1.4.RELEASE</spring-biz.version>
-		<commons-collections4.version>4.4</commons-collections4.version>
+		<commons-collections4.version>4.5.0-M2</commons-collections4.version>
+		<commons-lang3.version>3.14.0</commons-lang3.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
@@ -372,12 +372,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- http://mvnrepository.com/artifact/com.alibaba/fastjson -->
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>${fastjson.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.github.hiwepy</groupId>
 				<artifactId>jwt-issuer-api</artifactId>
@@ -464,12 +458,6 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
   			<artifactId>jackson-databind</artifactId>
 		</dependency>
-		<!-- http://mvnrepository.com/artifact/com.alibaba/fastjson -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-		</dependency>
-
 		<dependency>
 		    <groupId>com.github.hiwepy</groupId>
 		    <artifactId>spring-biz</artifactId>
