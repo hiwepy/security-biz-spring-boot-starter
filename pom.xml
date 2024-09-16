@@ -356,10 +356,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<fastjson.version>2.0.12</fastjson.version>
-		<jwt-issuer.version>1.1.0.RELEASE</jwt-issuer.version>
+		<fastjson2.version>2.0.52</fastjson2.version>
+		<jwt-issuer.version>1.1.8.RELEASE</jwt-issuer.version>
 		<spring-biz.version>1.1.4.RELEASE</spring-biz.version>
 		<commons-collections4.version>4.4</commons-collections4.version>
+		<commons-io.version>2.16.1</commons-io.version>
 		<maven.version>3.0</maven.version>
        	<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
@@ -372,23 +373,28 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- http://mvnrepository.com/artifact/com.alibaba/fastjson -->
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>${fastjson.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.github.hiwepy</groupId>
-				<artifactId>jwt-issuer-api</artifactId>
-				<version>${jwt-issuer.version}</version>
-			</dependency>
 			<!-- The Apache Commons Collections package contains types that extend
 				and augment the Java Collections Framework. -->
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-collections4</artifactId>
 				<version>${commons-collections4.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2 -->
+			<dependency>
+				<groupId>com.alibaba.fastjson2</groupId>
+				<artifactId>fastjson2</artifactId>
+				<version>${fastjson2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.hiwepy</groupId>
+				<artifactId>jwt-issuer-api</artifactId>
+				<version>${jwt-issuer.version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.github.hiwepy/spring-biz -->
 			<dependency>
@@ -466,8 +472,8 @@
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/com.alibaba/fastjson -->
 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
+			<groupId>com.alibaba.fastjson2</groupId>
+			<artifactId>fastjson2</artifactId>
 		</dependency>
 
 		<dependency>
