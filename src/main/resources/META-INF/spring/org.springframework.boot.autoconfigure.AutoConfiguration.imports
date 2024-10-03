@@ -1,0 +1,2 @@
+org.springframework.security.boot.SecurityBizAutoConfiguration
+org.springframework.security.boot.ReactiveSecurityBizAutoConfiguration
