@@ -16,7 +16,10 @@
 package org.springframework.security.boot;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.PropertyMapper;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,15 +57,16 @@ import java.util.stream.Collectors;
  * @see WebSecurityCustomizer
  * @author ： <a href="https://github.com/hiwepy">wandl</a>
  */
-public  class WebSecurityCustomizerAdapter implements WebSecurityCustomizer {
+public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
 
-	private Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
-	private Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
-	private Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
+	protected Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
+	protected Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
+	protected Pattern ipaddrPattern = Pattern.compile("ipaddr\\[(\\S+)\\]");
 	protected final SecurityBizProperties bizProperties;
 	protected final SecuritySessionMgtProperties sessionMgtProperties;
-	private final List<AuthenticationProvider> authenticationProviders;
-	
+	protected final List<AuthenticationProvider> authenticationProviders;
+	protected ApplicationContext applicationContext;
+
 	public WebSecurityCustomizerAdapter(SecurityBizProperties bizProperties,
 										SecuritySessionMgtProperties sessionMgtProperties,
 										List<AuthenticationProvider> authenticationProviders) {
@@ -325,4 +329,14 @@ public  class WebSecurityCustomizerAdapter implements WebSecurityCustomizer {
 	public SecuritySessionMgtProperties getSessionMgtProperties() {
 		return sessionMgtProperties;
 	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
 }
