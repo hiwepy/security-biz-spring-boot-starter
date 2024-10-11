@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +31,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @author 		： <a href="https://github.com/hiwepy">wandl</a>
  */
 @EnableGlobalMethodSecurity(jsr250Enabled=true)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
  
 	@Autowired
 	AuthenticationManager authenticationManager;
