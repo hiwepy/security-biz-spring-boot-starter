@@ -1,12 +1,12 @@
 package org.springframework.security.boot.biz;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.biz.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.WebSecurityExpressionRoot;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 public class CustomWebSecurityExpressionRoot  extends WebSecurityExpressionRoot {

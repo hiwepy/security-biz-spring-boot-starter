@@ -15,7 +15,7 @@
  */
 package org.springframework.security.boot.biz.property;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Session Fixation Policy 

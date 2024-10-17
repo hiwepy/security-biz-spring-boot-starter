@@ -1,6 +1,9 @@
 package org.springframework.security.boot;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hitool.core.lang3.time.DateFormats;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.biz.web.servlet.i18n.LocaleContextFilter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -13,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.*;
 import org.springframework.security.boot.biz.IgnoreLogoutHandler;
@@ -46,7 +50,6 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.*;
 import org.springframework.web.servlet.LocaleResolver;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
 /**
@@ -87,7 +90,11 @@ public class SecurityBizAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public ObjectMapper objectMapper() {
-		return new ObjectMapper();
+		return Jackson2ObjectMapperBuilder.json()
+				.simpleDateFormat(DateFormats.DATE_LONGFORMAT)
+				.failOnEmptyBeans(false)
+				.failOnUnknownProperties(false)
+				.featuresToEnable(MapperFeature.USE_GETTERS_AS_SETTERS, MapperFeature.ALLOW_FINAL_FIELDS_AS_MUTATORS).build();
 	}
 
 	@Bean

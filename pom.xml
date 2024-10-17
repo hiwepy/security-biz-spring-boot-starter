@@ -519,6 +519,11 @@
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
+
 		<!-- For Spring WebMvc -->
 		<dependency>
 		    <groupId>org.springframework</groupId>

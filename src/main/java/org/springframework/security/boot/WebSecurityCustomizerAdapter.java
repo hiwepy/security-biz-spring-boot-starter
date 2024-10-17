@@ -41,7 +41,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -57,7 +56,7 @@ import java.util.stream.Collectors;
  * @see WebSecurityCustomizer
  * @author ： <a href="https://github.com/hiwepy">wandl</a>
  */
-public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
+public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomizer, ApplicationContextAware {
 
 	protected Pattern rolesPattern = Pattern.compile("roles\\[(\\S+)\\]");
 	protected Pattern permsPattern = Pattern.compile("perms\\[(\\S+)\\]");
@@ -100,7 +99,22 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception {
 		if (properties.isEnabled()) {
 
-			HeadersConfigurer<HttpSecurity> headers = http.headers();
+			HeaderXssProtectionProperties xssProtectionProperties = properties.getXssProtection();
+
+			HeadersConfigurer<HttpSecurity> headersC = http.headers((headers) -> {
+					  return headers
+							.frameOptions((frameOptions) -> frameOptions. disable())
+							.xssProtection((xssProtection) -> xssProtection.headerValue(xssProtectionProperties.getHeaderValue()))
+							.contentTypeOptions((contentTypeOptions) -> contentTypeOptions.disable())
+							.cacheControl((cacheControl) -> cacheControl.disable())
+							.httpStrictTransportSecurity((hsts) -> hsts.disable())
+							.httpPublicKeyPinning((hpkp) -> hpkp.disable())
+							.contentSecurityPolicy((contentSecurityPolicy) -> contentSecurityPolicy.disable())
+							.referrerPolicy((referrerPolicy) -> referrerPolicy.disable())
+							.featurePolicy((featurePolicy) -> featurePolicy.disable());
+					}
+
+			);
 
 			HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
 			if (contentTypeOptions.isEnabled()) {
@@ -109,8 +123,8 @@ public abstract   class WebSecurityCustomizerAdapter implements WebSecurityCusto
 				headers.contentTypeOptions().disable();
 			}
 
-			HeaderXssProtectionProperties xssProtection = properties.getXssProtection();
-			if (xssProtection.isEnabled()) {
+
+			if (xssProtectionProperties.isEnabled()) {
 				headers.xssProtection().xssProtectionEnabled(xssProtection.isEnabled()).block(xssProtection.isBlock());
 			} else {
 				headers.xssProtection().disable();

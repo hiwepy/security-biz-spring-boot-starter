@@ -15,12 +15,11 @@
  */
 package org.springframework.security.boot.biz.property;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Security Header Csrf Properties

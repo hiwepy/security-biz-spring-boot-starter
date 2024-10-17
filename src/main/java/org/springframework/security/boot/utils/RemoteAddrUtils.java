@@ -15,9 +15,8 @@
  */
 package org.springframework.security.boot.utils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * http://blog.csdn.net/caoshuming_500/article/details/20952329

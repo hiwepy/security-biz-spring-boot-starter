@@ -15,8 +15,8 @@
  */
 package org.springframework.security.boot.biz.authentication;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * Authenticating Failure Counter

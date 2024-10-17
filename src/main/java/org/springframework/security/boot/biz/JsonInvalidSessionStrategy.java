@@ -15,14 +15,14 @@
  */
 package org.springframework.security.boot.biz;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.boot.biz.exception.AuthResponse;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -34,7 +34,7 @@ public class JsonInvalidSessionStrategy implements InvalidSessionStrategy {
 	@Override
 	public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		JSONObject.writeJSONString(response.getOutputStream(), AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(),
+		JSON.writeTo(response.getOutputStream(), AuthResponse.of(AuthResponseCode.SC_AUTHC_FAIL.getCode(),
 				"Session Invalided"));
 	}
 

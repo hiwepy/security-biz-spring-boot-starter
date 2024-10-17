@@ -1,8 +1,7 @@
 package org.springframework.security.boot.biz.authentication.server;
 
-import com.alibaba.fastjson.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.alibaba.fastjson2.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -18,15 +17,15 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 public class ReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHandler {
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
 	@Override
 	public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
 		
-		logger.debug("Locale : {}" , LocaleContextHolder.getLocale());
+		log.debug("Locale : {}" , LocaleContextHolder.getLocale());
 		
 		// 1、获取ServerHttpResponse、ServerHttpResponse
 		// ServerHttpRequest request = exchange.getExchange().getRequest();
