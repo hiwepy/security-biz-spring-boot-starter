@@ -43,5 +43,6 @@ public class HeaderFrameOptionsProperties {
 	 * application.
 	 */
 	private boolean sameOrigin = false;
+	private boolean allowFrom = false;
 
 }

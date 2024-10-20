@@ -33,14 +33,13 @@ import org.springframework.security.boot.biz.property.SecuritySessionMgtProperti
 import org.springframework.security.boot.biz.property.header.*;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.boot.utils.WebSecurityUtils;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.ContentSecurityPolicyConfig;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -50,6 +49,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 
 /**
  * WebSecurityCustomizer Adapter
@@ -99,99 +99,94 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 	protected void configure(HttpSecurity http, SecurityHeadersProperties properties) throws Exception {
 		if (properties.isEnabled()) {
 
-			HeaderXssProtectionProperties xssProtectionProperties = properties.getXssProtection();
+			http.headers((headers) -> {
 
-			HeadersConfigurer<HttpSecurity> headersC = http.headers((headers) -> {
-					  return headers
-							.frameOptions((frameOptions) -> frameOptions. disable())
-							.xssProtection((xssProtection) -> xssProtection.headerValue(xssProtectionProperties.getHeaderValue()))
-							.contentTypeOptions((contentTypeOptions) -> contentTypeOptions.disable())
-							.cacheControl((cacheControl) -> cacheControl.disable())
-							.httpStrictTransportSecurity((hsts) -> hsts.disable())
-							.httpPublicKeyPinning((hpkp) -> hpkp.disable())
-							.contentSecurityPolicy((contentSecurityPolicy) -> contentSecurityPolicy.disable())
-							.referrerPolicy((referrerPolicy) -> referrerPolicy.disable())
-							.featurePolicy((featurePolicy) -> featurePolicy.disable());
-					}
-
-			);
-
-			HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
-			if (contentTypeOptions.isEnabled()) {
-				headers.contentTypeOptions();
-			} else {
-				headers.contentTypeOptions().disable();
-			}
-
-
-			if (xssProtectionProperties.isEnabled()) {
-				headers.xssProtection().xssProtectionEnabled(xssProtection.isEnabled()).block(xssProtection.isBlock());
-			} else {
-				headers.xssProtection().disable();
-			}
-
-			HeaderCacheControlProperties cacheControl = properties.getCacheControl();
-			if (cacheControl.isEnabled()) {
-				headers.cacheControl();
-			} else {
-				headers.cacheControl().disable();
-			}
-
-			HeaderHstsProperties hsts = properties.getHsts();
-			if (hsts.isEnabled()) {
-				 headers.httpStrictTransportSecurity()
-						.includeSubDomains(hsts.isIncludeSubDomains())
-						.maxAgeInSeconds(hsts.getMaxAgeInSeconds());
-			} else {
-				headers.httpStrictTransportSecurity().disable();
-			}
-
-			HeaderFrameOptionsProperties frameOptions = properties.getFrameOptions();
-			if (frameOptions.isEnabled()) {
-				FrameOptionsConfig config = headers.frameOptions();
-				if (frameOptions.isDeny()) {
-					config.deny();
-				} else if (frameOptions.isSameOrigin()) {
-					config.sameOrigin();
+				HeaderContentTypeOptionsProperties contentTypeOptions = properties.getContentTypeOptions();
+				if (Objects.nonNull(contentTypeOptions) && contentTypeOptions.isEnabled()) {
+					headers.contentTypeOptions(Customizer.withDefaults());
 				}
-			} else {
-				headers.frameOptions().disable();
-			}
 
-			HeaderHpkpProperties hpkp = properties.getHpkp();
-			if (hpkp.isEnabled()) {
-				 headers.httpPublicKeyPinning()
-						.includeSubDomains(hpkp.isIncludeSubDomains())
-						.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
-						.reportOnly(hpkp.isReportOnly())
-						.reportUri(hpkp.getReportUri())
-						.withPins(hpkp.getPins())
-						.addSha256Pins(hpkp.getSha256Pins());
-			} else {
-				headers.httpPublicKeyPinning().disable();
-			}
-
-			HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
-			if (contentSecurityPolicy.isEnabled()) {
-				ContentSecurityPolicyConfig config = headers.contentSecurityPolicy(contentSecurityPolicy.getPolicyDirectives());
-				if (contentSecurityPolicy.isReportOnly()) {
-					config.reportOnly();
+				HeaderXssProtectionProperties xssProtectionProperties = properties.getXssProtection();
+				if (Objects.nonNull(xssProtectionProperties) && xssProtectionProperties.isEnabled()) {
+					headers.xssProtection(xXssConfig -> {
+						if (xssProtectionProperties.isBlock()) {
+							xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK);
+						} else {
+							xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED);
+						}
+					});
+				} else {
+					headers.xssProtection((xXssConfig) -> xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.DISABLED));
 				}
-			}
 
-			HeaderReferrerPolicyProperties referrerPolicy = properties.getReferrerPolicy();
-			if (referrerPolicy.isEnabled()) {
-				headers.referrerPolicy();
-			}
+				HeaderCacheControlProperties cacheControl = properties.getCacheControl();
+				if (Objects.nonNull(cacheControl) && cacheControl.isEnabled()) {
+					headers.cacheControl(cacheControlConfig -> {
+					});
+				}
 
-			HeaderFeaturePolicyProperties featurePolicy = properties.getFeaturePolicy();
-			if (featurePolicy.isEnabled()) {
-				headers.featurePolicy(featurePolicy.getPolicyDirectives());
-			}
+				HeaderHstsProperties hsts = properties.getHsts();
+				if (Objects.nonNull(hsts) && hsts.isEnabled()) {
+					headers.httpStrictTransportSecurity(hstsConfig -> {
+						hstsConfig.includeSubDomains(hsts.isIncludeSubDomains())
+									.maxAgeInSeconds(hsts.getMaxAgeInSeconds());
+					});
+				}
+
+				HeaderFrameOptionsProperties frameOptions = properties.getFrameOptions();
+				if (Objects.nonNull(frameOptions) && frameOptions.isEnabled()) {
+					headers.frameOptions( config -> {
+						if (frameOptions.isDeny()) {
+							config.deny();
+						} else if (frameOptions.isSameOrigin()) {
+							config.sameOrigin();
+						}
+					});
+				}
+
+				HeaderHpkpProperties hpkp = properties.getHpkp();
+				if (Objects.nonNull(hpkp) && hpkp.isEnabled()) {
+					headers.httpPublicKeyPinning()
+							.includeSubDomains(hpkp.isIncludeSubDomains())
+							.maxAgeInSeconds(hpkp.getMaxAgeInSeconds())
+							.reportOnly(hpkp.isReportOnly())
+							.reportUri(hpkp.getReportUri())
+							.withPins(hpkp.getPins())
+							.addSha256Pins(hpkp.getSha256Pins());
+				} else {
+					headers.httpPublicKeyPinning().disable();
+				}
+
+				HeaderContentSecurityPolicyProperties contentSecurityPolicy = properties.getContentSecurityPolicy();
+				if (Objects.nonNull(contentSecurityPolicy) && contentSecurityPolicy.isEnabled()) {
+					headers.contentSecurityPolicy(config -> {
+						config.policyDirectives(contentSecurityPolicy.getPolicyDirectives());
+						if (contentSecurityPolicy.isReportOnly()) {
+							config.reportOnly();
+						}
+					});
+				}
+
+				HeaderReferrerPolicyProperties referrerPolicy = properties.getReferrerPolicy();
+				if (Objects.nonNull(referrerPolicy) && referrerPolicy.isEnabled()) {
+					headers.referrerPolicy(config -> {
+						config.policy(referrerPolicy.getPolicy());
+					});
+				}
+
+				HeaderFeaturePolicyProperties featurePolicy = properties.getFeaturePolicy();
+				if (Objects.nonNull(featurePolicy) && featurePolicy.isEnabled()) {
+					headers.permissionsPolicy(config -> {
+						config.policy(featurePolicy.getPolicyDirectives());
+					});
+				}
+
+			});
 
 		} else {
-			http.headers().cacheControl().disable()// 禁用缓存
-					.and().cors();
+			http.headers((headers) -> {
+				headers.cacheControl(cacheControl -> cacheControl.disable());
+			});
 		}
 	}
 
@@ -206,11 +201,12 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 	protected void configure(HttpSecurity http, SecurityHeaderCsrfProperties csrf) throws Exception {
 		// CSRF 配置
 		if (csrf.isEnabled()) {
-			http.csrf()
-				.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
-				.ignoringAntMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()));
+			http.csrf(csrfConfigurer -> {
+				csrfConfigurer.csrfTokenRepository(WebSecurityUtils.csrfTokenRepository(sessionMgtProperties))
+						.ignoringRequestMatchers(StringUtils.tokenizeToStringArray(csrf.getIgnoringAntMatchers()));
+			});
 		} else {
-			http.csrf().disable();
+			http.csrf((csrfConfigurer) -> csrfConfigurer.disable());
 		}
 	}
 
@@ -227,8 +223,8 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 			permitMatchers = noneEntries.stream().map(mapper -> mapper.getKey()).collect(Collectors.toList());
 		}
 		web.ignoring()
-				.antMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
-				.antMatchers(HttpMethod.OPTIONS, "/**");
+				.requestMatchers(permitMatchers.toArray(new String[permitMatchers.size()]))
+				.requestMatchers(HttpMethod.OPTIONS, "/**");
 
 	}
 
@@ -262,9 +258,7 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 			Matcher rolesMatcher = rolesPattern.matcher(key.toString());
 			if (rolesMatcher.find()) {
 
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
+				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(Entry::getKey).collect(Collectors.toList());
 				// 角色
 				String[] roles = StringUtils.split(rolesMatcher.group(1), ",");
 				if (ArrayUtils.isNotEmpty(roles)) {
@@ -272,13 +266,13 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 						// 如果用户具备给定角色中的某一个的话，就允许访问
 						http = http.authorizeRequests()
 								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
 								.hasAnyRole(roles).and();
 					} else {
 						// 如果用户具备给定角色的话，就允许访问
 						http = http.authorizeRequests()
 								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
 								.hasRole(roles[0]).and();
 					}
 				}
@@ -287,9 +281,7 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 			Matcher permsMatcher = permsPattern.matcher(key.toString());
 			if (permsMatcher.find()) {
 
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
+				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(Entry::getKey).collect(Collectors.toList());
 				// 权限标记
 				String[] perms = StringUtils.split(permsMatcher.group(1), ",");
 				if (ArrayUtils.isNotEmpty(perms)) {
@@ -297,13 +289,13 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 						// 如果用户具备给定全权限的某一个的话，就允许访问
 						http = http.authorizeRequests()
 								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
 								.hasAnyAuthority(perms).and();
 					} else {
 						// 如果用户具备给定权限的话，就允许访问
 						http = http.authorizeRequests()
 								.expressionHandler(customWebSecurityExpressionHandler())
-								.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+								.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
 								.hasAuthority(perms[0]).and();
 					}
 				}
@@ -312,16 +304,14 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 			Matcher ipMatcher = ipaddrPattern.matcher(key.toString());
 			if (ipMatcher.find()) {
 
-				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(mapper -> {
-					return mapper.getKey();
-				}).collect(Collectors.toList());
+				List<String> antPatterns = groupingMap.get(key.toString()).stream().map(Entry::getKey).collect(Collectors.toList());
 				// ipaddress
 				String ipaddr = ipMatcher.group(1);
 				if (StringUtils.hasText(ipaddr)) {
 					// 如果请求来自给定IP地址的话，就允许访问
 					http = http.authorizeRequests()
 							.expressionHandler(customWebSecurityExpressionHandler())
-							.antMatchers(antPatterns.toArray(new String[antPatterns.size()]))
+							.requestMatchers(antPatterns.toArray(new String[antPatterns.size()]))
 							.hasIpAddress(ipaddr).and();
 				}
 			}
