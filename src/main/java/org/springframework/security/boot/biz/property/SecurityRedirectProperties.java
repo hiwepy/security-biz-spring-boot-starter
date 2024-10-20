@@ -33,8 +33,8 @@ import java.util.List;
 public class SecurityRedirectProperties {
 
 	/**
-	 * If <tt>true</tt>, causes any redirection URLs to be calculated minus the protocol
-	 * and context path (defaults to <tt>false</tt>).
+	 * If &lt;tt&gt;true&lt;/tt&gt;, causes any redirection URLs to be calculated minus the protocol
+	 * and context path (defaults to &lt;tt&gt;false&lt;/tt&gt;).
 	 */
 	private boolean contextRelative;
 

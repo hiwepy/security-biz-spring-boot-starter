@@ -72,7 +72,7 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	// ===================================================================================================
 	
 	/**
-	 * @param defaultFilterProcessesUrl the default value for <tt>filterProcessesUrl</tt>.
+	 * @param defaultFilterProcessesUrl the default value for &lt;tt&gt;filterProcessesUrl&lt;/tt&gt;.
 	 */
 	protected AuthenticationProcessingFilter(String defaultFilterProcessesUrl) {
 		super(defaultFilterProcessesUrl);
@@ -118,7 +118,7 @@ public abstract class AuthenticationProcessingFilter extends AbstractAuthenticat
 	 * <li>Return null, indicating that the authentication process is still in progress.
 	 * Before returning, the implementation should perform any additional work required to
 	 * complete the process.</li>
-	 * <li>Throw an <tt>AuthenticationException</tt> if the authentication process fails</li>
+	 * <li>Throw an &lt;tt&gt;AuthenticationException&lt;/tt&gt; if the authentication process fails</li>
 	 * </ol>
 	 *
 	 * @param request from which to extract parameters and perform the authentication

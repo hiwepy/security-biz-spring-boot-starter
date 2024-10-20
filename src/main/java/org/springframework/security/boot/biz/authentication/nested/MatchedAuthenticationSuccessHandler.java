@@ -42,7 +42,7 @@ public interface MatchedAuthenticationSuccessHandler {
 	 *
 	 * @param request the request which caused the successful authentication
 	 * @param response the response
-	 * @param authentication the <tt>Authentication</tt> object which was created during
+	 * @param authentication the &lt;tt&gt;Authentication&lt;/tt&gt; object which was created during
 	 * the authentication process.
 	 * @throws IOException IOException
 	 * @throws ServletException ServletException
