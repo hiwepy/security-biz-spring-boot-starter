@@ -322,11 +322,11 @@ public abstract class WebSecurityCustomizerAdapter implements WebSecurityCustomi
 		return new CustomWebSecurityExpressionHandler();
 	}
 
-	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties cors) throws Exception {
-		if (cors.isEnabled()) {
-			http.cors().configurationSource(this.configurationSource(cors));
+	protected void configure(HttpSecurity http, SecurityHeaderCorsProperties corsProperties) throws Exception {
+		if (Objects.nonNull(corsProperties) && corsProperties.isEnabled()) {
+			http.cors(config -> config.configurationSource(this.configurationSource(corsProperties)));
 		} else {
-			http.cors().disable();
+			http.cors(config -> config.disable());
 		}
 	}
 	
