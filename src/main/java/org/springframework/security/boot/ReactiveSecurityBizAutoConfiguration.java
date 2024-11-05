@@ -14,6 +14,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.boot.biz.authentication.server.*;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.NoOpAccessDeniedHandler;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
@@ -89,6 +91,12 @@ public class ReactiveSecurityBizAutoConfiguration {
 	@ConditionalOnMissingBean
 	public ServerLogoutSuccessHandler serverLogoutSuccessHandler() {
 		return new ReactiveServerLogoutSuccessHandler();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public AccessDeniedHandler accessDeniedHandler(){
+		return new NoOpAccessDeniedHandler();
 	}
 
 }

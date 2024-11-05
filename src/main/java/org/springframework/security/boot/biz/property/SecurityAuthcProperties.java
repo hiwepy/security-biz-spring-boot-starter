@@ -33,13 +33,22 @@ public class SecurityAuthcProperties {
 	/** Authorization Path Pattern */
 	private String pathPattern = "/login";
 	
-	/** 重定向地址：会话注销后的重定向地址 */
+	/**
+	 * 重定向地址：会话注销后的重定向地址
+	 */
 	private String redirectUrl = "/";
-	/** 系统主页：登录成功后跳转路径 */
+	/**
+	 * 系统主页：登录成功后跳转路径
+	 */
 	private String successUrl = "/index";;
-	/** 异常页面：认证失败时的跳转路径 */
+	/**
+	 * 异常页面：认证失败时的跳转路径
+	 */
 	private String failureUrl = "/error";
-	
+	/**
+	 * 未授权页面：无权限时的跳转路径
+	 */
+	private String accessDeniedUrl = "/errors/401";
 	/**
 	 * Indicates if the filter chain should be continued prior to delegation to
 	 * {@link #successfulAuthentication(HttpServletRequest, HttpServletResponse, FilterChain, Authentication)}
