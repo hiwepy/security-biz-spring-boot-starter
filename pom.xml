@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.github.hiwepy</groupId>
+	<groupId>io.github.hiwepy</groupId>
 	<artifactId>security-biz-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Spring Security Biz</description>
 	<version>2.0.4-SNAPSHOT</version>
@@ -378,7 +378,7 @@
 				<version>${fastjson.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.hiwepy</groupId>
+				<groupId>io.github.hiwepy</groupId>
 				<artifactId>jwt-issuer-api</artifactId>
 				<version>${jwt-issuer.version}</version>
 			</dependency>
@@ -391,7 +391,7 @@
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.github.hiwepy/spring-biz -->
 			<dependency>
-			    <groupId>com.github.hiwepy</groupId>
+			    <groupId>io.github.hiwepy</groupId>
 			    <artifactId>spring-biz</artifactId>
 			    <version>${spring-biz.version}</version>
 			</dependency>
@@ -470,11 +470,11 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>com.github.hiwepy</groupId>
+		    <groupId>io.github.hiwepy</groupId>
 		    <artifactId>spring-biz</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.github.hiwepy</groupId>
+			<groupId>io.github.hiwepy</groupId>
 			<artifactId>jwt-issuer-api</artifactId>
 		</dependency>
 
