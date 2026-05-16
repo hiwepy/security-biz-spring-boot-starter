@@ -1,0 +1,1614 @@
+[security-biz-spring-boot-starter/2.3.x] 失败 - 分支切换失败
+[security-biz-spring-boot-starter/2.7.x] 失败 - 分支切换失败
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------< [0;36mio.github.hiwepy:security-biz-spring-boot-starter[0;1m >---------[m
+[[1;34mINFO[m] [1mBuilding io.github.hiwepy:security-biz-spring-boot-starter 4.0.x.20251227-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/spring-biz/3.3.x.20241003.RELEASE/spring-biz-3.3.x.20241003.RELEASE.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/spring-biz/3.3.x.20241003.RELEASE/spring-biz-3.3.x.20241003.RELEASE.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/jwt-issuer-api/1.1.4.1.RELEASE/jwt-issuer-api-1.1.4.1.RELEASE.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/jwt-issuer-api/1.1.4.1.RELEASE/jwt-issuer-api-1.1.4.1.RELEASE.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/jwt-issuer/1.1.4.1.RELEASE/jwt-issuer-1.1.4.1.RELEASE.pom
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/jwt-issuer/1.1.4.1.RELEASE/jwt-issuer-1.1.4.1.RELEASE.pom (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-security/4.0.1/spring-boot-starter-security-4.0.1.pom
+Progress (1): 2.5 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-security/4.0.1/spring-boot-starter-security-4.0.1.pom (2.5 kB at 6.5 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-security/4.0.1/spring-boot-security-4.0.1.pom
+Progress (1): 2.4 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-security/4.0.1/spring-boot-security-4.0.1.pom (2.4 kB at 6.6 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-config/7.0.2/spring-security-config-7.0.2.pom
+Progress (1): 2.8 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-config/7.0.2/spring-security-config-7.0.2.pom (2.8 kB at 7.1 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-core/7.0.2/spring-security-core-7.0.2.pom
+Progress (1): 3.2 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-core/7.0.2/spring-security-core-7.0.2.pom (3.2 kB at 7.5 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-crypto/7.0.2/spring-security-crypto-7.0.2.pom
+Progress (1): 1.9 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-crypto/7.0.2/spring-security-crypto-7.0.2.pom (1.9 kB at 5.5 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-web/7.0.2/spring-security-web-7.0.2.pom
+Progress (1): 2.6 kB
+Progress (1): 3.2 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-web/7.0.2/spring-security-web-7.0.2.pom (3.2 kB at 9.0 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-aspects/7.0.2/spring-security-aspects-7.0.2.pom
+Progress (1): 2.8 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-aspects/7.0.2/spring-security-aspects-7.0.2.pom (2.8 kB at 3.9 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-messaging/7.0.2/spring-security-messaging-7.0.2.pom
+Progress (1): 3.0 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-messaging/7.0.2/spring-security-messaging-7.0.2.pom (3.0 kB at 4.0 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-messaging/7.0.2/spring-messaging-7.0.2.pom
+Progress (1): 2.2 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-messaging/7.0.2/spring-messaging-7.0.2.pom (2.2 kB at 3.4 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-webflux/7.0.2/spring-webflux-7.0.2.pom
+Progress (1): 2.6 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-webflux/7.0.2/spring-webflux-7.0.2.pom (2.6 kB at 7.2 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/spring-biz/3.3.x.20241003.RELEASE/spring-biz-3.3.x.20241003.RELEASE.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-config/7.0.2/spring-security-config-7.0.2.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-security/4.0.1/spring-boot-security-4.0.1.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-security/4.0.1/spring-boot-starter-security-4.0.1.jar
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/jwt-issuer-api/1.1.4.1.RELEASE/jwt-issuer-api-1.1.4.1.RELEASE.jar
+Progress (1): 2.6 kB
+Progress (1): 4.7 kB
+Progress (2): 4.7 kB | 4.1 kB
+Progress (2): 4.7 kB | 8.2 kB
+Progress (2): 4.7 kB | 11 kB 
+Progress (2): 4.7 kB | 15 kB
+Progress (2): 4.7 kB | 19 kB
+Progress (2): 4.7 kB | 23 kB
+Progress (2): 4.7 kB | 26 kB
+Progress (2): 4.7 kB | 29 kB
+Progress (2): 4.7 kB | 32 kB
+Progress (2): 4.7 kB | 36 kB
+Progress (2): 4.7 kB | 39 kB
+Progress (2): 4.7 kB | 42 kB
+Progress (2): 4.7 kB | 44 kB
+Progress (2): 4.7 kB | 48 kB
+Progress (2): 4.7 kB | 52 kB
+Progress (2): 4.7 kB | 57 kB
+Progress (2): 4.7 kB | 61 kB
+Progress (2): 4.7 kB | 65 kB
+Progress (2): 4.7 kB | 69 kB
+Progress (2): 4.7 kB | 73 kB
+Progress (2): 4.7 kB | 77 kB
+Progress (2): 4.7 kB | 81 kB
+Progress (2): 4.7 kB | 85 kB
+Progress (2): 4.7 kB | 89 kB
+Progress (2): 4.7 kB | 93 kB
+Progress (2): 4.7 kB | 97 kB
+                            
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/jwt-issuer-api/1.1.4.1.RELEASE/jwt-issuer-api-1.1.4.1.RELEASE.jar (0 B at 0 B/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-aspects/7.0.2/spring-security-aspects-7.0.2.jar
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-starter-security/4.0.1/spring-boot-starter-security-4.0.1.jar (4.7 kB at 11 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-core/7.0.2/spring-security-core-7.0.2.jar
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/boot/spring-boot-security/4.0.1/spring-boot-security-4.0.1.jar (97 kB at 169 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-crypto/7.0.2/spring-security-crypto-7.0.2.jar
+Progress (1): 2.6 kB
+                    
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/com/github/hiwepy/spring-biz/3.3.x.20241003.RELEASE/spring-biz-3.3.x.20241003.RELEASE.jar (0 B at 0 B/s)
+Progress (1): 6.7 kB
+                    
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-messaging/7.0.2/spring-security-messaging-7.0.2.jar
+Progress (1): 11 kB
+Progress (1): 14 kB
+Progress (1): 17 kB
+Progress (1): 21 kB
+Progress (1): 25 kB
+Progress (1): 29 kB
+Progress (1): 33 kB
+Progress (1): 36 kB
+Progress (1): 39 kB
+Progress (1): 41 kB
+Progress (1): 45 kB
+Progress (1): 49 kB
+Progress (1): 53 kB
+Progress (1): 57 kB
+Progress (1): 61 kB
+Progress (1): 65 kB
+Progress (1): 69 kB
+Progress (1): 73 kB
+Progress (2): 73 kB | 2.6 kB
+Progress (2): 73 kB | 6.7 kB
+Progress (2): 77 kB | 6.7 kB
+Progress (2): 81 kB | 6.7 kB
+Progress (2): 85 kB | 6.7 kB
+Progress (2): 85 kB | 11 kB 
+Progress (2): 85 kB | 14 kB
+Progress (2): 85 kB | 17 kB
+Progress (2): 85 kB | 21 kB
+Progress (2): 85 kB | 25 kB
+Progress (2): 85 kB | 29 kB
+Progress (2): 89 kB | 29 kB
+Progress (2): 89 kB | 32 kB
+Progress (2): 93 kB | 32 kB
+Progress (2): 93 kB | 35 kB
+Progress (2): 93 kB | 39 kB
+Progress (2): 93 kB | 43 kB
+Progress (2): 93 kB | 46 kB
+Progress (2): 93 kB | 50 kB
+Progress (2): 93 kB | 54 kB
+Progress (2): 93 kB | 58 kB
+Progress (2): 98 kB | 58 kB
+Progress (2): 98 kB | 61 kB
+Progress (2): 98 kB | 66 kB
+Progress (2): 98 kB | 70 kB
+Progress (2): 98 kB | 74 kB
+Progress (2): 98 kB | 78 kB
+Progress (2): 98 kB | 81 kB
+Progress (2): 98 kB | 84 kB
+Progress (2): 98 kB | 88 kB
+Progress (2): 102 kB | 88 kB
+Progress (2): 102 kB | 92 kB
+Progress (2): 106 kB | 92 kB
+Progress (2): 110 kB | 92 kB
+Progress (2): 114 kB | 92 kB
+Progress (2): 118 kB | 92 kB
+Progress (2): 122 kB | 92 kB
+Progress (2): 126 kB | 92 kB
+Progress (2): 130 kB | 92 kB
+Progress (2): 134 kB | 92 kB
+Progress (2): 139 kB | 92 kB
+Progress (2): 143 kB | 92 kB
+Progress (2): 147 kB | 92 kB
+Progress (2): 151 kB | 92 kB
+Progress (2): 155 kB | 92 kB
+Progress (2): 159 kB | 92 kB
+Progress (2): 163 kB | 92 kB
+Progress (2): 163 kB | 96 kB
+Progress (2): 167 kB | 96 kB
+Progress (2): 167 kB | 100 kB
+Progress (2): 167 kB | 104 kB
+Progress (2): 171 kB | 104 kB
+Progress (2): 171 kB | 108 kB
+Progress (2): 175 kB | 108 kB
+Progress (2): 175 kB | 112 kB
+Progress (2): 179 kB | 112 kB
+Progress (2): 184 kB | 112 kB
+Progress (2): 188 kB | 112 kB
+Progress (2): 192 kB | 112 kB
+Progress (2): 196 kB | 112 kB
+Progress (2): 200 kB | 112 kB
+Progress (2): 204 kB | 112 kB
+Progress (2): 208 kB | 112 kB
+Progress (2): 212 kB | 112 kB
+Progress (2): 216 kB | 112 kB
+Progress (2): 220 kB | 112 kB
+Progress (2): 225 kB | 112 kB
+Progress (2): 229 kB | 112 kB
+Progress (2): 233 kB | 112 kB
+Progress (2): 237 kB | 112 kB
+Progress (2): 241 kB | 112 kB
+Progress (2): 245 kB | 112 kB
+Progress (2): 249 kB | 112 kB
+Progress (2): 253 kB | 112 kB
+Progress (2): 257 kB | 112 kB
+Progress (2): 261 kB | 112 kB
+Progress (2): 266 kB | 112 kB
+Progress (2): 270 kB | 112 kB
+Progress (2): 274 kB | 112 kB
+Progress (2): 278 kB | 112 kB
+Progress (2): 282 kB | 112 kB
+Progress (2): 286 kB | 112 kB
+Progress (2): 290 kB | 112 kB
+Progress (2): 294 kB | 112 kB
+Progress (2): 298 kB | 112 kB
+Progress (2): 302 kB | 112 kB
+Progress (2): 306 kB | 112 kB
+Progress (2): 311 kB | 112 kB
+Progress (2): 315 kB | 112 kB
+Progress (2): 319 kB | 112 kB
+Progress (2): 323 kB | 112 kB
+Progress (2): 327 kB | 112 kB
+Progress (2): 331 kB | 112 kB
+Progress (2): 335 kB | 112 kB
+Progress (2): 339 kB | 112 kB
+Progress (2): 343 kB | 112 kB
+Progress (2): 347 kB | 112 kB
+Progress (2): 352 kB | 112 kB
+Progress (2): 356 kB | 112 kB
+Progress (2): 360 kB | 112 kB
+Progress (2): 364 kB | 112 kB
+Progress (2): 368 kB | 112 kB
+Progress (2): 372 kB | 112 kB
+Progress (2): 376 kB | 112 kB
+Progress (2): 380 kB | 112 kB
+Progress (2): 384 kB | 112 kB
+Progress (2): 388 kB | 112 kB
+Progress (2): 392 kB | 112 kB
+Progress (2): 397 kB | 112 kB
+Progress (2): 401 kB | 112 kB
+Progress (2): 405 kB | 112 kB
+Progress (2): 409 kB | 112 kB
+Progress (2): 413 kB | 112 kB
+Progress (2): 417 kB | 112 kB
+Progress (2): 421 kB | 112 kB
+Progress (2): 425 kB | 112 kB
+Progress (2): 429 kB | 112 kB
+Progress (2): 433 kB | 112 kB
+Progress (2): 438 kB | 112 kB
+Progress (2): 442 kB | 112 kB
+Progress (2): 446 kB | 112 kB
+Progress (2): 450 kB | 112 kB
+Progress (2): 454 kB | 112 kB
+Progress (2): 458 kB | 112 kB
+Progress (2): 462 kB | 112 kB
+Progress (2): 466 kB | 112 kB
+Progress (2): 470 kB | 112 kB
+Progress (2): 474 kB | 112 kB
+Progress (2): 478 kB | 112 kB
+Progress (2): 483 kB | 112 kB
+Progress (2): 487 kB | 112 kB
+Progress (2): 491 kB | 112 kB
+Progress (2): 495 kB | 112 kB
+Progress (2): 499 kB | 112 kB
+Progress (2): 503 kB | 112 kB
+Progress (2): 507 kB | 112 kB
+Progress (2): 511 kB | 112 kB
+Progress (2): 515 kB | 112 kB
+Progress (2): 519 kB | 112 kB
+Progress (2): 523 kB | 112 kB
+Progress (2): 528 kB | 112 kB
+Progress (2): 532 kB | 112 kB
+Progress (2): 536 kB | 112 kB
+Progress (2): 540 kB | 112 kB
+Progress (2): 544 kB | 112 kB
+Progress (2): 548 kB | 112 kB
+Progress (2): 552 kB | 112 kB
+Progress (2): 556 kB | 112 kB
+Progress (2): 560 kB | 112 kB
+Progress (2): 564 kB | 112 kB
+Progress (2): 569 kB | 112 kB
+Progress (2): 573 kB | 112 kB
+Progress (2): 577 kB | 112 kB
+Progress (2): 581 kB | 112 kB
+Progress (2): 585 kB | 112 kB
+Progress (2): 589 kB | 112 kB
+Progress (2): 593 kB | 112 kB
+Progress (2): 597 kB | 112 kB
+Progress (2): 601 kB | 112 kB
+Progress (2): 605 kB | 112 kB
+Progress (2): 609 kB | 112 kB
+Progress (2): 614 kB | 112 kB
+Progress (2): 618 kB | 112 kB
+Progress (2): 622 kB | 112 kB
+Progress (2): 626 kB | 112 kB
+Progress (2): 630 kB | 112 kB
+Progress (2): 634 kB | 112 kB
+Progress (2): 638 kB | 112 kB
+Progress (2): 642 kB | 112 kB
+Progress (2): 646 kB | 112 kB
+Progress (2): 650 kB | 112 kB
+Progress (2): 654 kB | 112 kB
+Progress (2): 659 kB | 112 kB
+Progress (2): 663 kB | 112 kB
+Progress (2): 667 kB | 112 kB
+Progress (2): 671 kB | 112 kB
+Progress (2): 675 kB | 112 kB
+Progress (2): 679 kB | 112 kB
+Progress (2): 683 kB | 112 kB
+Progress (2): 687 kB | 112 kB
+Progress (2): 691 kB | 112 kB
+Progress (2): 695 kB | 112 kB
+Progress (2): 700 kB | 112 kB
+Progress (2): 704 kB | 112 kB
+Progress (2): 708 kB | 112 kB
+Progress (2): 712 kB | 112 kB
+Progress (2): 716 kB | 112 kB
+Progress (2): 720 kB | 112 kB
+Progress (2): 724 kB | 112 kB
+Progress (2): 728 kB | 112 kB
+Progress (2): 732 kB | 112 kB
+Progress (2): 736 kB | 112 kB
+Progress (2): 740 kB | 112 kB
+Progress (2): 745 kB | 112 kB
+Progress (2): 749 kB | 112 kB
+Progress (2): 753 kB | 112 kB
+Progress (2): 757 kB | 112 kB
+Progress (2): 761 kB | 112 kB
+Progress (2): 765 kB | 112 kB
+Progress (2): 769 kB | 112 kB
+Progress (2): 773 kB | 112 kB
+Progress (2): 777 kB | 112 kB
+Progress (2): 781 kB | 112 kB
+Progress (2): 786 kB | 112 kB
+Progress (2): 790 kB | 112 kB
+Progress (2): 794 kB | 112 kB
+Progress (2): 798 kB | 112 kB
+Progress (2): 802 kB | 112 kB
+Progress (2): 806 kB | 112 kB
+Progress (2): 810 kB | 112 kB
+Progress (2): 814 kB | 112 kB
+Progress (2): 818 kB | 112 kB
+Progress (2): 822 kB | 112 kB
+Progress (2): 826 kB | 112 kB
+Progress (2): 831 kB | 112 kB
+Progress (2): 835 kB | 112 kB
+Progress (2): 839 kB | 112 kB
+Progress (2): 843 kB | 112 kB
+Progress (2): 847 kB | 112 kB
+Progress (2): 851 kB | 112 kB
+Progress (2): 855 kB | 112 kB
+Progress (2): 859 kB | 112 kB
+Progress (2): 863 kB | 112 kB
+Progress (2): 867 kB | 112 kB
+Progress (2): 872 kB | 112 kB
+Progress (2): 876 kB | 112 kB
+Progress (2): 880 kB | 112 kB
+Progress (2): 884 kB | 112 kB
+Progress (2): 888 kB | 112 kB
+Progress (2): 892 kB | 112 kB
+Progress (2): 896 kB | 112 kB
+Progress (2): 900 kB | 112 kB
+Progress (2): 904 kB | 112 kB
+Progress (2): 908 kB | 112 kB
+Progress (2): 912 kB | 112 kB
+Progress (2): 917 kB | 112 kB
+Progress (2): 921 kB | 112 kB
+Progress (2): 925 kB | 112 kB
+Progress (2): 929 kB | 112 kB
+Progress (2): 933 kB | 112 kB
+Progress (2): 937 kB | 112 kB
+Progress (2): 941 kB | 112 kB
+Progress (2): 945 kB | 112 kB
+Progress (2): 949 kB | 112 kB
+Progress (2): 953 kB | 112 kB
+Progress (2): 958 kB | 112 kB
+Progress (2): 962 kB | 112 kB
+Progress (2): 966 kB | 112 kB
+Progress (2): 970 kB | 112 kB
+Progress (2): 974 kB | 112 kB
+Progress (2): 978 kB | 112 kB
+Progress (2): 982 kB | 112 kB
+Progress (2): 986 kB | 112 kB
+Progress (2): 990 kB | 112 kB
+Progress (2): 994 kB | 112 kB
+Progress (2): 999 kB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.0 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.1 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.2 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.3 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.4 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.5 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (2): 1.6 MB | 112 kB
+Progress (3): 1.6 MB | 112 kB | 4.0 kB
+Progress (4): 1.6 MB | 112 kB | 4.0 kB | 4.0 kB
+Progress (4): 1.6 MB | 112 kB | 8.1 kB | 4.0 kB
+Progress (4): 1.6 MB | 112 kB | 8.1 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB 
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.6 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 6.9 kB
+Progress (4): 1.7 MB | 112 kB | 11 kB | 11 kB 
+Progress (4): 1.8 MB | 112 kB | 11 kB | 11 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 14 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 14 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 17 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 17 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 19 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 19 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.8 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 11 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 14 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 14 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 17 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 17 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 21 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 21 kB | 21 kB
+Progress (4): 1.9 MB | 112 kB | 24 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 24 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 28 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 32 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.0 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 36 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 39 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 42 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 44 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 49 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 53 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 57 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 61 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 65 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 69 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 73 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 77 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 81 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 85 kB | 21 kB
+Progress (4): 2.1 MB | 112 kB | 89 kB | 21 kB
+                                             
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-crypto/7.0.2/spring-security-crypto-7.0.2.jar (112 kB at 119 kB/s)
+Progress (3): 2.1 MB | 94 kB | 21 kB
+                                    
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-messaging/7.0.2/spring-messaging-7.0.2.jar
+Progress (3): 2.1 MB | 98 kB | 21 kB
+Progress (3): 2.1 MB | 102 kB | 21 kB
+Progress (3): 2.1 MB | 106 kB | 21 kB
+Progress (3): 2.1 MB | 110 kB | 21 kB
+Progress (3): 2.1 MB | 114 kB | 21 kB
+Progress (3): 2.1 MB | 118 kB | 21 kB
+Progress (3): 2.1 MB | 122 kB | 21 kB
+Progress (3): 2.1 MB | 126 kB | 21 kB
+Progress (3): 2.1 MB | 130 kB | 21 kB
+Progress (3): 2.1 MB | 134 kB | 21 kB
+Progress (3): 2.1 MB | 139 kB | 21 kB
+Progress (3): 2.1 MB | 143 kB | 21 kB
+Progress (3): 2.1 MB | 147 kB | 21 kB
+Progress (3): 2.1 MB | 151 kB | 21 kB
+Progress (3): 2.1 MB | 155 kB | 21 kB
+Progress (3): 2.1 MB | 159 kB | 21 kB
+Progress (3): 2.1 MB | 163 kB | 21 kB
+Progress (3): 2.1 MB | 167 kB | 21 kB
+Progress (3): 2.1 MB | 171 kB | 21 kB
+Progress (3): 2.1 MB | 175 kB | 21 kB
+Progress (3): 2.1 MB | 180 kB | 21 kB
+Progress (3): 2.1 MB | 184 kB | 21 kB
+Progress (3): 2.1 MB | 188 kB | 21 kB
+Progress (3): 2.1 MB | 192 kB | 21 kB
+Progress (3): 2.1 MB | 196 kB | 21 kB
+Progress (3): 2.1 MB | 200 kB | 21 kB
+Progress (3): 2.1 MB | 204 kB | 21 kB
+Progress (3): 2.1 MB | 208 kB | 21 kB
+Progress (3): 2.1 MB | 212 kB | 21 kB
+Progress (3): 2.1 MB | 216 kB | 21 kB
+Progress (3): 2.1 MB | 221 kB | 21 kB
+Progress (3): 2.1 MB | 225 kB | 21 kB
+Progress (3): 2.1 MB | 229 kB | 21 kB
+Progress (3): 2.1 MB | 233 kB | 21 kB
+Progress (3): 2.1 MB | 237 kB | 21 kB
+Progress (3): 2.1 MB | 241 kB | 21 kB
+Progress (3): 2.1 MB | 245 kB | 21 kB
+Progress (3): 2.1 MB | 249 kB | 21 kB
+Progress (3): 2.1 MB | 253 kB | 21 kB
+Progress (3): 2.1 MB | 257 kB | 21 kB
+Progress (3): 2.1 MB | 261 kB | 21 kB
+Progress (3): 2.1 MB | 266 kB | 21 kB
+Progress (3): 2.1 MB | 270 kB | 21 kB
+Progress (3): 2.1 MB | 274 kB | 21 kB
+Progress (3): 2.1 MB | 278 kB | 21 kB
+Progress (3): 2.1 MB | 282 kB | 21 kB
+Progress (3): 2.1 MB | 286 kB | 21 kB
+Progress (3): 2.1 MB | 290 kB | 21 kB
+Progress (3): 2.1 MB | 294 kB | 21 kB
+Progress (3): 2.1 MB | 298 kB | 21 kB
+Progress (3): 2.1 MB | 302 kB | 21 kB
+Progress (3): 2.1 MB | 307 kB | 21 kB
+Progress (3): 2.1 MB | 311 kB | 21 kB
+Progress (3): 2.1 MB | 315 kB | 21 kB
+Progress (3): 2.1 MB | 319 kB | 21 kB
+Progress (3): 2.1 MB | 323 kB | 21 kB
+Progress (3): 2.1 MB | 327 kB | 21 kB
+Progress (3): 2.1 MB | 331 kB | 21 kB
+Progress (3): 2.1 MB | 335 kB | 21 kB
+Progress (3): 2.1 MB | 339 kB | 21 kB
+Progress (3): 2.1 MB | 343 kB | 21 kB
+Progress (3): 2.1 MB | 347 kB | 21 kB
+Progress (3): 2.1 MB | 352 kB | 21 kB
+Progress (3): 2.1 MB | 356 kB | 21 kB
+Progress (3): 2.1 MB | 360 kB | 21 kB
+Progress (3): 2.1 MB | 364 kB | 21 kB
+Progress (3): 2.1 MB | 368 kB | 21 kB
+Progress (3): 2.1 MB | 372 kB | 21 kB
+Progress (3): 2.1 MB | 376 kB | 21 kB
+Progress (3): 2.1 MB | 380 kB | 21 kB
+Progress (3): 2.1 MB | 384 kB | 21 kB
+Progress (3): 2.1 MB | 388 kB | 21 kB
+Progress (3): 2.1 MB | 393 kB | 21 kB
+Progress (3): 2.1 MB | 397 kB | 21 kB
+Progress (3): 2.1 MB | 401 kB | 21 kB
+Progress (3): 2.1 MB | 405 kB | 21 kB
+Progress (3): 2.1 MB | 409 kB | 21 kB
+Progress (3): 2.1 MB | 413 kB | 21 kB
+Progress (3): 2.1 MB | 417 kB | 21 kB
+Progress (3): 2.1 MB | 421 kB | 21 kB
+Progress (3): 2.1 MB | 425 kB | 21 kB
+Progress (3): 2.1 MB | 429 kB | 21 kB
+Progress (3): 2.1 MB | 433 kB | 21 kB
+Progress (3): 2.1 MB | 438 kB | 21 kB
+Progress (3): 2.1 MB | 442 kB | 21 kB
+Progress (3): 2.1 MB | 446 kB | 21 kB
+Progress (3): 2.1 MB | 450 kB | 21 kB
+Progress (3): 2.1 MB | 454 kB | 21 kB
+Progress (3): 2.1 MB | 458 kB | 21 kB
+Progress (3): 2.1 MB | 462 kB | 21 kB
+Progress (3): 2.1 MB | 466 kB | 21 kB
+Progress (3): 2.1 MB | 470 kB | 21 kB
+Progress (3): 2.1 MB | 474 kB | 21 kB
+Progress (3): 2.1 MB | 478 kB | 21 kB
+Progress (3): 2.1 MB | 483 kB | 21 kB
+Progress (3): 2.1 MB | 487 kB | 21 kB
+Progress (3): 2.1 MB | 491 kB | 21 kB
+Progress (3): 2.1 MB | 495 kB | 21 kB
+Progress (3): 2.1 MB | 499 kB | 21 kB
+Progress (3): 2.1 MB | 503 kB | 21 kB
+Progress (3): 2.1 MB | 507 kB | 21 kB
+Progress (3): 2.1 MB | 511 kB | 21 kB
+Progress (3): 2.1 MB | 515 kB | 21 kB
+Progress (3): 2.1 MB | 519 kB | 21 kB
+Progress (3): 2.1 MB | 524 kB | 21 kB
+Progress (3): 2.1 MB | 528 kB | 21 kB
+Progress (3): 2.1 MB | 532 kB | 21 kB
+Progress (3): 2.1 MB | 536 kB | 21 kB
+Progress (3): 2.1 MB | 540 kB | 21 kB
+Progress (3): 2.1 MB | 544 kB | 21 kB
+Progress (3): 2.1 MB | 548 kB | 21 kB
+Progress (3): 2.1 MB | 552 kB | 21 kB
+Progress (3): 2.1 MB | 556 kB | 21 kB
+Progress (3): 2.1 MB | 560 kB | 21 kB
+Progress (3): 2.1 MB | 564 kB | 21 kB
+Progress (3): 2.1 MB | 569 kB | 21 kB
+Progress (3): 2.1 MB | 573 kB | 21 kB
+Progress (3): 2.1 MB | 577 kB | 21 kB
+Progress (3): 2.1 MB | 581 kB | 21 kB
+Progress (3): 2.1 MB | 585 kB | 21 kB
+Progress (3): 2.1 MB | 589 kB | 21 kB
+Progress (3): 2.1 MB | 593 kB | 21 kB
+Progress (3): 2.1 MB | 597 kB | 21 kB
+Progress (3): 2.1 MB | 601 kB | 21 kB
+Progress (3): 2.1 MB | 605 kB | 21 kB
+Progress (3): 2.1 MB | 609 kB | 21 kB
+Progress (3): 2.1 MB | 614 kB | 21 kB
+Progress (3): 2.1 MB | 618 kB | 21 kB
+                                     
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-aspects/7.0.2/spring-security-aspects-7.0.2.jar (21 kB at 19 kB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-web/7.0.2/spring-security-web-7.0.2.jar
+Progress (3): 2.1 MB | 618 kB | 2.6 kB
+Progress (3): 2.1 MB | 618 kB | 6.7 kB
+Progress (3): 2.1 MB | 618 kB | 11 kB 
+                                     
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-config/7.0.2/spring-security-config-7.0.2.jar (2.1 MB at 1.8 MB/s)
+Downloading from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-webflux/7.0.2/spring-webflux-7.0.2.jar
+Progress (2): 618 kB | 14 kB
+Progress (2): 618 kB | 18 kB
+Progress (2): 618 kB | 22 kB
+Progress (2): 618 kB | 26 kB
+Progress (2): 618 kB | 30 kB
+Progress (2): 618 kB | 34 kB
+Progress (2): 618 kB | 38 kB
+                            
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-core/7.0.2/spring-security-core-7.0.2.jar (618 kB at 521 kB/s)
+Progress (1): 42 kB
+Progress (1): 46 kB
+Progress (1): 49 kB
+Progress (1): 53 kB
+Progress (1): 57 kB
+Progress (1): 60 kB
+Progress (2): 60 kB | 4.0 kB
+Progress (2): 60 kB | 8.1 kB
+Progress (2): 60 kB | 11 kB 
+Progress (2): 60 kB | 14 kB
+Progress (2): 60 kB | 17 kB
+Progress (2): 60 kB | 19 kB
+Progress (2): 60 kB | 23 kB
+Progress (2): 60 kB | 28 kB
+Progress (2): 60 kB | 32 kB
+Progress (2): 60 kB | 36 kB
+Progress (2): 60 kB | 39 kB
+Progress (2): 60 kB | 42 kB
+Progress (2): 60 kB | 45 kB
+Progress (2): 60 kB | 49 kB
+Progress (2): 60 kB | 53 kB
+Progress (2): 60 kB | 57 kB
+Progress (2): 60 kB | 61 kB
+Progress (2): 60 kB | 64 kB
+Progress (2): 60 kB | 68 kB
+Progress (2): 60 kB | 71 kB
+Progress (2): 60 kB | 74 kB
+Progress (2): 60 kB | 77 kB
+Progress (2): 60 kB | 81 kB
+Progress (2): 60 kB | 85 kB
+Progress (2): 60 kB | 88 kB
+Progress (2): 60 kB | 91 kB
+Progress (2): 60 kB | 94 kB
+Progress (2): 60 kB | 98 kB
+Progress (2): 60 kB | 101 kB
+Progress (2): 60 kB | 104 kB
+Progress (2): 60 kB | 106 kB
+Progress (2): 60 kB | 110 kB
+Progress (2): 60 kB | 115 kB
+Progress (2): 60 kB | 119 kB
+Progress (2): 60 kB | 123 kB
+Progress (2): 60 kB | 127 kB
+Progress (2): 60 kB | 129 kB
+Progress (2): 60 kB | 132 kB
+Progress (2): 60 kB | 135 kB
+Progress (2): 60 kB | 138 kB
+Progress (2): 60 kB | 142 kB
+Progress (2): 60 kB | 146 kB
+Progress (2): 60 kB | 148 kB
+Progress (2): 60 kB | 151 kB
+Progress (2): 60 kB | 154 kB
+Progress (2): 60 kB | 157 kB
+Progress (2): 60 kB | 161 kB
+Progress (2): 60 kB | 164 kB
+Progress (2): 60 kB | 167 kB
+Progress (2): 60 kB | 170 kB
+Progress (2): 60 kB | 173 kB
+Progress (2): 60 kB | 177 kB
+Progress (2): 60 kB | 180 kB
+Progress (2): 60 kB | 183 kB
+Progress (2): 60 kB | 185 kB
+Progress (2): 60 kB | 188 kB
+Progress (2): 60 kB | 192 kB
+Progress (2): 60 kB | 195 kB
+Progress (2): 60 kB | 198 kB
+Progress (2): 60 kB | 202 kB
+Progress (2): 60 kB | 205 kB
+Progress (2): 60 kB | 208 kB
+Progress (2): 60 kB | 211 kB
+Progress (2): 60 kB | 214 kB
+Progress (2): 60 kB | 216 kB
+Progress (2): 60 kB | 218 kB
+Progress (2): 60 kB | 222 kB
+Progress (2): 60 kB | 226 kB
+Progress (2): 60 kB | 230 kB
+Progress (2): 60 kB | 235 kB
+Progress (2): 60 kB | 239 kB
+Progress (2): 60 kB | 243 kB
+Progress (2): 60 kB | 247 kB
+Progress (2): 60 kB | 251 kB
+Progress (2): 60 kB | 255 kB
+Progress (2): 60 kB | 259 kB
+Progress (2): 60 kB | 263 kB
+Progress (2): 60 kB | 267 kB
+Progress (2): 60 kB | 271 kB
+Progress (2): 60 kB | 276 kB
+Progress (2): 60 kB | 280 kB
+Progress (2): 60 kB | 284 kB
+Progress (2): 60 kB | 288 kB
+Progress (2): 60 kB | 292 kB
+Progress (2): 60 kB | 296 kB
+Progress (2): 60 kB | 300 kB
+Progress (2): 60 kB | 304 kB
+Progress (2): 60 kB | 308 kB
+Progress (2): 60 kB | 312 kB
+Progress (2): 60 kB | 317 kB
+Progress (2): 60 kB | 321 kB
+Progress (2): 60 kB | 325 kB
+Progress (2): 60 kB | 329 kB
+Progress (2): 60 kB | 332 kB
+Progress (2): 60 kB | 335 kB
+Progress (2): 60 kB | 339 kB
+Progress (2): 60 kB | 343 kB
+Progress (2): 60 kB | 347 kB
+Progress (2): 60 kB | 351 kB
+Progress (2): 60 kB | 355 kB
+Progress (2): 60 kB | 359 kB
+Progress (2): 60 kB | 363 kB
+Progress (2): 60 kB | 367 kB
+Progress (2): 60 kB | 371 kB
+Progress (2): 60 kB | 375 kB
+Progress (2): 60 kB | 379 kB
+Progress (2): 60 kB | 383 kB
+Progress (2): 60 kB | 388 kB
+Progress (2): 60 kB | 392 kB
+Progress (2): 60 kB | 396 kB
+Progress (2): 60 kB | 400 kB
+Progress (2): 60 kB | 404 kB
+Progress (2): 60 kB | 408 kB
+Progress (2): 60 kB | 412 kB
+Progress (2): 60 kB | 416 kB
+Progress (2): 60 kB | 420 kB
+Progress (2): 60 kB | 424 kB
+Progress (2): 60 kB | 428 kB
+Progress (2): 60 kB | 433 kB
+Progress (2): 60 kB | 437 kB
+Progress (2): 60 kB | 441 kB
+Progress (2): 60 kB | 445 kB
+Progress (2): 60 kB | 449 kB
+Progress (2): 60 kB | 453 kB
+Progress (2): 60 kB | 457 kB
+Progress (2): 60 kB | 461 kB
+Progress (2): 60 kB | 465 kB
+Progress (2): 60 kB | 469 kB
+Progress (2): 60 kB | 474 kB
+Progress (2): 60 kB | 478 kB
+Progress (2): 60 kB | 482 kB
+Progress (2): 60 kB | 486 kB
+Progress (2): 60 kB | 490 kB
+Progress (2): 60 kB | 494 kB
+Progress (2): 60 kB | 498 kB
+Progress (2): 60 kB | 502 kB
+Progress (2): 60 kB | 506 kB
+Progress (2): 60 kB | 510 kB
+Progress (2): 60 kB | 515 kB
+Progress (2): 60 kB | 519 kB
+Progress (2): 60 kB | 523 kB
+Progress (2): 60 kB | 527 kB
+Progress (2): 60 kB | 531 kB
+Progress (2): 60 kB | 535 kB
+Progress (2): 60 kB | 539 kB
+Progress (2): 60 kB | 543 kB
+Progress (2): 60 kB | 547 kB
+Progress (2): 60 kB | 551 kB
+Progress (2): 60 kB | 555 kB
+Progress (2): 60 kB | 560 kB
+Progress (2): 60 kB | 564 kB
+Progress (2): 60 kB | 568 kB
+Progress (2): 60 kB | 572 kB
+Progress (2): 60 kB | 576 kB
+Progress (2): 60 kB | 580 kB
+Progress (2): 60 kB | 584 kB
+Progress (2): 60 kB | 588 kB
+Progress (2): 60 kB | 592 kB
+Progress (2): 60 kB | 596 kB
+Progress (2): 60 kB | 601 kB
+Progress (2): 60 kB | 605 kB
+Progress (2): 60 kB | 609 kB
+Progress (2): 60 kB | 612 kB
+                            
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-messaging/7.0.2/spring-security-messaging-7.0.2.jar (60 kB at 42 kB/s)
+Progress (2): 612 kB | 4.1 kB
+Progress (2): 612 kB | 8.2 kB
+Progress (2): 612 kB | 11 kB 
+Progress (3): 612 kB | 11 kB | 4.0 kB
+Progress (3): 612 kB | 11 kB | 8.1 kB
+Progress (3): 612 kB | 11 kB | 11 kB 
+Progress (3): 612 kB | 14 kB | 11 kB
+Progress (3): 612 kB | 14 kB | 14 kB
+Progress (3): 612 kB | 18 kB | 14 kB
+Progress (3): 612 kB | 22 kB | 14 kB
+Progress (3): 612 kB | 26 kB | 14 kB
+Progress (3): 612 kB | 30 kB | 14 kB
+Progress (3): 612 kB | 30 kB | 17 kB
+Progress (3): 612 kB | 34 kB | 17 kB
+Progress (3): 612 kB | 34 kB | 19 kB
+Progress (3): 612 kB | 34 kB | 24 kB
+Progress (3): 612 kB | 34 kB | 28 kB
+Progress (3): 612 kB | 34 kB | 32 kB
+Progress (3): 612 kB | 34 kB | 35 kB
+Progress (3): 612 kB | 34 kB | 37 kB
+Progress (3): 612 kB | 37 kB | 37 kB
+Progress (3): 612 kB | 37 kB | 42 kB
+Progress (3): 612 kB | 37 kB | 45 kB
+Progress (3): 612 kB | 37 kB | 49 kB
+Progress (3): 612 kB | 37 kB | 53 kB
+Progress (3): 612 kB | 37 kB | 57 kB
+Progress (3): 612 kB | 37 kB | 61 kB
+Progress (3): 612 kB | 37 kB | 63 kB
+Progress (3): 612 kB | 37 kB | 66 kB
+Progress (3): 612 kB | 37 kB | 70 kB
+Progress (3): 612 kB | 37 kB | 74 kB
+Progress (3): 612 kB | 37 kB | 77 kB
+Progress (3): 612 kB | 37 kB | 81 kB
+Progress (3): 612 kB | 37 kB | 85 kB
+Progress (3): 612 kB | 37 kB | 89 kB
+Progress (3): 612 kB | 37 kB | 92 kB
+Progress (3): 612 kB | 37 kB | 96 kB
+Progress (3): 612 kB | 37 kB | 99 kB
+Progress (3): 612 kB | 37 kB | 102 kB
+Progress (3): 612 kB | 37 kB | 106 kB
+Progress (3): 612 kB | 37 kB | 110 kB
+Progress (3): 612 kB | 37 kB | 114 kB
+Progress (3): 612 kB | 37 kB | 119 kB
+Progress (3): 612 kB | 37 kB | 122 kB
+Progress (3): 612 kB | 37 kB | 126 kB
+Progress (3): 612 kB | 37 kB | 129 kB
+Progress (3): 612 kB | 37 kB | 133 kB
+Progress (3): 612 kB | 37 kB | 137 kB
+Progress (3): 612 kB | 42 kB | 137 kB
+Progress (3): 612 kB | 42 kB | 141 kB
+Progress (3): 612 kB | 45 kB | 141 kB
+Progress (3): 612 kB | 45 kB | 145 kB
+Progress (3): 612 kB | 47 kB | 145 kB
+Progress (3): 612 kB | 47 kB | 149 kB
+Progress (3): 612 kB | 51 kB | 149 kB
+Progress (3): 612 kB | 51 kB | 153 kB
+Progress (3): 612 kB | 54 kB | 153 kB
+Progress (3): 612 kB | 54 kB | 157 kB
+Progress (3): 612 kB | 58 kB | 157 kB
+Progress (3): 612 kB | 58 kB | 161 kB
+Progress (3): 612 kB | 62 kB | 161 kB
+Progress (3): 612 kB | 62 kB | 165 kB
+Progress (3): 612 kB | 66 kB | 165 kB
+Progress (3): 612 kB | 66 kB | 169 kB
+Progress (3): 612 kB | 70 kB | 169 kB
+Progress (3): 612 kB | 70 kB | 173 kB
+Progress (3): 612 kB | 74 kB | 173 kB
+Progress (3): 612 kB | 78 kB | 173 kB
+Progress (3): 612 kB | 82 kB | 173 kB
+Progress (3): 612 kB | 87 kB | 173 kB
+Progress (3): 612 kB | 91 kB | 173 kB
+Progress (3): 612 kB | 95 kB | 173 kB
+Progress (3): 612 kB | 95 kB | 177 kB
+Progress (3): 612 kB | 95 kB | 180 kB
+Progress (3): 612 kB | 95 kB | 183 kB
+Progress (3): 612 kB | 95 kB | 188 kB
+Progress (3): 612 kB | 95 kB | 192 kB
+Progress (3): 612 kB | 95 kB | 195 kB
+Progress (3): 612 kB | 95 kB | 199 kB
+Progress (3): 612 kB | 95 kB | 203 kB
+Progress (3): 612 kB | 95 kB | 207 kB
+Progress (3): 612 kB | 95 kB | 211 kB
+Progress (3): 612 kB | 95 kB | 213 kB
+Progress (3): 612 kB | 95 kB | 216 kB
+Progress (3): 612 kB | 95 kB | 219 kB
+Progress (3): 612 kB | 95 kB | 223 kB
+Progress (3): 612 kB | 95 kB | 226 kB
+Progress (3): 612 kB | 95 kB | 229 kB
+Progress (3): 612 kB | 95 kB | 233 kB
+Progress (3): 612 kB | 95 kB | 237 kB
+Progress (3): 612 kB | 95 kB | 241 kB
+Progress (3): 612 kB | 95 kB | 245 kB
+Progress (3): 612 kB | 95 kB | 248 kB
+Progress (3): 612 kB | 95 kB | 252 kB
+Progress (3): 612 kB | 95 kB | 256 kB
+Progress (3): 612 kB | 95 kB | 260 kB
+Progress (3): 612 kB | 95 kB | 264 kB
+Progress (3): 612 kB | 95 kB | 269 kB
+Progress (3): 612 kB | 95 kB | 273 kB
+Progress (3): 612 kB | 95 kB | 277 kB
+Progress (3): 612 kB | 95 kB | 281 kB
+Progress (3): 612 kB | 95 kB | 283 kB
+Progress (3): 612 kB | 95 kB | 288 kB
+Progress (3): 612 kB | 95 kB | 291 kB
+Progress (3): 612 kB | 95 kB | 296 kB
+Progress (3): 612 kB | 95 kB | 300 kB
+Progress (3): 612 kB | 95 kB | 304 kB
+Progress (3): 612 kB | 95 kB | 308 kB
+Progress (3): 612 kB | 95 kB | 312 kB
+Progress (3): 612 kB | 95 kB | 316 kB
+Progress (3): 612 kB | 95 kB | 320 kB
+Progress (3): 612 kB | 95 kB | 323 kB
+Progress (3): 612 kB | 95 kB | 327 kB
+Progress (3): 612 kB | 95 kB | 331 kB
+Progress (3): 612 kB | 95 kB | 335 kB
+Progress (3): 612 kB | 95 kB | 339 kB
+Progress (3): 612 kB | 95 kB | 343 kB
+Progress (3): 612 kB | 95 kB | 347 kB
+Progress (3): 612 kB | 95 kB | 351 kB
+Progress (3): 612 kB | 95 kB | 355 kB
+Progress (3): 612 kB | 95 kB | 359 kB
+Progress (3): 612 kB | 95 kB | 362 kB
+Progress (3): 612 kB | 95 kB | 364 kB
+Progress (3): 612 kB | 95 kB | 367 kB
+Progress (3): 612 kB | 95 kB | 370 kB
+Progress (3): 612 kB | 95 kB | 373 kB
+Progress (3): 612 kB | 95 kB | 377 kB
+Progress (3): 612 kB | 95 kB | 381 kB
+Progress (3): 612 kB | 95 kB | 384 kB
+Progress (3): 612 kB | 95 kB | 387 kB
+Progress (3): 612 kB | 95 kB | 390 kB
+Progress (3): 612 kB | 95 kB | 394 kB
+Progress (3): 612 kB | 99 kB | 394 kB
+Progress (3): 612 kB | 103 kB | 394 kB
+Progress (3): 612 kB | 107 kB | 394 kB
+Progress (3): 612 kB | 111 kB | 394 kB
+Progress (3): 612 kB | 115 kB | 394 kB
+Progress (3): 612 kB | 119 kB | 394 kB
+Progress (3): 612 kB | 123 kB | 394 kB
+Progress (3): 612 kB | 127 kB | 394 kB
+Progress (3): 612 kB | 132 kB | 394 kB
+Progress (3): 612 kB | 136 kB | 394 kB
+Progress (3): 612 kB | 140 kB | 394 kB
+Progress (3): 612 kB | 144 kB | 394 kB
+Progress (3): 612 kB | 148 kB | 394 kB
+Progress (3): 612 kB | 152 kB | 394 kB
+Progress (3): 612 kB | 156 kB | 394 kB
+Progress (3): 612 kB | 160 kB | 394 kB
+Progress (3): 612 kB | 164 kB | 394 kB
+Progress (3): 612 kB | 168 kB | 394 kB
+Progress (3): 612 kB | 173 kB | 394 kB
+Progress (3): 612 kB | 177 kB | 394 kB
+Progress (3): 612 kB | 181 kB | 394 kB
+Progress (3): 612 kB | 185 kB | 394 kB
+Progress (3): 612 kB | 189 kB | 394 kB
+Progress (3): 612 kB | 193 kB | 394 kB
+Progress (3): 612 kB | 197 kB | 394 kB
+Progress (3): 612 kB | 197 kB | 398 kB
+Progress (3): 612 kB | 201 kB | 398 kB
+Progress (3): 612 kB | 201 kB | 402 kB
+Progress (3): 612 kB | 201 kB | 406 kB
+Progress (3): 612 kB | 201 kB | 409 kB
+Progress (3): 612 kB | 201 kB | 413 kB
+Progress (3): 612 kB | 201 kB | 417 kB
+Progress (3): 612 kB | 201 kB | 422 kB
+Progress (3): 612 kB | 201 kB | 425 kB
+Progress (3): 612 kB | 201 kB | 429 kB
+Progress (3): 612 kB | 201 kB | 433 kB
+Progress (3): 612 kB | 201 kB | 437 kB
+Progress (3): 612 kB | 201 kB | 441 kB
+Progress (3): 612 kB | 201 kB | 445 kB
+Progress (3): 612 kB | 201 kB | 449 kB
+Progress (3): 612 kB | 201 kB | 453 kB
+Progress (3): 612 kB | 201 kB | 455 kB
+Progress (3): 612 kB | 201 kB | 458 kB
+Progress (3): 612 kB | 201 kB | 461 kB
+Progress (3): 612 kB | 201 kB | 465 kB
+Progress (3): 612 kB | 201 kB | 469 kB
+Progress (3): 612 kB | 201 kB | 473 kB
+Progress (3): 612 kB | 201 kB | 477 kB
+Progress (3): 612 kB | 201 kB | 482 kB
+Progress (3): 612 kB | 201 kB | 486 kB
+Progress (3): 612 kB | 201 kB | 490 kB
+Progress (3): 612 kB | 201 kB | 494 kB
+Progress (3): 612 kB | 201 kB | 497 kB
+Progress (3): 612 kB | 201 kB | 500 kB
+Progress (3): 612 kB | 201 kB | 504 kB
+Progress (3): 612 kB | 201 kB | 507 kB
+Progress (3): 612 kB | 201 kB | 510 kB
+Progress (3): 612 kB | 201 kB | 513 kB
+                                      
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-messaging/7.0.2/spring-messaging-7.0.2.jar (612 kB at 373 kB/s)
+Progress (2): 201 kB | 517 kB
+Progress (2): 201 kB | 521 kB
+Progress (2): 201 kB | 525 kB
+Progress (2): 201 kB | 530 kB
+Progress (2): 201 kB | 534 kB
+Progress (2): 201 kB | 538 kB
+Progress (2): 201 kB | 542 kB
+Progress (2): 201 kB | 545 kB
+Progress (2): 201 kB | 547 kB
+Progress (2): 201 kB | 549 kB
+Progress (2): 201 kB | 552 kB
+Progress (2): 201 kB | 555 kB
+Progress (2): 201 kB | 558 kB
+Progress (2): 201 kB | 562 kB
+Progress (2): 201 kB | 566 kB
+Progress (2): 201 kB | 570 kB
+Progress (2): 201 kB | 574 kB
+Progress (2): 201 kB | 578 kB
+Progress (2): 201 kB | 583 kB
+Progress (2): 201 kB | 587 kB
+Progress (2): 201 kB | 591 kB
+Progress (2): 201 kB | 595 kB
+Progress (2): 201 kB | 599 kB
+Progress (2): 201 kB | 601 kB
+Progress (2): 201 kB | 605 kB
+Progress (2): 201 kB | 610 kB
+Progress (2): 201 kB | 614 kB
+Progress (2): 201 kB | 618 kB
+Progress (2): 201 kB | 622 kB
+Progress (2): 201 kB | 626 kB
+Progress (2): 205 kB | 626 kB
+Progress (2): 205 kB | 630 kB
+Progress (2): 209 kB | 630 kB
+Progress (2): 209 kB | 634 kB
+Progress (2): 209 kB | 638 kB
+Progress (2): 209 kB | 642 kB
+Progress (2): 209 kB | 646 kB
+Progress (2): 209 kB | 651 kB
+Progress (2): 209 kB | 655 kB
+Progress (2): 209 kB | 659 kB
+Progress (2): 209 kB | 663 kB
+Progress (2): 209 kB | 666 kB
+Progress (2): 209 kB | 670 kB
+Progress (2): 209 kB | 673 kB
+Progress (2): 214 kB | 673 kB
+Progress (2): 214 kB | 676 kB
+Progress (2): 218 kB | 676 kB
+Progress (2): 222 kB | 676 kB
+Progress (2): 226 kB | 676 kB
+Progress (2): 230 kB | 676 kB
+Progress (2): 234 kB | 676 kB
+Progress (2): 238 kB | 676 kB
+Progress (2): 242 kB | 676 kB
+Progress (2): 246 kB | 676 kB
+Progress (2): 250 kB | 676 kB
+Progress (2): 250 kB | 680 kB
+Progress (2): 254 kB | 680 kB
+Progress (2): 259 kB | 680 kB
+Progress (2): 263 kB | 680 kB
+Progress (2): 267 kB | 680 kB
+Progress (2): 271 kB | 680 kB
+Progress (2): 275 kB | 680 kB
+Progress (2): 279 kB | 680 kB
+Progress (2): 283 kB | 680 kB
+Progress (2): 287 kB | 680 kB
+Progress (2): 291 kB | 680 kB
+Progress (2): 295 kB | 680 kB
+Progress (2): 300 kB | 680 kB
+Progress (2): 304 kB | 680 kB
+Progress (2): 308 kB | 680 kB
+Progress (2): 312 kB | 680 kB
+Progress (2): 316 kB | 680 kB
+Progress (2): 320 kB | 680 kB
+Progress (2): 324 kB | 680 kB
+Progress (2): 328 kB | 680 kB
+Progress (2): 332 kB | 680 kB
+Progress (2): 336 kB | 680 kB
+Progress (2): 340 kB | 680 kB
+Progress (2): 345 kB | 680 kB
+Progress (2): 349 kB | 680 kB
+Progress (2): 353 kB | 680 kB
+Progress (2): 357 kB | 680 kB
+Progress (2): 361 kB | 680 kB
+Progress (2): 365 kB | 680 kB
+Progress (2): 369 kB | 680 kB
+Progress (2): 373 kB | 680 kB
+Progress (2): 377 kB | 680 kB
+Progress (2): 381 kB | 680 kB
+Progress (2): 386 kB | 680 kB
+Progress (2): 390 kB | 680 kB
+Progress (2): 394 kB | 680 kB
+Progress (2): 398 kB | 680 kB
+Progress (2): 402 kB | 680 kB
+Progress (2): 406 kB | 680 kB
+Progress (2): 406 kB | 684 kB
+Progress (2): 410 kB | 684 kB
+Progress (2): 410 kB | 687 kB
+Progress (2): 414 kB | 687 kB
+Progress (2): 418 kB | 687 kB
+Progress (2): 418 kB | 691 kB
+Progress (2): 418 kB | 694 kB
+Progress (2): 418 kB | 699 kB
+Progress (2): 418 kB | 703 kB
+Progress (2): 418 kB | 706 kB
+Progress (2): 418 kB | 708 kB
+Progress (2): 418 kB | 713 kB
+Progress (2): 418 kB | 716 kB
+Progress (2): 418 kB | 720 kB
+Progress (2): 418 kB | 725 kB
+Progress (2): 418 kB | 729 kB
+Progress (2): 418 kB | 733 kB
+Progress (2): 418 kB | 737 kB
+Progress (2): 418 kB | 741 kB
+Progress (2): 418 kB | 745 kB
+Progress (2): 418 kB | 747 kB
+Progress (2): 418 kB | 751 kB
+Progress (2): 418 kB | 756 kB
+Progress (2): 418 kB | 760 kB
+Progress (2): 418 kB | 764 kB
+Progress (2): 418 kB | 766 kB
+Progress (2): 418 kB | 770 kB
+Progress (2): 418 kB | 774 kB
+Progress (2): 418 kB | 778 kB
+Progress (2): 418 kB | 782 kB
+Progress (2): 418 kB | 786 kB
+Progress (2): 418 kB | 790 kB
+Progress (2): 418 kB | 794 kB
+Progress (2): 418 kB | 796 kB
+Progress (2): 418 kB | 799 kB
+Progress (2): 418 kB | 803 kB
+Progress (2): 418 kB | 807 kB
+Progress (2): 418 kB | 811 kB
+Progress (2): 418 kB | 816 kB
+Progress (2): 418 kB | 818 kB
+Progress (2): 418 kB | 822 kB
+Progress (2): 418 kB | 826 kB
+Progress (2): 418 kB | 830 kB
+Progress (2): 418 kB | 834 kB
+Progress (2): 418 kB | 837 kB
+Progress (2): 418 kB | 840 kB
+Progress (2): 418 kB | 844 kB
+Progress (2): 418 kB | 847 kB
+Progress (2): 418 kB | 851 kB
+Progress (2): 418 kB | 854 kB
+Progress (2): 418 kB | 857 kB
+Progress (2): 418 kB | 861 kB
+Progress (2): 418 kB | 865 kB
+Progress (2): 418 kB | 869 kB
+Progress (2): 418 kB | 873 kB
+Progress (2): 418 kB | 877 kB
+Progress (2): 418 kB | 881 kB
+Progress (2): 418 kB | 885 kB
+Progress (2): 418 kB | 889 kB
+Progress (2): 418 kB | 893 kB
+Progress (2): 418 kB | 898 kB
+Progress (2): 418 kB | 902 kB
+Progress (2): 418 kB | 906 kB
+Progress (2): 418 kB | 910 kB
+Progress (2): 418 kB | 914 kB
+Progress (2): 418 kB | 918 kB
+Progress (2): 418 kB | 922 kB
+Progress (2): 418 kB | 926 kB
+Progress (2): 422 kB | 926 kB
+Progress (2): 422 kB | 930 kB
+Progress (2): 426 kB | 930 kB
+Progress (2): 426 kB | 934 kB
+Progress (2): 431 kB | 934 kB
+Progress (2): 435 kB | 934 kB
+Progress (2): 439 kB | 934 kB
+Progress (2): 443 kB | 934 kB
+Progress (2): 443 kB | 939 kB
+Progress (2): 447 kB | 939 kB
+Progress (2): 447 kB | 943 kB
+Progress (2): 451 kB | 943 kB
+Progress (2): 455 kB | 943 kB
+Progress (2): 455 kB | 947 kB
+Progress (2): 459 kB | 947 kB
+Progress (2): 459 kB | 951 kB
+Progress (2): 463 kB | 951 kB
+Progress (2): 463 kB | 954 kB
+Progress (2): 463 kB | 957 kB
+Progress (2): 463 kB | 961 kB
+Progress (2): 463 kB | 965 kB
+Progress (2): 463 kB | 968 kB
+Progress (2): 467 kB | 968 kB
+Progress (2): 467 kB | 972 kB
+Progress (2): 471 kB | 972 kB
+Progress (2): 476 kB | 972 kB
+Progress (2): 480 kB | 972 kB
+Progress (2): 484 kB | 972 kB
+Progress (2): 488 kB | 972 kB
+Progress (2): 492 kB | 972 kB
+Progress (2): 496 kB | 972 kB
+Progress (2): 500 kB | 972 kB
+Progress (2): 504 kB | 972 kB
+Progress (2): 508 kB | 972 kB
+Progress (2): 512 kB | 972 kB
+Progress (2): 512 kB | 977 kB
+Progress (2): 517 kB | 977 kB
+Progress (2): 517 kB | 981 kB
+Progress (2): 521 kB | 981 kB
+Progress (2): 525 kB | 981 kB
+Progress (2): 529 kB | 981 kB
+Progress (2): 533 kB | 981 kB
+Progress (2): 537 kB | 981 kB
+Progress (2): 541 kB | 981 kB
+Progress (2): 545 kB | 981 kB
+Progress (2): 549 kB | 981 kB
+Progress (2): 553 kB | 981 kB
+Progress (2): 557 kB | 981 kB
+Progress (2): 562 kB | 981 kB
+Progress (2): 566 kB | 981 kB
+Progress (2): 570 kB | 981 kB
+Progress (2): 574 kB | 981 kB
+Progress (2): 578 kB | 981 kB
+Progress (2): 582 kB | 981 kB
+Progress (2): 586 kB | 981 kB
+Progress (2): 590 kB | 981 kB
+Progress (2): 594 kB | 981 kB
+Progress (2): 598 kB | 981 kB
+Progress (2): 603 kB | 981 kB
+Progress (2): 607 kB | 981 kB
+Progress (2): 611 kB | 981 kB
+Progress (2): 615 kB | 981 kB
+Progress (2): 619 kB | 981 kB
+Progress (2): 623 kB | 981 kB
+Progress (2): 627 kB | 981 kB
+Progress (2): 631 kB | 981 kB
+Progress (2): 635 kB | 981 kB
+Progress (2): 639 kB | 981 kB
+Progress (2): 643 kB | 981 kB
+Progress (2): 648 kB | 981 kB
+Progress (2): 652 kB | 981 kB
+Progress (2): 656 kB | 981 kB
+Progress (2): 660 kB | 981 kB
+Progress (2): 664 kB | 981 kB
+Progress (2): 668 kB | 981 kB
+Progress (2): 668 kB | 985 kB
+Progress (2): 672 kB | 985 kB
+Progress (2): 676 kB | 985 kB
+Progress (2): 680 kB | 985 kB
+Progress (2): 684 kB | 985 kB
+Progress (2): 688 kB | 985 kB
+Progress (2): 688 kB | 989 kB
+Progress (2): 693 kB | 989 kB
+Progress (2): 693 kB | 993 kB
+Progress (2): 697 kB | 993 kB
+Progress (2): 697 kB | 997 kB
+Progress (2): 697 kB | 1000 kB
+Progress (2): 697 kB | 1.0 MB 
+Progress (2): 697 kB | 1.0 MB
+Progress (2): 697 kB | 1.0 MB
+Progress (2): 697 kB | 1.0 MB
+Progress (2): 697 kB | 1.0 MB
+Progress (2): 701 kB | 1.0 MB
+Progress (2): 705 kB | 1.0 MB
+Progress (2): 709 kB | 1.0 MB
+Progress (2): 713 kB | 1.0 MB
+Progress (2): 717 kB | 1.0 MB
+Progress (2): 721 kB | 1.0 MB
+Progress (2): 725 kB | 1.0 MB
+Progress (2): 729 kB | 1.0 MB
+Progress (2): 734 kB | 1.0 MB
+Progress (2): 738 kB | 1.0 MB
+Progress (2): 742 kB | 1.0 MB
+Progress (2): 746 kB | 1.0 MB
+Progress (2): 750 kB | 1.0 MB
+Progress (2): 754 kB | 1.0 MB
+Progress (2): 758 kB | 1.0 MB
+Progress (2): 762 kB | 1.0 MB
+Progress (2): 766 kB | 1.0 MB
+Progress (2): 770 kB | 1.0 MB
+Progress (2): 775 kB | 1.0 MB
+Progress (2): 779 kB | 1.0 MB
+Progress (2): 783 kB | 1.0 MB
+Progress (2): 787 kB | 1.0 MB
+Progress (2): 791 kB | 1.0 MB
+Progress (2): 795 kB | 1.0 MB
+Progress (2): 799 kB | 1.0 MB
+Progress (2): 803 kB | 1.0 MB
+Progress (2): 807 kB | 1.0 MB
+Progress (2): 811 kB | 1.0 MB
+Progress (2): 815 kB | 1.0 MB
+Progress (2): 820 kB | 1.0 MB
+Progress (2): 824 kB | 1.0 MB
+Progress (2): 828 kB | 1.0 MB
+Progress (2): 832 kB | 1.0 MB
+Progress (2): 836 kB | 1.0 MB
+Progress (2): 840 kB | 1.0 MB
+Progress (2): 844 kB | 1.0 MB
+Progress (2): 848 kB | 1.0 MB
+Progress (2): 852 kB | 1.0 MB
+Progress (2): 856 kB | 1.0 MB
+Progress (2): 861 kB | 1.0 MB
+Progress (2): 865 kB | 1.0 MB
+Progress (2): 869 kB | 1.0 MB
+Progress (2): 873 kB | 1.0 MB
+Progress (2): 877 kB | 1.0 MB
+Progress (2): 881 kB | 1.0 MB
+Progress (2): 885 kB | 1.0 MB
+Progress (2): 889 kB | 1.0 MB
+Progress (2): 893 kB | 1.0 MB
+Progress (2): 897 kB | 1.0 MB
+Progress (2): 901 kB | 1.0 MB
+Progress (2): 906 kB | 1.0 MB
+Progress (2): 910 kB | 1.0 MB
+Progress (2): 914 kB | 1.0 MB
+Progress (2): 918 kB | 1.0 MB
+Progress (2): 922 kB | 1.0 MB
+Progress (2): 926 kB | 1.0 MB
+Progress (2): 928 kB | 1.0 MB
+                             
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/spring-webflux/7.0.2/spring-webflux-7.0.2.jar (1.0 MB at 539 kB/s)
+Downloaded from aiban-tianyin-core: https://aiban-maven.pkg.coding.net/repository/tianyin/core/org/springframework/security/spring-security-web/7.0.2/spring-security-web-7.0.2.jar (928 kB at 482 kB/s)
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:3.4.0:clean[m [1m(default-clean)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Deleting /Users/wandl/workspaces/workspace-ddd4j/workspace-ddd4j-boot-starters/security-biz-spring-boot-starter/target
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  8.547 s
+[[1;34mINFO[m] Finished at: 2026-03-16T14:11:59+08:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m on project [36msecurity-biz-spring-boot-starter[m: [1;31m[m
+[[1;31mERROR[m] [1;31mRule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:[m
+[[1;31mERROR[m] [1;31mYou are running an older version of Maven. This application requires at least Maven 3.9.6.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[security-biz-spring-boot-starter/3.0.x] 失败 - 查看日志
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------< [0;36mio.github.hiwepy:security-biz-spring-boot-starter[0;1m >---------[m
+[[1;34mINFO[m] [1mBuilding io.github.hiwepy:security-biz-spring-boot-starter 4.0.x.20251227-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:3.4.0:clean[m [1m(default-clean)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  0.355 s
+[[1;34mINFO[m] Finished at: 2026-03-16T14:12:00+08:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m on project [36msecurity-biz-spring-boot-starter[m: [1;31m[m
+[[1;31mERROR[m] [1;31mRule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:[m
+[[1;31mERROR[m] [1;31mYou are running an older version of Maven. This application requires at least Maven 3.9.6.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[security-biz-spring-boot-starter/3.1.x] 失败 - 查看日志
+[security-biz-spring-boot-starter/3.2.x] 失败 - 分支切换失败
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------< [0;36mio.github.hiwepy:security-biz-spring-boot-starter[0;1m >---------[m
+[[1;34mINFO[m] [1mBuilding io.github.hiwepy:security-biz-spring-boot-starter 4.0.x.20251227-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:3.4.0:clean[m [1m(default-clean)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  0.339 s
+[[1;34mINFO[m] Finished at: 2026-03-16T14:12:01+08:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m on project [36msecurity-biz-spring-boot-starter[m: [1;31m[m
+[[1;31mERROR[m] [1;31mRule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:[m
+[[1;31mERROR[m] [1;31mYou are running an older version of Maven. This application requires at least Maven 3.9.6.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[security-biz-spring-boot-starter/3.3.x] 失败 - 查看日志
+[security-biz-spring-boot-starter/3.4.x] 失败 - 分支切换失败
+[security-biz-spring-boot-starter/3.5.x] 失败 - 分支切换失败
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------< [0;36mio.github.hiwepy:security-biz-spring-boot-starter[0;1m >---------[m
+[[1;34mINFO[m] [1mBuilding io.github.hiwepy:security-biz-spring-boot-starter 4.0.x.20251227-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-clean-plugin:3.4.0:clean[m [1m(default-clean)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m @ [36msecurity-biz-spring-boot-starter[0;1m ---[m
+[[1;34mINFO[m] Rule 1: org.apache.maven.enforcer.rules.version.RequireJavaVersion passed
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  0.290 s
+[[1;34mINFO[m] Finished at: 2026-03-16T14:12:01+08:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-enforcer-plugin:3.5.0:enforce[m [1m(default-cli)[m on project [36msecurity-biz-spring-boot-starter[m: [1;31m[m
+[[1;31mERROR[m] [1;31mRule 0: org.apache.maven.enforcer.rules.version.RequireMavenVersion failed with message:[m
+[[1;31mERROR[m] [1;31mYou are running an older version of Maven. This application requires at least Maven 3.9.6.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[security-biz-spring-boot-starter/4.0.x] 失败 - 查看日志
+[security-biz-spring-boot-starter/master] 失败 - 分支切换失败
