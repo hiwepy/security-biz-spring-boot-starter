@@ -15,7 +15,7 @@
  */
 package org.springframework.security.boot.biz.userdetails;
 
-import com.github.hiwepy.jwt.JwtPayload;
+import io.github.hiwepy.jwt.JwtPayload;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
