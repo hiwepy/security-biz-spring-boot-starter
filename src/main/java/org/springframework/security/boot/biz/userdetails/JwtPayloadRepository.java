@@ -15,7 +15,7 @@
  */
 package org.springframework.security.boot.biz.userdetails;
 
-import io.github.hiwepy.jwt.JwtPayload;
+import com.github.hiwepy.jwt.JwtPayload;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 
